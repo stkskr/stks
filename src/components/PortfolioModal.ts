@@ -3,7 +3,7 @@ import { PortfolioItem } from '../types/portfolio.types';
 import { portfolioData } from '../data/portfolio';
 import { languageManager } from '../core/language';
 import { createElement } from '../utils/dom';
-import { getFullImages, getDefaultFullImagePath } from '../utils/portfolio';
+import { getFullImages } from '../utils/portfolio';
 import { stateManager } from '../core/state';
 import { router } from '../core/router';
 
@@ -125,9 +125,9 @@ export class PortfolioModal {
       // If modal is already open, animate the content change
       const wasActive = this.element.classList.contains('active');
       if (wasActive) {
-        this.animateContentChange(modalBody, modalContent, item, language);
+        await this.animateContentChange(modalBody, modalContent, item, language);
       } else {
-        const content = this.renderModalContentAsync(item, language);
+        const content = await this.renderModalContentAsync(item, language);
         modalBody.innerHTML = content;
         this.element.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -154,7 +154,7 @@ export class PortfolioModal {
     await new Promise(resolve => setTimeout(resolve, 150));
 
     // Update content while invisible to measure new height
-    const content = this.renderModalContentAsync(item, language);
+    const content = await this.renderModalContentAsync(item, language);
     modalBody.innerHTML = content;
     this.attachCarouselListeners();
 
@@ -213,7 +213,7 @@ export class PortfolioModal {
     return types.map(t => typeMap[t.toLowerCase()]?.[language] || t).join(', ');
   }
 
-  private renderModalContentAsync(item: PortfolioItem, language: Language): string {
+  private async renderModalContentAsync(item: PortfolioItem, language: Language): Promise<string> {
     const title = languageManager.getContent(item.title, language);
     const mission = languageManager.getContent(item.mission, language);
     const solution = languageManager.getContent(item.solution, language);
@@ -242,8 +242,8 @@ export class PortfolioModal {
         </div>
       `;
     } else {
-      // Get full images (carousel or single) - now synchronous!
-      const images = getFullImages(item.id);
+      // Get full images (carousel or single)
+      const images = await getFullImages(item.id);
 
       if (images.length === 1) {
         // Single image
