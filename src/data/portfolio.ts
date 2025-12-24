@@ -314,29 +314,6 @@ export const portfolioData: PortfolioData = [
     },
   },
 
-  // ============================================================
-  // innisfree Global Brand Slogan
-  // ============================================================
-  {
-    id: 'innisfree-global-slogan',
-    title: {
-      ko: 'innisfree Global Brand Slogan',
-      en: 'innisfree Global Brand Slogan',
-    },
-    date: '2023-04-18',
-    client: 'innisfree',
-    mediaType: 'branding',
-    mission: {
-      ko: '제주도의 purity를 중심으로 한 이미지와 제주에서 더 나아가 지구를 sustainable하게 지켜주는 브랜드라는 이미지를 살리면서 모든 제품, 모든 광고, 모든 매체에 사용 가능한 슬로건을 제작.',
-      en: 'Create a slogan that emphasizes the purity of Jeju and conveys the image of a brand that not only preserves Jeju but also protects the Earth in a sustainable way, applicable to all products, advertisements, and media.',
-    },
-    solution: {
-      ko: '제주에 관련된 브랜드 이미지의 장점을 살리면서 최근 증가 중인 eco-conscious 소비자들에게 매력적으로 보일 수 있도록 하여 슬로건을 제작.',
-      en: 'We crafted a slogan that highlights the strengths of the brand image related to Jeju, making it appealing to the growing number of eco-conscious consumers.',
-    },
-  },
-
-
 
 
 /// ADD NEW JOBS ABOVE THIS TEXT
