@@ -40,6 +40,7 @@ export const portfolioData: PortfolioData = [
     date: '2022-01-05',
     client: 'Innocean',
     mediaType: 'online, video',
+    videoURL: 'https://www.youtube.com/watch?v=y9tnJ1CIvT8&t=613s',
     mission: {
       ko: '현대 CEO 정의선이 CES 2022에서 관중에게 발표할 연설문 제작. 매력적이고 이해하기 쉬운 방식으로 현대의 첨단 로봇 기술을 소개하는 스크립트 작업.',
       en: 'Write a speech to be delivered by Hyundai CEO Chung Eui-sun, and speakers from Hyundai, to a live audience at CES 2022. The speech had to introduce Hyundai\'s advanced robotics technology for mobility in a way that was captivating and easy to understand.',

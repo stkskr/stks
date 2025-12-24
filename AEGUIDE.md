@@ -67,7 +67,7 @@ Images that appear as the thumbnail.
       en: 'English Title',
     },
     client: 'Client Company',
-    videoUrl: 'https://youtube.com/...'
+    videoUrl: 'https://youtube.com/...',
     mediaType: 'category',
     mission: {
       ko: '등등등',
@@ -166,7 +166,7 @@ Replace `Client Company` with the client name. Like the Project Title, this fiel
 ### Video URL (DELETE IF UNNEEDED)
 
 ```
-videoUrl: 'https://youtube.com/...'
+videoUrl: 'https://youtube.com/...',
 ```
 
 Place a link to the video you need to embed here. 
