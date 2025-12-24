@@ -15,8 +15,9 @@ export const portfolioData: PortfolioData = [
       en: 'LG 2023 New Years Message',
     },
     client: 'HsAd',
-      // Optional: videoUrl: 'https://youtube.com/...'
     mediaType: 'video',
+    imagePrefix: '01',
+    carouselCount: 0,
     mission: {
       ko: '모든 사원들에게 감사의 표현을 전하고, 다음 해를 맞이하여 동기부여의 메세지를 담은 LG CEO의 메세지 제작.',
       en: 'Write a message from the CEO of LG, showing gratitude to all company employees and setting the tone for the next year of work.',
@@ -39,6 +40,8 @@ export const portfolioData: PortfolioData = [
     client: 'Innocean',
     mediaType: 'online, video',
     videoUrl: 'https://www.youtube.com/watch?v=y9tnJ1CIvT8&t=613s',
+    imagePrefix: '02',
+    carouselCount: 0,
     mission: {
       ko: '현대 CEO 정의선이 CES 2022에서 관중에게 발표할 연설문 제작. 매력적이고 이해하기 쉬운 방식으로 현대의 첨단 로봇 기술을 소개하는 스크립트 작업.',
       en: 'Write a speech to be delivered by Hyundai CEO Chung Eui-sun, and speakers from Hyundai, to a live audience at CES 2022. The speech had to introduce Hyundai\'s advanced robotics technology for mobility in a way that was captivating and easy to understand.',
@@ -60,6 +63,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'Design Fever',
     mediaType: 'online, branding',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: '990 PRO 라인업의 온라인 피쳐 페이지에 들어갈 PC 및 콘솔 게이머들에게 강력히 어필하는 카피 제작.',
       en: 'Create copy for the 990 PRO lineup\'s online feature pages, that would appeal powerfully to PC and console gamers.',
@@ -81,6 +86,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'Naver Corp.',
     mediaType: 'online, video',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: 'TEAM NAVER의 AI 발전을 소개하고 미래의 노력에 대한 흥미를 일으키는 DAN23 컨퍼런스 영상 및 웹사이트를 영문화.',
       en: 'Transcreate a promotional video that showcases NAVER\'s AI advancements and creates excitement for future endeavors.',
@@ -102,6 +109,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'LG Electronics',
     mediaType: 'branding',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: '항균 기능성 첨가제의 위생, 보호라는 제품 속성을 직접적으로 전달하면서, 쉽고 직관적인 3음절 이내의 이름을 제작하라. 상표등록을 위해 새로운 단어를 만들어라.',
       en: 'Create a new, trademarkable name under three syllables that clearly conveys the antimicrobial additive\'s hygiene and protection attributes.',
@@ -123,6 +132,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'LG Electronics',
     mediaType: 'online, video',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: '서울에서 개최한 2023년 Life\'s Good Award 시상식에서 글로벌한 관중 앞에서 LG전자 CEO가 발표할 연설문을 작성.',
       en: 'Write a speech for LG Electronics\' CEO to deliver in front of a live international audience at the 2023 Life\'s Good Award ceremony in Seoul.',
@@ -144,6 +155,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'Samsung Display',
     mediaType: 'ooh',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: 'CES 2025에서 공개된 삼성디스플레이의 첨단 기술을 관람객의 이목을 끌 수 있는 언어로 구현하고자, 각 존의 주제에 맞는 후킹 있는 영어 타이틀 개발 과제가 주어짐. 더불어 전시 전반에 활용되는 다양한 영어 카피에 대한 자연스러운 톤앤매너 정비 및 고도화 필요.',
       en: 'Development of compelling, native-sounding English zone titles that capture the essence of Samsung Display\'s latest innovations for CES 2025. Additional task: elevate the overall quality of supporting English copy to ensure tonal consistency and global clarity across the exhibition.',
@@ -165,6 +178,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'LG GMG',
     mediaType: 'ooh',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: 'CES 2025에서 공개된 LG의 미래 비전을 전 세계 고객이 쉽게 이해하고 감정적으로 공감할 수 있도록, \'공감지능(Affectionate Intelligence)\'이라는 복합 개념을 따뜻하고 명료한 언어로 풀어내는 글로벌 카피 개발 과제. 브랜드의 기술 혁신성과 인간 중심 메시지를 동시에 전달할 수 있는 카피 구조화 필요.',
       en: 'Development of globally resonant copy to communicate LG\'s CES 2025 vision—anchored in the concept of Affectionate Intelligence—in language that is both emotionally engaging and easy to understand. Required a tonal balance of technological innovation and human warmth, with clear narrative structuring.',
@@ -186,6 +201,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'AMOREPACIFIC',
     mediaType: 'video',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: '아모레퍼시픽의 80년 헤리티지를 기반으로, 브랜드의 비전과 정체성을 함께 전달할 수 있는 내러티브 카피 개발. 좌우 분할 구조의 필름 구성을 감안해, 과거와 미래의 메시지가 하나의 흐름으로 읽힐 수 있도록 언어적 연결성과 리듬을 갖춘 문장 설계 필요.',
       en: 'Craft an English narrative that bridges Amorepacific\'s heritage and future vision for its 80th anniversary film. The film\'s split-screen format required a writing structure that could move fluidly between past and future, while expressing confidence, artistry, and forward-thinking ambition.',
@@ -207,6 +224,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'AMOREPACIFIC',
     mediaType: 'branding',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: '글로벌 뷰티 시장에서의 방향성과 정체성을 간결하게 전달할 수 있는 아모레퍼시픽의 비전 스테이트먼트 영문 버전 작성. 아모레퍼시픽의 헤리티지를 기반으로 미래를 바라보는 "New Beauty"가 전사적 커뮤니케이션에 사용될 수 있도록 메시지의 밀도와 보편성을 확보하는 것이 과제.',
       en: 'Develop the English version of Amorepacific\'s corporate vision statement to clearly convey the company\'s direction and identity in the global beauty landscape. The statement needed to encapsulate "New Beauty"—a future-focused message rooted in heritage—while remaining dense and adaptable enough for use across all corporate communications.',
@@ -228,6 +247,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'LG Electronics',
     mediaType: 'branding',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: 'LG의 톤을 한국어에서 영어로 번역하고 정제하여, 브랜드의 핵심 가치를 명확하고 간결하게 전달하며 감정적 공감을 국제적으로 전달.',
       en: 'Translate and refine LG\'s tone of voice from Korean to English, capturing the brand\'s core values and emotional resonance with clarity and brevity for an international audience.',
@@ -249,6 +270,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'PLEDIS Entertainment',
     mediaType: 'branding',
+    imagePrefix: '12',
+    carouselCount: 2,
     mission: {
       ko: '세븐틴 12집의 영문 앨범명 개발. 다양한 미적, 주제적 개념에 맞는 짧고 임팩트 있는 제목 개발.',
       en: 'Writing an English title to be used as an album name. Required creating a title to fit a variety of aesthetic and thematic concepts that is both catchy and impactful.',
@@ -270,6 +293,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'Serviceplan',
     mediaType: 'sns',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: 'GV80 블랙 및 GV80 블랙 쿠페의 존재감과 고급스러움을 강조할 수 있는 소셜미디어 콘텐츠를 제작. 각 채널 특성에 맞춰 간결하면서도 시적인 톤으로 차량의 정체성을 표현.',
       en: 'Create social content that highlights the presence and luxury of the GV80 Black and GV80 Black Coupe. Use a poetic yet concise tone tailored to each platform.',
@@ -291,6 +316,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'LG Uplus',
     mediaType: 'video',
+    imagePrefix: null,
+    carouselCount: 0,
     mission: {
       ko: 'AI 기반 통화 요약, 딥페이크 감지, 스팸 필터링 등 \'익시오\'의 주요 기능을 소비자 관점에서 쉽게 전달할 수 있는 TVC용 영문 카피 개발. 기능 중심 설명이 아닌, 공감 가능한 언어와 리듬으로 브랜드 톤을 살리는 작업이 요구됨.',
       en: 'Craft English copy for the ixi-O TVC series that introduces AI-powered features in a way that feels relatable and natural to everyday users. The goal was to go beyond technical descriptions and create copy with character, rhythm, and consumer appeal.',
@@ -312,6 +339,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'innisfree',
     mediaType: 'slogan',
+    imagePrefix: '14',
+    carouselCount: 3,
     mission: {
       ko: '제주도의 purity를 중심으로 한 이미지와 제주에서 더 나아가 지구를 sustainable하게 지켜주는 브랜드라는 이미지를 살리면서 모든 제품, 모든 광고, 모든 매체에 사용 가능한 슬로건을 제작.',
       en: 'Create a slogan that emphasizes the purity of Jeju and conveys the image of a brand that not only preserves Jeju but also protects the Earth in a sustainable way, applicable to all products, advertisements, and media.',
@@ -333,6 +362,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'Hankook Tire',
     mediaType: 'branding',
+    imagePrefix: '15',
+    carouselCount: 0,
     mission: {
       ko: '북미 시장에서 운용 중인 다양한 보증 프로그램을 하나의 브랜드로 통합해, 소비자가 명확히 인지하고 신뢰할 수 있는 언어 자산 구축. ‘신뢰–보호–안전’의 핵심 가치를 직관적이면서 차별화된 이름으로 구현하는 과제.',
       en: 'Establish a unified brand name for Hankook’s North American warranty programs to enhance consumer awareness and trust. The name needed to express core values—trust, protection, safety—while clearly standing apart from competitors.',
@@ -358,6 +389,8 @@ export const portfolioData: PortfolioData = [
     },
     client: 'LG H&A',
     mediaType: 'online',
+    imagePrefix: '16',
+    carouselCount: 2,
     mission: {
       ko: '강력한 스팀 기술을 바탕으로 위생 관리와 섬세한 케어가 가능한 신제품 ‘LG Styler’의 9가지 핵심 USP를 중심으로 메시지 매트릭스를 작성. 웹사이트, 소셜미디어, 행사 등 다양한 채널에 맞는 헤드라인과 소비자용 바디 카피, 현장 직원들이 활용할 수 있는 트레이닝용 설명 문구를 포함해야 함.',
       en: 'Develop a message matrix highlighting 9 key USPs of the new LG Styler, powered by advanced steam technology for hygiene and fabric care. Include headlines for digital, event, and social use, as well as body copy for the website and product explanation copy for on-site sales and training teams.',

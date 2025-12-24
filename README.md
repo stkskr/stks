@@ -75,9 +75,8 @@ Add new portfolio items:
 {
   id: 'unique-id',
   thumbnailPath: '/assets/portfolio/thumbnails/image.jpg',
-  modalImagePath: '/assets/portfolio/full/image.jpg',
+  modalImagePath: '/assets/portfolio/slider/image.jpg',
   title: { ko: '한글 제목', en: 'English Title' },
-  date: '2024-03-15',  // ISO format
   client: { ko: '고객사', en: 'Client Name' },
   mediaType: 'image',  // or 'video'
   mission: { ko: '미션', en: 'Mission' },

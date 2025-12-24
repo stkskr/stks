@@ -125,9 +125,9 @@ export class PortfolioModal {
       // If modal is already open, animate the content change
       const wasActive = this.element.classList.contains('active');
       if (wasActive) {
-        await this.animateContentChange(modalBody, modalContent, item, language);
+        this.animateContentChange(modalBody, modalContent, item, language);
       } else {
-        const content = await this.renderModalContentAsync(item, language);
+        const content = this.renderModalContentAsync(item, language);
         modalBody.innerHTML = content;
         this.element.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -154,7 +154,7 @@ export class PortfolioModal {
     await new Promise(resolve => setTimeout(resolve, 150));
 
     // Update content while invisible to measure new height
-    const content = await this.renderModalContentAsync(item, language);
+    const content = this.renderModalContentAsync(item, language);
     modalBody.innerHTML = content;
     this.attachCarouselListeners();
 
@@ -213,7 +213,7 @@ export class PortfolioModal {
     return types.map(t => typeMap[t.toLowerCase()]?.[language] || t).join(', ');
   }
 
-  private async renderModalContentAsync(item: PortfolioItem, language: Language): Promise<string> {
+  private renderModalContentAsync(item: PortfolioItem, language: Language): string {
     const title = languageManager.getContent(item.title, language);
     const mission = languageManager.getContent(item.mission, language);
     const solution = languageManager.getContent(item.solution, language);
@@ -242,24 +242,24 @@ export class PortfolioModal {
         </div>
       `;
     } else {
-      // Get full images (carousel or single)
-      const images = await getFullImages(item.id);
+      // Get full images (carousel or single) - now synchronous!
+      const images = getFullImages(item.id);
 
       if (images.length === 1) {
         // Single image
         mediaContent = `
           <div class="modal-image-container">
-            <img src="${images[0]}" alt="${title}" />
+            <img src="${images[0]}" alt="${title}" loading="eager" decoding="async" />
           </div>
         `;
-      } else {
+      } else if (images.length > 1) {
         // Carousel
         mediaContent = `
           <div class="modal-carousel-container">
             <div class="modal-carousel">
               ${images.map((img, idx) => `
                 <div class="modal-carousel-item ${idx === 0 ? 'active' : ''}">
-                  <img src="${img}" alt="${title} ${idx + 1}" />
+                  <img src="${img}" alt="${title} ${idx + 1}" loading="${idx === 0 ? 'eager' : 'lazy'}" decoding="async" />
                 </div>
               `).join('')}
             </div>

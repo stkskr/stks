@@ -161,13 +161,14 @@ export class PortfolioGrid {
         itemElement.dataset.index = originalIndex.toString();
         itemElement.classList.add('portfolio-item-enter');
 
-        // Load and display thumbnail
-        getThumbnailPath(item.id).then(thumbnailPath => {
-          const img = createElement('img') as HTMLImageElement;
-          img.src = thumbnailPath;
-          img.alt = languageManager.getContent(item.title, this.currentLanguage);
-          itemElement.appendChild(img);
-        });
+        // Load and display thumbnail (now synchronous!)
+        const thumbnailPath = getThumbnailPath(item.id);
+        const img = createElement('img') as HTMLImageElement;
+        img.src = thumbnailPath;
+        img.loading = 'lazy'; // Native lazy loading
+        img.decoding = 'async'; // Async image decoding
+        img.alt = languageManager.getContent(item.title, this.currentLanguage);
+        itemElement.appendChild(img);
 
         itemElement.addEventListener('click', () => {
           this.modal.open(originalIndex, this.currentLanguage);

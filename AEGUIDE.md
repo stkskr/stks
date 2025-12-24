@@ -32,7 +32,7 @@ These are the only parts of the site project AEs should ever touch:
     * faq.ts
     * portfolio.ts
 * The portfolio image folders (public/assets/portfolio)
-    * full
+    * slider
     * thumbnails
 
 ## File and Folder Map
@@ -46,10 +46,10 @@ Where you can edit the Contact tab, and the questions and answers of the FAQ fou
 ### portfolio.ts
 Where you edit or add new projects to the portfolio. 
 
-### portfolio/full
+### portfolio/slider
 Images that appear in the modal (pop-up).
 
-### portfolio/thumbnials
+### portfolio/thumbnails
 Images that appear as the thumbnail.
 
 # How to upload to the portfolio
@@ -190,9 +190,9 @@ Add either `video`, `online`, `branding`, `sns`, `ooh`, and/or `script` to repla
 
 ## How to add images and thumbnails
 
-For any project, use the exact same `id` for the file name that you used when you filled in the data. 
+For any project, use the exact same `id` for the file name that you used when you filled in the data.
 
-Thumbnail images go in the `thumbnail` folder. Modal (pop-up) images go in the `full` folder. Often times, the thumbnail image and full image will have the same file name. This is normal. 
+Thumbnail images go in the `thumbnails` folder. Modal (pop-up) images go in the `slider` folder. Often times, the thumbnail image and slider image will have the same file name. This is normal. 
 
 All images must follow this format:
 
@@ -212,4 +212,4 @@ If a project has more than one image for the modal, we add a second `_##` to the
 
 In this example, we've set `amore-pacific-vision-statement`` as project number 23, and its carousel will include three images. 
 
-If the `id` from `portfolio.ts` matches the image file names, and the image files are in the `thumbnails` and `full` folders, they will be uploaded automatically. 
+If the `id` from `portfolio.ts` matches the image file names, and the image files are in the `thumbnails` and `slider` folders, they will be uploaded automatically. 
