@@ -322,7 +322,26 @@ export const portfolioData: PortfolioData = [
     },
   },
 
-
+  // ============================================================
+  // Hankook Tire – Warranty Program Naming
+  // ============================================================
+  {
+    id: 'hankook-tire-warranty',
+    title: {
+      ko: '한국타이어 – 워랜티 프로그램 네이밍',
+      en: 'Hankook Tire – Warranty Program Naming',
+    },
+    client: 'Hankook Tire',
+    mediaType: 'branding',
+    mission: {
+      ko: '북미 시장에서 운용 중인 다양한 보증 프로그램을 하나의 브랜드로 통합해, 소비자가 명확히 인지하고 신뢰할 수 있는 언어 자산 구축. ‘신뢰–보호–안전’의 핵심 가치를 직관적이면서 차별화된 이름으로 구현하는 과제.',
+      en: 'Establish a unified brand name for Hankook’s North American warranty programs to enhance consumer awareness and trust. The name needed to express core values—trust, protection, safety—while clearly standing apart from competitors.',
+    },
+    solution: {
+      ko: '‘Surefire Plan’의 익숙한 어감을 활용해 신뢰, 보호, 직관성을 동시에 담은 명칭. 워드플레이를 통해 감각적인 인상을 주면서도 타이어 카테고리를 명확히 드러내 소비자 인지와 브랜드 연결력 제고.',
+      en: 'Inspired by “Surefire Plan,” the name “SureTire Plan” delivers trust, clarity, and category recognition in one. The wordplay adds memorability while reinforcing brand linkage and consumer understanding.',
+    },
+  },
 
 
 
