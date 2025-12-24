@@ -9,15 +9,6 @@ export class LanguageManager {
   getContent<T>(content: { ko: T; en: T }, lang: Language): T {
     return content[lang];
   }
-
-  formatDate(isoDate: string, lang: Language): string {
-    const date = new Date(isoDate);
-    return new Intl.DateTimeFormat(lang === 'ko' ? 'ko-KR' : 'en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(date);
-  }
 }
 
 export const languageManager = new LanguageManager();

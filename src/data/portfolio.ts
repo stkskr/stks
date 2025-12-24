@@ -14,7 +14,6 @@ export const portfolioData: PortfolioData = [
       ko: 'LG 2023 New Years Message',
       en: 'LG 2023 New Years Message',
     },
-    date: '2023-01-01',
     client: 'HsAd',
       // Optional: videoUrl: 'https://youtube.com/...'
     mediaType: 'video',
@@ -37,10 +36,9 @@ export const portfolioData: PortfolioData = [
       ko: 'CES 2022 Hyundai Keynote Speech',
       en: 'CES 2022 Hyundai Keynote Speech',
     },
-    date: '2022-01-05',
     client: 'Innocean',
     mediaType: 'online, video',
-    videoURL: 'https://www.youtube.com/watch?v=y9tnJ1CIvT8&t=613s',
+    videoUrl: 'https://www.youtube.com/watch?v=y9tnJ1CIvT8&t=613s',
     mission: {
       ko: '현대 CEO 정의선이 CES 2022에서 관중에게 발표할 연설문 제작. 매력적이고 이해하기 쉬운 방식으로 현대의 첨단 로봇 기술을 소개하는 스크립트 작업.',
       en: 'Write a speech to be delivered by Hyundai CEO Chung Eui-sun, and speakers from Hyundai, to a live audience at CES 2022. The speech had to introduce Hyundai\'s advanced robotics technology for mobility in a way that was captivating and easy to understand.',
@@ -60,7 +58,6 @@ export const portfolioData: PortfolioData = [
       ko: '990 PRO & 990 PRO with Heatsink Online Features',
       en: '990 PRO & 990 PRO with Heatsink Online Features',
     },
-    date: '2023-09-15',
     client: 'Design Fever',
     mediaType: 'online, branding',
     mission: {
@@ -82,7 +79,6 @@ export const portfolioData: PortfolioData = [
       ko: 'TEAM NAVER Conference DAN 23',
       en: 'TEAM NAVER Conference DAN 23',
     },
-    date: '2023-10-23',
     client: 'Naver Corp.',
     mediaType: 'online, video',
     mission: {
@@ -104,7 +100,6 @@ export const portfolioData: PortfolioData = [
       ko: 'LG Antimicrobial Glass Powder Naming',
       en: 'LG Antimicrobial Glass Powder Naming',
     },
-    date: '2023-06-10',
     client: 'LG Electronics',
     mediaType: 'branding',
     mission: {
@@ -126,7 +121,6 @@ export const portfolioData: PortfolioData = [
       ko: '2023 Life\'s Good Award Speech',
       en: '2023 Life\'s Good Award Speech',
     },
-    date: '2023-11-15',
     client: 'LG Electronics',
     mediaType: 'online, video',
     mission: {
@@ -148,7 +142,6 @@ export const portfolioData: PortfolioData = [
       ko: 'SDC CES 2025 Zone Title',
       en: 'SDC CES 2025 Zone Title',
     },
-    date: '2025-01-07',
     client: 'Samsung Display',
     mediaType: 'ooh',
     mission: {
@@ -170,7 +163,6 @@ export const portfolioData: PortfolioData = [
       ko: 'LG CES 2025 Convention Copy',
       en: 'LG CES 2025 Convention Copy',
     },
-    date: '2025-01-07',
     client: 'LG GMG',
     mediaType: 'ooh',
     mission: {
@@ -192,7 +184,6 @@ export const portfolioData: PortfolioData = [
       ko: 'Amorepacific 80th Anniversary Brand Film',
       en: 'Amorepacific 80th Anniversary Brand Film',
     },
-    date: '2025-09-05',
     client: 'AMOREPACIFIC',
     mediaType: 'video',
     mission: {
@@ -214,7 +205,6 @@ export const portfolioData: PortfolioData = [
       ko: 'Amorepacific Vision Statement',
       en: 'Amorepacific Vision Statement',
     },
-    date: '2024-03-20',
     client: 'AMOREPACIFIC',
     mediaType: 'branding',
     mission: {
@@ -236,7 +226,6 @@ export const portfolioData: PortfolioData = [
       ko: 'LG Brand Communication Guidelines',
       en: 'LG Brand Communication Guidelines',
     },
-    date: '2024-05-12',
     client: 'LG Electronics',
     mediaType: 'branding',
     mission: {
@@ -258,7 +247,6 @@ export const portfolioData: PortfolioData = [
       ko: 'SEVENTEEN 12th Mini Album Title',
       en: 'SEVENTEEN 12th Mini Album Title',
     },
-    date: '2024-10-14',
     client: 'PLEDIS Entertainment',
     mediaType: 'branding',
     mission: {
@@ -280,7 +268,6 @@ export const portfolioData: PortfolioData = [
       ko: 'Genesis GV80/GV80 Coupe Black Launch SNS Copy',
       en: 'Genesis GV80/GV80 Coupe Black Launch SNS Copy',
     },
-    date: '2024-08-20',
     client: 'Serviceplan',
     mediaType: 'sns',
     mission: {
@@ -302,7 +289,6 @@ export const portfolioData: PortfolioData = [
       ko: 'LG Uplus – ixi-O TVC',
       en: 'LG Uplus – ixi-O TVC',
     },
-    date: '2024-11-05',
     client: 'LG Uplus',
     mediaType: 'video',
     mission: {
