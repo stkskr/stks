@@ -19,13 +19,28 @@ export class CloseButton {
     const { language } = stateManager.getState();
     const path = language === 'en' ? '/en/' : '/';
 
-    // Scroll container to top before navigating
-    const container = document.querySelector('.container');
+    // iOS Safari scroll reset fix
+    const container = document.querySelector('.container') as HTMLElement;
     if (container) {
-      container.scrollTop = 0;
-    }
+      // 1. Disable smooth scrolling to prevent conflict
+      container.style.scrollBehavior = 'auto';
 
-    router.navigate(path);
+      // 2. Force scroll to top BEFORE navigation
+      container.scrollTop = 0;
+      window.scrollTo(0, 0);
+
+      // 3. Use requestAnimationFrame to ensure scroll reset is painted before layout shift
+      requestAnimationFrame(() => {
+        router.navigate(path);
+
+        // 4. Restore smooth scroll after navigation
+        setTimeout(() => {
+          container.style.scrollBehavior = 'smooth';
+        }, 100);
+      });
+    } else {
+      router.navigate(path);
+    }
   }
 
   mount(parent: HTMLElement): void {

@@ -10,25 +10,28 @@ body {
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  overflow-y: auto;
+  /* Prevent rubber-banding on iOS */
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
 
 .container {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  /* Use dvh to account for mobile address bars */
+  height: 100dvh;
   background: var(--color-content-white);
   overflow-x: hidden;
   overflow-y: hidden;
   scroll-behavior: smooth;
+  /* Smooth inertia for iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 .container.stateExpanding {
-  position: relative;
-  min-height: 100vh;
-  height: auto;
   overflow-y: auto;
 }
