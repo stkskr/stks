@@ -6,6 +6,7 @@ import { createElement } from '../utils/dom';
 import { PortfolioGrid } from './PortfolioGrid';
 import { PortfolioModal } from './PortfolioModal';
 import { ServicesGrid } from './ServicesGrid';
+import { getYoutubeThumbnail, activateYoutubeFacade } from '../utils/youtube';
 
 export class ContentArea {
   private element: HTMLDivElement;

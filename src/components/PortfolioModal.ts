@@ -6,6 +6,7 @@ import { createElement } from '../utils/dom';
 import { getFullImages } from '../utils/portfolio';
 import { stateManager } from '../core/state';
 import { router } from '../core/router';
+import { extractVideoId, getYoutubeThumbnail, activateYoutubeFacade } from '../utils/youtube';
 
 export class PortfolioModal {
   private element: HTMLDivElement;
@@ -112,7 +113,7 @@ export class PortfolioModal {
     router.switchLanguage(newLang);
   }
 
-  async openBySlug(id: string, language: Language): Promise<void> {
+  openBySlug(id: string, language: Language): void {
     const index = portfolioData.findIndex((item) => item.id === id);
     if (index !== -1) {
       this.currentIndex = index;
@@ -125,13 +126,14 @@ export class PortfolioModal {
       // If modal is already open, animate the content change
       const wasActive = this.element.classList.contains('active');
       if (wasActive) {
-        await this.animateContentChange(modalBody, modalContent, item, language);
+        this.animateContentChange(modalBody, modalContent, item, language);
       } else {
-        const content = await this.renderModalContentAsync(item, language);
+        const content = this.renderModalContent(item, language);
         modalBody.innerHTML = content;
         this.element.classList.add('active');
         document.body.style.overflow = 'hidden';
         this.attachCarouselListeners();
+        this.attachYoutubeFacadeListener();
       }
 
       this.updateNavigationButtons();
@@ -139,48 +141,49 @@ export class PortfolioModal {
     }
   }
 
-  private async animateContentChange(
+  private animateContentChange(
     modalBody: HTMLDivElement,
     modalContent: HTMLDivElement,
     item: PortfolioItem,
     language: Language
-  ): Promise<void> {
+  ): void {
     // Get current height
     const currentHeight = modalContent.offsetHeight;
 
     // Fade out current content
     modalBody.style.opacity = '0';
 
-    await new Promise(resolve => setTimeout(resolve, 150));
+    setTimeout(() => {
+      // Update content while invisible to measure new height
+      const content = this.renderModalContent(item, language);
+      modalBody.innerHTML = content;
+      this.attachCarouselListeners();
+      this.attachYoutubeFacadeListener();
 
-    // Update content while invisible to measure new height
-    const content = await this.renderModalContentAsync(item, language);
-    modalBody.innerHTML = content;
-    this.attachCarouselListeners();
+      // Measure new height with new content
+      const newHeight = modalContent.offsetHeight;
 
-    // Measure new height with new content
-    const newHeight = modalContent.offsetHeight;
+      // Set current height explicitly
+      modalContent.style.height = `${currentHeight}px`;
 
-    // Set current height explicitly
-    modalContent.style.height = `${currentHeight}px`;
+      // Force reflow
+      void modalContent.offsetHeight;
 
-    // Force reflow
-    void modalContent.offsetHeight;
+      // Animate to new height FIRST
+      requestAnimationFrame(() => {
+        modalContent.style.height = `${newHeight}px`;
 
-    // Animate to new height FIRST
-    requestAnimationFrame(() => {
-      modalContent.style.height = `${newHeight}px`;
+        // Wait for height animation to mostly complete, then fade in content
+        setTimeout(() => {
+          modalBody.style.opacity = '1';
+        }, 200);
 
-      // Wait for height animation to mostly complete, then fade in content
-      setTimeout(() => {
-        modalBody.style.opacity = '1';
-      }, 200);
-
-      // Remove explicit height after all transitions complete
-      setTimeout(() => {
-        modalContent.style.height = '';
-      }, 400);
-    });
+        // Remove explicit height after all transitions complete
+        setTimeout(() => {
+          modalContent.style.height = '';
+        }, 400);
+      });
+    }, 150);
   }
 
   open(index: number, language: Language): void {
@@ -213,7 +216,7 @@ export class PortfolioModal {
     return types.map(t => typeMap[t.toLowerCase()]?.[language] || t).join(', ');
   }
 
-  private async renderModalContentAsync(item: PortfolioItem, language: Language): Promise<string> {
+  private renderModalContent(item: PortfolioItem, language: Language): string {
     const title = languageManager.getContent(item.title, language);
     const mission = languageManager.getContent(item.mission, language);
     const solution = languageManager.getContent(item.solution, language);
@@ -228,22 +231,23 @@ export class PortfolioModal {
     let mediaContent = '';
 
     if (item.videoUrl) {
-      // Extract video ID from YouTube URL
-      const videoId = this.extractVideoId(item.videoUrl);
+      // Use YouTube facade for lazy loading
+      const videoId = extractVideoId(item.videoUrl);
+      const thumbnailUrl = getYoutubeThumbnail(videoId);
       mediaContent = `
-        <div class="modal-video-container">
-          <iframe
-            src="https://www.youtube.com/embed/${videoId}"
-            title="${title}"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
+        <div class="modal-video-container youtube-facade" data-video-id="${videoId}" data-video-title="${title}">
+          <img src="${thumbnailUrl}" alt="${title}" loading="eager" decoding="async" />
+          <button class="youtube-play-btn" aria-label="Play video">
+            <svg width="68" height="48" viewBox="0 0 68 48">
+              <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path>
+              <path d="M 45,24 27,14 27,34" fill="#fff"></path>
+            </svg>
+          </button>
         </div>
       `;
     } else {
       // Get full images (carousel or single)
-      const images = await getFullImages(item.id);
+      const images = getFullImages(item.id);
 
       if (images.length === 1) {
         // Single image
@@ -310,10 +314,17 @@ export class PortfolioModal {
     `;
   }
 
-  private extractVideoId(url: string): string {
-    // Handle both youtube.com/watch?v=ID and youtu.be/ID formats
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-    return match ? match[1] : '';
+  private attachYoutubeFacadeListener(): void {
+    const facade = this.element.querySelector('.youtube-facade');
+    if (!facade) return;
+
+    facade.addEventListener('click', () => {
+      const videoId = facade.getAttribute('data-video-id');
+      const videoTitle = facade.getAttribute('data-video-title') || 'Video';
+      if (videoId) {
+        activateYoutubeFacade(facade as HTMLElement, videoId, videoTitle);
+      }
+    });
   }
 
   private attachCarouselListeners(): void {

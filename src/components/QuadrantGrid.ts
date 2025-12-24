@@ -14,6 +14,7 @@ export class QuadrantGrid {
   private blueSubText: HTMLSpanElement;
   private whiteSubText: HTMLSpanElement;
   private videoModal: VideoModal;
+  private resizeTimeout: number | null = null;
 
   constructor(containerId: string) {
     this.container = document.getElementById(containerId)!;
@@ -97,6 +98,15 @@ export class QuadrantGrid {
 
     this.container.appendChild(centerCircle);
     this.videoModal.mount(document.body);
+
+    // Prevent transition glitches during resize
+    window.addEventListener('resize', () => {
+      this.container.classList.add('no-transition');
+      if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = window.setTimeout(() => {
+        this.container.classList.remove('no-transition');
+      }, 150) as unknown as number;
+    });
 
     stateManager.subscribe((state) => this.render(state));
   }

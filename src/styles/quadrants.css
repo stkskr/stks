@@ -81,6 +81,7 @@
   height: 0;
   top: 0;
   left: 0;
+  opacity: 0;
 }
 
 .stateExpanding .services:not(.selected) {
@@ -88,6 +89,7 @@
   height: 0;
   top: 0;
   left: 100%;
+  opacity: 0;
 }
 
 .stateExpanding .portfolio:not(.selected) {
@@ -95,6 +97,7 @@
   height: 0;
   top: 100%;
   left: 0;
+  opacity: 0;
 }
 
 .stateExpanding .clients:not(.selected) {
@@ -102,6 +105,7 @@
   height: 0;
   top: 100%;
   left: 100%;
+  opacity: 0;
 }
 
 /* Selected Quadrant Stays Top-Left */
@@ -145,4 +149,45 @@
   height: 50vh !important;
   display: flex !important;
   z-index: 50 !important;
+}
+
+/* ========================================
+   RESIZE PROTECTION
+   ======================================== */
+
+/* Disable transitions during resize to prevent glitches */
+.container.no-transition .quadrant,
+.container.no-transition .sub-quadrant {
+  transition: none !important;
+}
+
+/* ========================================
+   MOBILE STACKING (max-width: 768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* EXPANDED STATE: Selected quad takes 40vh */
+  .quadrant.selected {
+    width: 100% !important;
+    height: 40vh !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  /* Sub-quadrant stacks below selected quad */
+  .aboutSelected .blue-sub,
+  .clientsSelected .blue-sub,
+  .servicesSelected .white-sub,
+  .portfolioSelected .white-sub {
+    left: 0 !important;
+    top: 40vh !important;
+    width: 100% !important;
+    height: 40vh !important;
+  }
+
+  /* Adjust sub-quadrant text size */
+  .sub-quadrant {
+    font-size: 3vw;
+    padding: 20px;
+  }
 }

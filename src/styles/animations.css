@@ -41,7 +41,7 @@
 
 /* Close Button Animation */
 .close-button {
-  position: absolute;
+  position: fixed;
   top: 24px;
   right: 30px;
   width: 36px;

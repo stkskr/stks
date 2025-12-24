@@ -18,6 +18,13 @@ export class CloseButton {
   private handleClose(): void {
     const { language } = stateManager.getState();
     const path = language === 'en' ? '/en/' : '/';
+
+    // Scroll container to top before navigating
+    const container = document.querySelector('.container');
+    if (container) {
+      container.scrollTop = 0;
+    }
+
     router.navigate(path);
   }
 

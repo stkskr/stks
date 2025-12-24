@@ -21,12 +21,14 @@ body {
   width: 100vw;
   height: 100vh;
   background: var(--color-content-white);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
 }
 
 .container.stateExpanding {
   position: relative;
   min-height: 100vh;
   height: auto;
-  overflow: visible;
+  overflow-y: auto;
 }
