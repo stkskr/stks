@@ -347,7 +347,26 @@ export const portfolioData: PortfolioData = [
 
 
 
-
+  // ============================================================
+  // LG Styler Online Feature
+  // ============================================================
+  {
+    id: 'lg-styler-of',
+    title: {
+      ko: 'LG 스타일러 온라인 피처',
+      en: 'LG Styler Online Feature',
+    },
+    client: 'LG H&A',
+    mediaType: 'online',
+    mission: {
+      ko: '강력한 스팀 기술을 바탕으로 위생 관리와 섬세한 케어가 가능한 신제품 ‘LG Styler’의 9가지 핵심 USP를 중심으로 메시지 매트릭스를 작성. 웹사이트, 소셜미디어, 행사 등 다양한 채널에 맞는 헤드라인과 소비자용 바디 카피, 현장 직원들이 활용할 수 있는 트레이닝용 설명 문구를 포함해야 함.',
+      en: 'Develop a message matrix highlighting 9 key USPs of the new LG Styler, powered by advanced steam technology for hygiene and fabric care. Include headlines for digital, event, and social use, as well as body copy for the website and product explanation copy for on-site sales and training teams.',
+    },
+    solution: {
+      ko: '스팀 기반의 위생, 탈취, 케어 기능을 직관적으로 이해할 수 있도록 USP별로 톤 앤 매너를 세분화하여 구성. 채널 특성과 목적에 따라 헤드라인, 웹 바디 카피, 트레이닝용 설명 문구를 각각 설계해 소비자는 물론 현장 직원들도 제품의 핵심 가치를 쉽게 전달하고 활용할 수 있도록 함.',
+      en: 'Organized each USP with a clear tone and structure to communicate the Styler’s steam-powered benefits effectively. Tailored the messaging to suit each channel—punchy headlines to grab attention, web copy to engage consumers, and practical product explanations to support frontline staff in showcasing the key features.',
+    },
+  },
 
 
 /// ADD NEW JOBS ABOVE THIS TEXT
