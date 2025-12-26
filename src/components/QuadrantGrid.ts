@@ -141,6 +141,11 @@ export class QuadrantGrid {
       this.container.classList.add(`${currentSection}Selected`);
       document.body.classList.add('stateExpanding');
       document.body.classList.add(`${currentSection}Selected`);
+
+      // Force reflow to ensure overflow-y: auto is immediately recognized
+      requestAnimationFrame(() => {
+        this.container.scrollTop;
+      });
     }
 
     const sections: Section[] = ['about', 'services', 'portfolio', 'clients'];
