@@ -142,9 +142,10 @@ export class QuadrantGrid {
       document.body.classList.add('stateExpanding');
       document.body.classList.add(`${currentSection}Selected`);
 
-      // Force reflow to ensure overflow-y: auto is immediately recognized
+      // Force reflow for Safari to recognize overflow-y: auto immediately
+      void this.container.offsetHeight;
       requestAnimationFrame(() => {
-        this.container.scrollTop;
+        this.container.style.overflowY = 'auto';
       });
     }
 
