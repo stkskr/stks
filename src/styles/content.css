@@ -927,8 +927,8 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
    =================================== */
 
 .quote-carousel-container {
-  width: 90%;
-  max-width: 900px;
+  width: 95%;
+  max-width: 1100px;
   margin: 40px auto;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -957,14 +957,17 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .quote-icon {
-  font-size: 60px;
-  line-height: 1;
-  font-family: serif;
-  margin-bottom: 20px;
-  display: block;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  fill: white;
+  opacity: 0.9;
 }
 
 .quote-text {
@@ -972,6 +975,10 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   line-height: 1.5;
   font-weight: 300;
   margin: 0;
+  position: relative;
+  width: 100%;
+  text-align: left;
+  padding-top: 30px;
 }
 
 /* Triangle connector */
@@ -1023,6 +1030,7 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
 @media (max-width: 768px) {
   .quote-text {
     font-size: 1rem;
+    padding-top: 20px;
   }
 
   .quote-box-dark,
@@ -1031,8 +1039,10 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   }
 
   .quote-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
+    top: 15px;
+    left: 15px;
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -1209,6 +1219,12 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   max-width: 320px;
   min-height: 320px;
   z-index: 1;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.team-grid:has(.team-member:hover) .team-member:not(:hover) {
+  opacity: 0.8;
 }
 
 .team-member:hover,
@@ -1225,6 +1241,19 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   margin-bottom: 48px;
   z-index: 1;
   flex-shrink: 0;
+}
+
+/* Extended hover area below diamond for easier tooltip access */
+.diamond-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 120px;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .diamond-shape {
@@ -1280,6 +1309,7 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   width: 100%;
   position: relative;
   z-index: 10;
+  pointer-events: none;
 }
 
 .member-info .name {
@@ -1319,7 +1349,8 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   color: #555;
   padding: 20px;
   background: #ffffff;
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
+  border-top: 3px solid var(--color-red);
   border-radius: 4px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   width: 280px;

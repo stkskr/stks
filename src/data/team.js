@@ -35,41 +35,6 @@ export const teamData = [
     },
   },
   {
-    name: 'James Chung',
-    initial: 'J',
-    role: {
-      ko: 'Global Copy Lead',
-      en: 'Global Copy Lead',
-    },
-    image: '/assets/images/profileJames.jpg',
-    education: {
-      ko: [
-        { school: 'James Madison University, USA', degree: '기술과학 커뮤니케이션 학사' },
-      ],
-      en: [
-        { school: 'James Madison University, USA', degree: 'BS in Writing, Rhetoric and Tech. Comm.' },
-      ],
-    },
-    experience: {
-      ko: [
-        '우인 IP 법률사무소 – 선임 매니저',
-        'YEK Glass – 해외 마컴팀',
-        'Vice Media - 기고자',
-        'Washington Post - 기고자',
-        'DK Eyewitness – 기고자',
-        '모국어: 미국 영어 / 국적: USA',
-      ],
-      en: [
-        'Wooin IP Law Firm - Senior Manager',
-        'YEK Glass - Overseas Marcom',
-        'Vice Media Contributor',
-        'Washington Post Contributor',
-        'DK Eyewitness Contributor',
-        'Native in American English / Nationality: USA',
-      ],
-    },
-  },
-  {
     name: 'Brixton Sandhals',
     initial: 'B',
     role: {
@@ -198,7 +163,10 @@ export const teamData = [
     },
   },
   {
-    name: 'Otto(아로)',
+    name: {
+      ko: '아로',
+      en: 'Otto',
+    },
     initial: 'O',
     role: {
       ko: 'Chief Happiness Officer',

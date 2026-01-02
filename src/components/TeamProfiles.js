@@ -31,6 +31,7 @@ export class TeamProfiles {
   createProfileCard(member) {
     const card = createElement('div', 'team-member');
 
+    const name = typeof member.name === 'string' ? member.name : languageManager.getContent(member.name, this.language);
     const role = languageManager.getContent(member.role, this.language);
     const education = languageManager.getContent(member.education, this.language);
     const experience = languageManager.getContent(member.experience, this.language);
@@ -49,11 +50,11 @@ export class TeamProfiles {
       <div class="diamond-wrapper">
         <div class="initial-overlay">${member.initial}</div>
         <div class="diamond-shape">
-          <img src="${member.image}" alt="${member.name}" class="diamond-image">
+          <img src="${member.image}" alt="${name}" class="diamond-image">
         </div>
       </div>
       <div class="member-info">
-        <h3 class="name">${member.name}</h3>
+        <h3 class="name">${name}</h3>
         <p class="role">${role}</p>
         <div class="profile-reveal">
           <div class="edu-section">
