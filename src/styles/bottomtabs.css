@@ -19,38 +19,116 @@
   pointer-events: none; /* Allow clicks to pass through to panel underneath */
 }
 
-/* Contact panel - default state */
-.bottom-tab-panel.contact-panel {
-  bottom: calc(-65vh);
-  height: calc(65vh + 42px);
-  z-index: 1;
-}
-
-/* Contact panel - active */
-.bottom-tabs.contact-active .contact-panel {
-  bottom: 0;
-  z-index: 3;
-}
-
-/* FAQ panel - default state */
+/* Default z-index for panels */
+.bottom-tab-panel.contact-panel,
 .bottom-tab-panel.faq-panel {
-  /* Use dynamic CSS variable with fallback */
-  --faq-panel-height: calc(85vh + 42px);
-
-  /* State 1: Minimized - Position so only 42px button shows */
-  bottom: calc(-1 * (var(--faq-panel-height) - 42px));
-  height: var(--faq-panel-height);
-
-  max-height: 95vh;
   z-index: 1;
-  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
-/* FAQ panel - active */
-.bottom-tabs.faq-active .faq-panel {
-  bottom: 0 !important;
-  z-index: 3;
+/* Desktop/Tablet Behavior (> 768px) - Dynamic height based on content */
+@media (min-width: 769px) {
+  /* FAQ Panel */
+  .bottom-tab-panel.faq-panel {
+    /* Default fallback before JS runs */
+    --faq-panel-height: 500px;
+
+    height: var(--faq-panel-height);
+    max-height: 85vh;
+    /* Formula: Start at - (Total Height - 42px Tab Height) */
+    bottom: calc(-1 * (var(--faq-panel-height) - 42px));
+    transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bottom-tabs.faq-active .faq-panel {
+    bottom: 0;
+    z-index: 3;
+  }
+
+  /* Contact Panel */
+  .bottom-tab-panel.contact-panel {
+    --contact-panel-height: 450px;
+
+    height: var(--contact-panel-height);
+    max-height: 85vh;
+    bottom: calc(-1 * (var(--contact-panel-height) - 42px));
+    transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bottom-tabs.contact-active .contact-panel {
+    bottom: 0;
+    z-index: 3;
+  }
+
+  /* Ensure inner containers can scroll */
+  .faq-inner,
+  .contact-inner {
+    overflow-y: auto;
+    height: auto;
+    min-height: min-content;
+    scrollbar-gutter: stable; /* Reserve space for scrollbar to prevent layout shift */
+  }
+
+  /* Webkit browsers - overlay scrollbar that doesn't take width */
+  .faq-inner::-webkit-scrollbar,
+  .contact-inner::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .faq-inner::-webkit-scrollbar-track,
+  .contact-inner::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .faq-inner::-webkit-scrollbar-thumb,
+  .contact-inner::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .faq-inner::-webkit-scrollbar-thumb:hover,
+  .contact-inner::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  /* FAQ Measure Container - Unconstrained wrapper for accurate height measurement */
+  .faq-measure-container {
+    display: block;
+    height: auto;
+    min-height: min-content;
+  }
+
+  /* Contact Measure Container - Unconstrained wrapper for accurate height measurement */
+  .contact-measure-container {
+    display: block;
+    height: auto;
+    min-height: min-content;
+  }
+}
+
+/* Mobile Behavior (≤ 768px) - Fixed viewport heights */
+@media (max-width: 768px) {
+  .bottom-tab-panel.faq-panel {
+    height: calc(90vh + 42px);
+    bottom: calc(-90vh);
+    max-height: none;
+  }
+
+  .bottom-tab-panel.contact-panel {
+    height: calc(80vh + 42px);
+    bottom: calc(-80vh);
+    max-height: none;
+  }
+
+  .bottom-tabs.faq-active .faq-panel,
+  .bottom-tabs.contact-active .contact-panel {
+    bottom: 0 !important;
+    z-index: 3;
+  }
 }
 
 /* When Contact is active, lower FAQ's z-index */
@@ -183,7 +261,7 @@
 .bottom-tab-inner {
   height: 100%;
   overflow-y: auto;
-  padding: 40px 40px 30px;
+  padding: 40px 40px 10px;
 }
 
 /* Contact Content */
@@ -233,6 +311,13 @@
   border-radius: 8px;
   overflow: hidden;
   background: var(--color-light-gray);
+}
+
+/* Desktop: Give map a fixed height for proper height calculation */
+@media (min-width: 769px) {
+  .contact-map {
+    height: 350px;
+  }
 }
 
 /* FAQ Content */
@@ -354,7 +439,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #999;
+  background: #a11d20;
   color: white;
   display: flex;
   align-items: center;
@@ -433,16 +518,7 @@
     margin-top: 12px !important;
   }
 
-  /* Increase height for mobile to ensure all content visible */
-  .bottom-tab-panel.contact-panel {
-    bottom: calc(-80vh);
-    height: calc(80vh + 42px);
-  }
-
-  .bottom-tab-panel.faq-panel {
-    bottom: calc(-90vh);
-    height: calc(90vh + 42px);
-  }
+  /* Panel heights for mobile are defined in the main mobile media query above */
 
   /* FAQ Content - Optimize for narrow screens */
   .faq-categories {

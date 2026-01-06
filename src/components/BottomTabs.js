@@ -96,6 +96,11 @@ export class BottomTabs {
     if (tab === 'contact') {
       const inner = this.container.querySelector('.contact-inner');
       inner.innerHTML = this.renderContactContent();
+
+      // Update contact panel height after content renders
+      setTimeout(() => {
+        this.updateContactPanelHeight();
+      }, 0);
     } else if (tab === 'faq') {
       const inner = this.container.querySelector('.faq-inner');
       inner.innerHTML = this.renderFaqContent();
@@ -116,75 +121,164 @@ export class BottomTabs {
   }
 
   updateFaqPanelHeight() {
-    const faqPanel = this.container.querySelector('.faq-panel');
-    const faqInner = this.container.querySelector('.faq-inner');
+    // Skip on mobile - use fixed viewport heights
+    if (window.innerWidth <= 768) return;
 
-    if (!faqPanel || !faqInner) return;
+    const faqPanel = this.container.querySelector('.faq-panel');
+    const faqMeasureContainer = this.container.querySelector('.faq-measure-container');
+
+    if (!faqPanel || !faqMeasureContainer) return;
 
     // Double requestAnimationFrame ensures DOM is fully painted after filtering
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // 1. Measure actual content height (the inner wrapper with padding)
-        const contentHeight = faqInner.scrollHeight;
+        // 1. Measure actual content height from the measure container
+        const contentHeight = faqMeasureContainer.scrollHeight;
 
-        // 2. Calculate total: Button(42px) + Content (already includes padding)
-        const totalHeight = 42 + contentHeight;
+        // 2. Calculate total: Button(42px) + Content + Bottom Buffer(30px)
+        const totalHeight = 42 + contentHeight + 70;
 
         // 3. Set CSS variable - triggers smooth CSS transition
         faqPanel.style.setProperty('--faq-panel-height', `${totalHeight}px`);
-
-        // Debug logging
-        console.log('FAQ Panel Height Update:', {
-          contentHeight,
-          totalHeight,
-          variable: faqPanel.style.getPropertyValue('--faq-panel-height')
-        });
       });
+    });
+  }
+
+  updateContactPanelHeight() {
+    // Skip on mobile - use fixed viewport heights
+    if (window.innerWidth <= 768) return;
+
+    const contactPanel = this.container.querySelector('.contact-panel');
+    const contactMeasureContainer = this.container.querySelector('.contact-measure-container');
+
+    if (!contactPanel || !contactMeasureContainer) return;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Measure actual content height from the measure container
+        const contentHeight = contactMeasureContainer.scrollHeight;
+
+        // Calculate total: Button(42px) + Content + Bottom Buffer(30px)
+        const totalHeight = 42 + contentHeight + 70;
+
+        // Set CSS variable for smooth transition
+        contactPanel.style.setProperty('--contact-panel-height', `${totalHeight}px`);
+      });
+    });
+  }
+
+  setupResizeObserver() {
+    // Skip on mobile - use fixed viewport heights
+    if (window.innerWidth <= 768) return;
+
+    // Track the last set height to prevent redundant updates
+    this.lastFaqHeight = 0;
+    this.lastContactHeight = 0;
+
+    // Create ResizeObserver to automatically update panel heights when content changes
+    this.resizeObserver = new ResizeObserver((entries) => {
+      // Wrap in requestAnimationFrame to avoid "ResizeObserver loop limit exceeded" error
+      window.requestAnimationFrame(() => {
+        for (const entry of entries) {
+          const element = entry.target;
+
+          /* CRITICAL FIX: Use scrollHeight of the inner content.
+             contentRect.height is the *observed* box, which is affected by
+             the parent's height and clipping. scrollHeight is the *natural* size.
+          */
+          const contentHeight = element.scrollHeight;
+          const totalHeight = 42 + contentHeight + 70; // Button + Content + Bottom Buffer
+
+          // Determine which panel this observer is watching
+          if (element.classList.contains('faq-measure-container')) {
+            // Only update if the change is significant (> 1px difference)
+            if (Math.abs(this.lastFaqHeight - totalHeight) > 1) {
+              this.lastFaqHeight = totalHeight;
+              const faqPanel = this.container.querySelector('.faq-panel');
+              if (faqPanel) {
+                faqPanel.style.setProperty('--faq-panel-height', `${totalHeight}px`);
+              }
+            }
+          } else if (element.classList.contains('contact-measure-container')) {
+            // Only update if the change is significant (> 1px difference)
+            if (Math.abs(this.lastContactHeight - totalHeight) > 1) {
+              this.lastContactHeight = totalHeight;
+              const contactPanel = this.container.querySelector('.contact-panel');
+              if (contactPanel) {
+                contactPanel.style.setProperty('--contact-panel-height', `${totalHeight}px`);
+              }
+            }
+          }
+        }
+      });
+    });
+
+    // Observe FAQ and Contact measure containers
+    const faqMeasureContainer = this.container.querySelector('.faq-measure-container');
+    const contactMeasureContainer = this.container.querySelector('.contact-measure-container');
+
+    if (faqMeasureContainer) {
+      this.resizeObserver.observe(faqMeasureContainer);
+    }
+    if (contactMeasureContainer) {
+      this.resizeObserver.observe(contactMeasureContainer);
+    }
+
+    // Clean up observer on window resize if switching to mobile
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768 && this.resizeObserver) {
+        this.resizeObserver.disconnect();
+        this.resizeObserver = null;
+      } else if (window.innerWidth > 768 && !this.resizeObserver) {
+        this.setupResizeObserver();
+      }
     });
   }
 
   renderContactContent() {
     return `
-      <div class="contact-content">
-        <div class="contact-info">
-          <h2>Contact</h2>
+      <div class="contact-measure-container">
+        <div class="contact-content">
+          <div class="contact-info">
+            <h2>Contact</h2>
 
-          <div class="contact-section">
-            <h3>Phone:</h3>
-            <p>02-793-7857</p>
+            <div class="contact-section">
+              <h3>Phone:</h3>
+              <p>02-793-7857</p>
+            </div>
+
+            <div class="contact-section">
+              <h3>Email:</h3>
+              <p>talk@stks.kr</p>
+            </div>
+
+            <div class="contact-section">
+              <h3>Office:</h3>
+              <p>서울 용산구<br>녹사평대로26길 42<br>스틱스앤스톤스 빌딩</p>
+            </div>
+
+            <div class="contact-section">
+              <p class="contact-tagline">${this.language === 'ko'
+                ? 'Words that stick, boosting brands. 글로벌 브랜딩과 마케팅에 특화된 영어 전문 카피라이팅 회사, 스틱스앤스톤스 서울.'
+                : 'Words that stick, boosting brands. A specialized English copywriting agency for global branding and marketing, Sticks & Stones Seoul.'
+              }</p>
+            </div>
+
+            <div class="contact-section">
+              <p>(주)스틱스앤스톤스 119-88-00409<br>대표자: Richard King Kim</p>
+            </div>
           </div>
 
-          <div class="contact-section">
-            <h3>Email:</h3>
-            <p>talk@stks.kr</p>
+          <div class="contact-map">
+            <iframe
+              src="https://www.google.com/maps?q=서울특별시+용산구+녹사평대로26길+42&output=embed"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy">
+            </iframe>
           </div>
-
-          <div class="contact-section">
-            <h3>Office:</h3>
-            <p>서울 용산구<br>녹사평대로26길 42<br>스틱스앤스톤스 빌딩</p>
-          </div>
-
-          <div class="contact-section">
-            <p class="contact-tagline">${this.language === 'ko'
-              ? 'Words that stick, boosting brands. 글로벌 브랜딩과 마케팅에 특화된 영어 전문 카피라이팅 회사, 스틱스앤스톤스 서울.'
-              : 'Words that stick, boosting brands. A specialized English copywriting agency for global branding and marketing, Sticks & Stones Seoul.'
-            }</p>
-          </div>
-
-          <div class="contact-section">
-            <p>(주)스틱스앤스톤스 119-88-00409<br>대표자: Richard King Kim</p>
-          </div>
-        </div>
-
-        <div class="contact-map">
-          <iframe
-            src="https://www.google.com/maps?q=서울특별시+용산구+녹사평대로26길+42&output=embed"
-            width="100%"
-            height="100%"
-            style="border:0;"
-            allowfullscreen=""
-            loading="lazy">
-          </iframe>
         </div>
       </div>
     `;
@@ -202,28 +296,30 @@ export class BottomTabs {
     }));
 
     return `
-      <div class="faq-content">
-        <div class="faq-categories">
-          ${categories.map((category, index) => `
-            <button class="faq-category-btn ${index === 0 ? 'active' : ''}" data-category="${category}">
-              ${languageManager.getContent(faqCategoryLabels[category], this.language)}
-            </button>
-          `).join('')}
-        </div>
-
-        <div class="faq-list">
-          ${faqs.map((faq, index) => `
-            <div class="faq-item ${index === 0 ? 'open' : ''}" data-category="${faq.category}">
-              <button class="faq-question">
-                <span class="faq-q-icon">Q</span>
-                <span class="faq-q-text">${faq.question}</span>
-                <span class="faq-toggle">${index === 0 ? '▲' : '▼'}</span>
+      <div class="faq-measure-container">
+        <div class="faq-content">
+          <div class="faq-categories">
+            ${categories.map((category, index) => `
+              <button class="faq-category-btn ${index === 0 ? 'active' : ''}" data-category="${category}">
+                ${languageManager.getContent(faqCategoryLabels[category], this.language)}
               </button>
-              <div class="faq-answer">
-                <p>${faq.answer}</p>
+            `).join('')}
+          </div>
+
+          <div class="faq-list">
+            ${faqs.map((faq, index) => `
+              <div class="faq-item ${index === 0 ? 'open' : ''}" data-category="${faq.category}">
+                <button class="faq-question">
+                  <span class="faq-q-icon">Q</span>
+                  <span class="faq-q-text">${faq.question}</span>
+                  <span class="faq-toggle">${index === 0 ? '▲' : '▼'}</span>
+                </button>
+                <div class="faq-answer">
+                  <p>${faq.answer}</p>
+                </div>
               </div>
-            </div>
-          `).join('')}
+            `).join('')}
+          </div>
         </div>
       </div>
     `;
@@ -231,6 +327,9 @@ export class BottomTabs {
 
   mount(parent) {
     parent.appendChild(this.container);
+
+    // Set up ResizeObserver for automatic height updates (desktop only)
+    this.setupResizeObserver();
 
     // Add FAQ accordion functionality after mounting
     this.container.addEventListener('click', (e) => {
@@ -252,8 +351,10 @@ export class BottomTabs {
           toggle.textContent = '▲';
         }
 
-        // Update panel height after accordion state changes
-        this.updateFaqPanelHeight();
+        // Update panel height after accordion animation completes (250ms transition + buffer)
+        setTimeout(() => {
+          this.updateFaqPanelHeight();
+        }, 300);
       }
 
       // Handle category filtering

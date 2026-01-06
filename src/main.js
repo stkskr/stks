@@ -14,6 +14,7 @@ import { LanguageToggle } from './components/LanguageToggle.js';
 import { AudioToggle } from './components/AudioToggle.js';
 import { CloseButton } from './components/CloseButton.js';
 import { BottomTabs } from './components/BottomTabs.js';
+import { initializeMarqueeHover } from './utils/marquee.js';
 
 class App {
   constructor() {
@@ -40,6 +41,14 @@ class App {
   init() {
     stateManager.subscribe((state) => {
       this.contentArea.render(state);
+
+      // Initialize marquee hover after content renders (when clients section is active)
+      if (state.currentSection === 'clients') {
+        // Use a small delay to ensure DOM is ready
+        setTimeout(() => {
+          initializeMarqueeHover();
+        }, 100);
+      }
     });
 
     router.init();

@@ -72,7 +72,7 @@ export const teamData = [
       ko: 'Account Manager',
       en: 'Account Manager',
     },
-    image: '/assets/images/profileSein.png',
+    image: '/assets/images/profileSein.jpg',
     education: {
       ko: [
         { school: '한국외국어대학교', degree: '스페인어 학사' },
@@ -100,8 +100,8 @@ export const teamData = [
     name: 'Natalie Lee',
     initial: 'N',
     role: {
-      ko: 'Senior Copywriter',
-      en: 'Senior Copywriter',
+      ko: 'Account Executive',
+      en: 'Account Executive',
     },
     image: '/assets/images/profileNatalie.jpg',
     education: {
