@@ -21,6 +21,12 @@ export class KeyboardHandler {
       return;
     }
 
+    // Ignore if hotkey modal is active - let the modal handle it
+    const hotkeyModal = document.querySelector('.hotkey-modal.active');
+    if (hotkeyModal) {
+      return;
+    }
+
     const key = e.key.toLowerCase();
     const state = stateManager.getState();
 
@@ -59,10 +65,17 @@ export class KeyboardHandler {
       e.preventDefault();
       this.toggleMute();
     }
-    // Back navigation shortcut
+    // Back/Main navigation shortcut
     else if (key === 'b') {
-      e.preventDefault();
-      window.history.back();
+      // Check if portfolio modal is active - if so, let the modal handle it
+      const portfolioModal = document.querySelector('.portfolio-modal.active');
+      if (!portfolioModal) {
+        // Not in modal, go to main page
+        e.preventDefault();
+        const path = router.buildPath('main', state.language);
+        router.navigate(path);
+      }
+      // If modal is active, the modal's key handler will close it
     }
   }
 

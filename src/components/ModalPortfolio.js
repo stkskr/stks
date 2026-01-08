@@ -5,12 +5,14 @@ import { getFullImages } from '../utils/portfolio.js';
 import { stateManager } from '../core/state.js';
 import { router } from '../core/router.js';
 import { extractVideoId, extractTimestamp, getYoutubeThumbnail, resolveYoutubeThumbnail, activateYoutubeFacade } from '../utils/youtube.js';
+import { HotkeyModal } from './HotkeyModal.js';
 
 export class ModalPortfolio {
   constructor() {
     this.element = createElement('div', 'portfolio-modal');
     this.currentIndex = -1;
     this.language = 'ko';
+    this.hotkeyModal = new HotkeyModal();
     this.render();
 
     // Subscribe to state changes
@@ -52,7 +54,15 @@ export class ModalPortfolio {
               <span class="modal-lang-option modal-lang-kr">KR</span>
             </span>
           </div>
-          <button class="modal-close">✕</button>
+          <div class="modal-header-actions">
+            <button class="modal-hotkey-btn" title="Keyboard shortcuts">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/>
+              </svg>
+            </button>
+            <button class="modal-close">✕</button>
+          </div>
         </div>
         <div class="modal-body"></div>
       </div>
@@ -66,6 +76,14 @@ export class ModalPortfolio {
 
     const nextBtn = this.element.querySelector('.next-btn');
     nextBtn.addEventListener('click', () => this.navigate(1));
+
+    // Hotkey button handler
+    const hotkeyBtn = this.element.querySelector('.modal-hotkey-btn');
+    if (hotkeyBtn) {
+      hotkeyBtn.addEventListener('click', () => {
+        this.hotkeyModal.open();
+      });
+    }
 
     // Language toggle handler
     const langToggle = this.element.querySelector('.modal-language-toggle');
@@ -87,13 +105,21 @@ export class ModalPortfolio {
       // Only handle keys when modal is active
       if (!this.element.classList.contains('active')) return;
 
-      if (e.key === 'ArrowLeft') {
+      const key = e.key.toLowerCase();
+
+      if (e.key === 'ArrowLeft' && !e.shiftKey) {
         e.preventDefault();
         this.navigate(-1);
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' && !e.shiftKey) {
         e.preventDefault();
         this.navigate(1);
-      } else if (e.key === 'Escape') {
+      } else if (e.key === 'ArrowLeft' && e.shiftKey) {
+        e.preventDefault();
+        this.navigateCarousel(-1);
+      } else if (e.key === 'ArrowRight' && e.shiftKey) {
+        e.preventDefault();
+        this.navigateCarousel(1);
+      } else if (e.key === 'Escape' || key === 'b') {
         e.preventDefault();
         this.close();
       }
@@ -108,6 +134,21 @@ export class ModalPortfolio {
       const item = portfolioData[newIndex];
       const newPath = router.buildPath('portfolio', this.language, item.id);
       router.navigate(newPath);
+    }
+  }
+
+  navigateCarousel(direction) {
+    // Find the carousel navigation buttons in the modal
+    const carouselContainer = this.element.querySelector('.modal-carousel-container');
+    if (!carouselContainer) return;
+
+    const prevBtn = carouselContainer.querySelector('.modal-carousel-prev');
+    const nextBtn = carouselContainer.querySelector('.modal-carousel-next');
+
+    if (direction === -1 && prevBtn) {
+      prevBtn.click();
+    } else if (direction === 1 && nextBtn) {
+      nextBtn.click();
     }
   }
 
@@ -479,5 +520,6 @@ export class ModalPortfolio {
 
   mount(parent) {
     parent.appendChild(this.element);
+    this.hotkeyModal.mount(document.body);
   }
 }

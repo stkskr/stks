@@ -434,7 +434,9 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
 .portfolio-filters {
   display: flex;
   gap: 8px;
-  margin-bottom: 50px;
+  padding-bottom: 50px;
+  background:white;
+  z-index:3;
   flex-wrap: wrap;
   justify-content: center;
   max-width: 100%;
@@ -588,7 +590,11 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   justify-self: center;
 }
 
-.modal-close {
+/* Container for right-side buttons */
+.modal-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
   justify-self: end;
 }
 
@@ -616,7 +622,8 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   cursor: not-allowed;
 }
 
-.modal-close {
+.modal-close,
+.modal-hotkey-btn {
   background: none;
   border: 1px solid var(--color-border-gray);
   width: 40px;
@@ -628,11 +635,27 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   align-items: center;
   justify-content: center;
   transition: all 200ms ease;
+  color: inherit;
 }
 
-.modal-close:hover {
+.modal-close:hover,
+.modal-hotkey-btn:hover {
   background: var(--color-light-gray);
   border-color: var(--color-gray);
+}
+
+.modal-hotkey-btn {
+  font-size: 16px;
+  opacity: 0.25;
+  transition: opacity 200ms ease;
+}
+
+.modal-hotkey-btn:hover {
+  opacity: 1;
+}
+
+.modal-hotkey-btn svg {
+  display: block;
 }
 
 .modal-header .modal-language-toggle {

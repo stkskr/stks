@@ -5,6 +5,7 @@ import './styles/quadrants.css';
 import './styles/content.css';
 import './styles/bottomtabs.css';
 import './styles/videomodal.css';
+import './styles/hotkey.css';
 
 import { router } from './core/router.js';
 import { stateManager } from './core/state.js';

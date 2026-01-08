@@ -392,19 +392,73 @@ export class BottomTabs {
         const faqItem = questionBtn.closest('.faq-item');
         const toggle = questionBtn.querySelector('.faq-toggle');
         const isOpen = faqItem.classList.contains('open');
+        const faqPanel = this.container.querySelector('.faq-panel');
+        const tabsContent = faqPanel?.querySelector('.bottom-tabs-content');
+        const faqMeasureContainer = this.container.querySelector('.faq-measure-container');
 
-        if (isOpen) {
-          faqItem.classList.remove('open');
-          toggle.textContent = '▼';
+        // Check if we should hide the scrollbar during animation
+        if (tabsContent && faqMeasureContainer) {
+          // Temporarily toggle to measure final height
+          const wasOpen = isOpen;
+          if (wasOpen) {
+            faqItem.classList.remove('open');
+          } else {
+            faqItem.classList.add('open');
+          }
+
+          // Measure what the final height will be
+          requestAnimationFrame(() => {
+            const finalContentHeight = faqMeasureContainer.scrollHeight;
+            const finalTotalHeight = 42 + finalContentHeight + 70; // Button + Content + Buffer
+            const maxHeight = window.innerHeight * 0.85; // 85vh
+
+            // Restore original state
+            if (wasOpen) {
+              faqItem.classList.add('open');
+            } else {
+              faqItem.classList.remove('open');
+            }
+
+            // Only hide scrollbar if final height won't need scrolling
+            const willNeedScrollbar = finalTotalHeight > maxHeight;
+
+            if (!willNeedScrollbar) {
+              tabsContent.classList.add('is-animating');
+
+              // Remove animation class after 2 seconds
+              setTimeout(() => {
+                tabsContent.classList.remove('is-animating');
+              }, 2000);
+            }
+
+            // Perform the actual toggle
+            if (isOpen) {
+              faqItem.classList.remove('open');
+              toggle.textContent = '▼';
+            } else {
+              faqItem.classList.add('open');
+              toggle.textContent = '▲';
+            }
+
+            // Update panel height after accordion animation completes (250ms transition + buffer)
+            setTimeout(() => {
+              this.updateFaqPanelHeight();
+            }, 300);
+          });
         } else {
-          faqItem.classList.add('open');
-          toggle.textContent = '▲';
-        }
+          // Fallback if elements not found
+          if (isOpen) {
+            faqItem.classList.remove('open');
+            toggle.textContent = '▼';
+          } else {
+            faqItem.classList.add('open');
+            toggle.textContent = '▲';
+          }
 
-        // Update panel height after accordion animation completes (250ms transition + buffer)
-        setTimeout(() => {
-          this.updateFaqPanelHeight();
-        }, 300);
+          setTimeout(() => {
+            this.updateFaqPanelHeight();
+          }, 300);
+        }
       }
 
       // Handle category filtering

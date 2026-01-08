@@ -67,16 +67,16 @@
   /* Ensure inner containers can scroll */
   .faq-inner,
   .contact-inner {
-    overflow-y: auto;
+    overflow: visible;
     height: auto;
     min-height: min-content;
-    scrollbar-gutter: stable; /* Reserve space for scrollbar to prevent layout shift */
+    padding-right: 0;
   }
 
-  /* Webkit browsers - overlay scrollbar that doesn't take width */
+  /* Webkit browsers - overlay scrollbar */
   .faq-inner::-webkit-scrollbar,
   .contact-inner::-webkit-scrollbar {
-    width: 8px;
+    width: 12px;
   }
 
   .faq-inner::-webkit-scrollbar-track,
@@ -87,12 +87,16 @@
   .faq-inner::-webkit-scrollbar-thumb,
   .contact-inner::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
   }
 
   .faq-inner::-webkit-scrollbar-thumb:hover,
   .contact-inner::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.3);
+    border: 3px solid transparent;
+    background-clip: padding-box;
   }
 
   /* FAQ Measure Container - Unconstrained wrapper for accurate height measurement */
@@ -219,8 +223,19 @@
   height: calc(100% - 42px);
   border-radius: 12px 12px 0 0;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   pointer-events: auto; /* Re-enable clicks for content area */
+}
+
+/* Hide scrollbar during FAQ animations when not needed */
+.faq-panel .bottom-tabs-content.is-animating {
+  overflow-y: hidden !important;
+  scrollbar-width: none; /* Firefox */
+}
+
+.faq-panel .bottom-tabs-content.is-animating::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 /* Contact content styling */
