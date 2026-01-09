@@ -122,7 +122,7 @@
   left: 100%;
   top: 0;
   z-index: var(--z-sub-quadrant);
-  font-size: 1vw;
+  font-size: 1.5vw;
   padding: 40px;
   text-align: center;
   cursor: default;
@@ -159,6 +159,17 @@
 .container.no-transition .quadrant,
 .container.no-transition .sub-quadrant {
   transition: none !important;
+}
+
+/* ========================================
+   TABLET/SMALLER SCREENS (max-width: 1024px)
+   ======================================== */
+
+@media (max-width: 1100px) {
+  /* Increase sub-quadrant text size for better readability */
+  .sub-quadrant {
+    font-size: 1.8vw;
+  }
 }
 
 /* ========================================

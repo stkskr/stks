@@ -155,9 +155,6 @@ export class GridQuadrant {
         this.centerCircle.style.left = oppositeCorners[currentSection].left;
       }
 
-      // Force reflow for Safari to recognize overflow-y: auto immediately
-      void this.container.offsetHeight;
-
       // Remove no-transition class after initial render so future navigations animate
       if (appState === 'expanded') {
         requestAnimationFrame(() => {
@@ -165,13 +162,32 @@ export class GridQuadrant {
         });
       }
 
+      // Safari scroll kickstart: Force body to be recognized as scrollable
       requestAnimationFrame(() => {
-        this.container.style.overflowY = 'auto';
+        setTimeout(() => {
+          // Force Safari to recognize body as scroll target
+          window.scrollTo(0, 1);
+          window.scrollTo(0, 0);
+
+          // Add passive scroll listener to force Safari to attach wheel handlers to body
+          if (!document.body._scrollListenerAdded) {
+            document.body.addEventListener('scroll', () => {}, { passive: true });
+            document.body.addEventListener('wheel', () => {}, { passive: true });
+            document.body.addEventListener('touchmove', () => {}, { passive: true });
+            window.addEventListener('scroll', () => {}, { passive: true });
+            window.addEventListener('wheel', () => {}, { passive: true });
+            window.addEventListener('touchmove', () => {}, { passive: true });
+            document.body._scrollListenerAdded = true;
+          }
+
+          // Force style recalc on body
+          document.body.style.willChange = 'scroll-position';
+          void document.body.offsetHeight;
+        }, 50);
       });
     } else {
-      // Reset overflow and scroll position when returning to homepage
-      this.container.style.overflowY = '';
-      this.container.scrollTop = 0;
+      // Reset scroll position when returning to homepage
+      window.scrollTo(0, 0);
 
       // Stop audio when returning to home
       audioManager.stop();

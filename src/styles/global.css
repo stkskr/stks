@@ -28,21 +28,41 @@ body {
   height: 100%;
 }
 
+/* When expanded, body becomes the scroll container */
+body.stateExpanding {
+  position: static !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: none;
+  height: auto !important;
+  min-height: 100vh;
+}
+
 .container {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   /* Use dvh to account for mobile address bars */
   height: 100dvh;
   background: var(--color-content-white);
-  overflow-x: hidden;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  /* Smooth inertia for iOS */
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+  /* Clip content that extends beyond viewport on home */
+  clip-path: inset(0 0 0 0);
 }
 
+/* When expanded, container grows to accommodate content */
 .container.stateExpanding {
-  overflow-y: auto;
+  height: auto !important;
+  min-height: 100dvh;
+  overflow: visible !important;
+  clip-path: none;
+}
+
+/* Safari Ghost Layer Fix: Allow interaction with content */
+.stateExpanding .content-box {
+  /* Safari fix: Ensure text selection works */
+  -webkit-user-select: text !important;
+  user-select: text !important;
 }

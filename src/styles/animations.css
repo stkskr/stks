@@ -86,11 +86,15 @@
   padding: 40px 20% 0;
   opacity: 0;
   transition: opacity var(--duration-fade) var(--timing-ease);
+  display: block;
+  width: 100%;
 }
 
 .stateExpanding .content-inner {
   opacity: 1;
   transition-delay: var(--duration-fade-delay);
+  /* Ensure there is always 1px of overflow to wake up Safari scroll engine */
+  min-height: calc(50vh + 1px);
 }
 
 /* Reduce side padding as screen gets smaller */
@@ -109,6 +113,13 @@
 @media (max-width: 1024px) {
   .content-inner {
     padding: 40px 8% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .stateExpanding .content-inner {
+    /* Mobile: Force overflow in 20vh container */
+    min-height: calc(20vh + 1px);
   }
 }
 
