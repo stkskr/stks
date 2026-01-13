@@ -28,6 +28,20 @@ export class ClientMarquee {
     `;
 
     this.element.innerHTML = trackHTML;
+    this.attachHoverListeners();
+  }
+
+  attachHoverListeners() {
+    // Add individual hover listeners for Safari compatibility
+    const items = this.element.querySelectorAll('.marquee-item');
+    items.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.classList.add('hovered');
+      });
+      item.addEventListener('mouseleave', () => {
+        item.classList.remove('hovered');
+      });
+    });
   }
 
   renderLogos() {

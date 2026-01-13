@@ -19,6 +19,7 @@ export class QuoteCarousel {
 
     // Create navigation buttons
     this.prevBtn = createElement('button', 'quote-carousel-prev');
+    this.prevBtn.type = 'button'; // Explicit type for Safari
     this.prevBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -27,6 +28,7 @@ export class QuoteCarousel {
     this.prevBtn.setAttribute('aria-label', 'Previous quote');
 
     this.nextBtn = createElement('button', 'quote-carousel-next');
+    this.nextBtn.type = 'button'; // Explicit type for Safari
     this.nextBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -58,19 +60,60 @@ export class QuoteCarousel {
       this.startAutoScroll();
     });
 
-    // Navigation button click handlers
-    this.prevBtn.addEventListener('click', () => {
+    // Navigation button click handlers with explicit event prevention for Safari
+    this.prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       this.moveToSlide(this.currentIndex - 1);
     });
 
-    this.nextBtn.addEventListener('click', () => {
+    this.nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       this.moveToSlide(this.currentIndex + 1);
+    });
+
+    // Add hover listeners for Safari compatibility
+    this.prevBtn.addEventListener('mouseenter', () => {
+      this.prevBtn.classList.add('hovered');
+    });
+    this.prevBtn.addEventListener('mouseleave', () => {
+      this.prevBtn.classList.remove('hovered');
+    });
+
+    this.nextBtn.addEventListener('mouseenter', () => {
+      this.nextBtn.classList.add('hovered');
+    });
+    this.nextBtn.addEventListener('mouseleave', () => {
+      this.nextBtn.classList.remove('hovered');
     });
   }
 
   updateSlideWidth() {
-    // Get the precise width of the container in pixels
-    this.slideWidth = Math.round(this.element.offsetWidth);
+    // Use getBoundingClientRect for subpixel precision (fixes iOS hairline gaps)
+    const rect = this.element.getBoundingClientRect();
+    this.slideWidth = rect.width; // Keep fractional width, don't round yet
+  }
+
+  setSlideWidths() {
+    // Force each slide to exact measured width to eliminate flex rounding ambiguity
+    const rect = this.element.getBoundingClientRect();
+    const w = rect.width;
+    const slides = this.track.querySelectorAll('.quote-slide');
+    slides.forEach(slide => {
+      slide.style.width = `${w}px`;
+      slide.style.minWidth = `${w}px`;
+      slide.style.maxWidth = `${w}px`;
+    });
+    this.slideWidth = w;
+  }
+
+  applyTransform() {
+    // Snap transform to device pixels to prevent subpixel drift on iOS
+    const dpr = window.devicePixelRatio || 1;
+    const rawX = this.currentIndex * this.slideWidth;
+    const snappedX = Math.round(rawX * dpr) / dpr;
+    this.track.style.transform = `translate3d(-${snappedX}px, 0, 0)`;
   }
 
   render() {
@@ -85,13 +128,13 @@ export class QuoteCarousel {
       });
     }
 
-    // Update slide width and position
-    this.updateSlideWidth();
+    // Set explicit widths on all slides for subpixel precision
+    this.setSlideWidths();
 
     // Start at the middle set (set index 1)
     this.currentIndex = this.slideCount;
     this.track.style.transition = 'none';
-    this.track.style.transform = `translate3d(-${this.currentIndex * this.slideWidth}px, 0, 0)`;
+    this.applyTransform();
 
     // Re-enable transitions after a frame
     requestAnimationFrame(() => {
@@ -138,7 +181,7 @@ export class QuoteCarousel {
       const offsetInSet = index % this.slideCount;
       this.track.style.transition = 'none';
       this.currentIndex = this.slideCount + offsetInSet;
-      this.track.style.transform = `translate3d(-${this.currentIndex * this.slideWidth}px, 0, 0)`;
+      this.applyTransform();
       // Force reflow
       this.track.offsetHeight;
       this.track.style.transition = '';
@@ -150,7 +193,7 @@ export class QuoteCarousel {
       const offsetInSet = ((index % this.slideCount) + this.slideCount) % this.slideCount;
       this.track.style.transition = 'none';
       this.currentIndex = this.slideCount + offsetInSet;
-      this.track.style.transform = `translate3d(-${this.currentIndex * this.slideWidth}px, 0, 0)`;
+      this.applyTransform();
       // Force reflow
       this.track.offsetHeight;
       this.track.style.transition = '';
@@ -160,7 +203,7 @@ export class QuoteCarousel {
 
     this.isTransitioning = true;
     this.currentIndex = index;
-    this.track.style.transform = `translate3d(-${this.currentIndex * this.slideWidth}px, 0, 0)`;
+    this.applyTransform();
 
     // Listen for transition end to reset flag
     const handleTransitionEnd = () => {
@@ -192,22 +235,23 @@ export class QuoteCarousel {
     this.render();
     this.startAutoScroll();
 
-    // Handle window resize to recalculate slide width
-    this.resizeHandler = () => {
-      this.updateSlideWidth();
+    // Use ResizeObserver for better mobile Safari support
+    this.resizeObserver = new ResizeObserver(() => {
+      this.setSlideWidths();
       this.track.style.transition = 'none';
-      this.track.style.transform = `translate3d(-${this.currentIndex * this.slideWidth}px, 0, 0)`;
+      this.applyTransform();
       requestAnimationFrame(() => {
         this.track.style.transition = '';
       });
-    };
-    window.addEventListener('resize', this.resizeHandler);
+    });
+    this.resizeObserver.observe(this.element);
   }
 
   unmount() {
     this.stopAutoScroll();
-    if (this.resizeHandler) {
-      window.removeEventListener('resize', this.resizeHandler);
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
     }
     if (this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);

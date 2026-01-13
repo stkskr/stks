@@ -1,0 +1,502 @@
+/* ============================================
+   MOBILE FIXES - Critical iPhone Layout Issues
+   ============================================
+
+   Addresses:
+   1. Horizontal scrolling from 100vw elements
+   2. Content cutoff under headers (vh → dvh)
+   3. Carousel centering issues
+   4. Modal layout problems
+
+   Applied at: <= 768px (mobile)
+   ============================================ */
+
+/* =========================================
+   NARROW VIEWPORT FULL-WIDTH BREAKOUTS
+   ========================================= */
+
+/* For narrow desktop and tablet screens */
+@media (max-width: 1000px) {
+  .client-marquee-container,
+  .space-gallery-container,
+  .testimonials-section,
+  .cta-section {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    position: relative !important;
+    left: 50% !important;
+    right: 50% !important;
+    margin-left: -50vw !important;
+    margin-right: -50vw !important;
+  }
+
+  /* Quote carousel stays centered (not edge-to-edge) */
+  .quote-carousel-container {
+    width: 100% !important;
+    max-width: 900px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* CTA section needs padding for content */
+  .cta-section {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+
+  /* Testimonials section: edge-to-edge with no padding */
+  .testimonials-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* ===========================
+   1. HORIZONTAL SCROLL FIXES
+   =========================== */
+
+/* Prevent body/html horizontal overflow */
+@media (max-width: 768px) {
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Enable full-width breakout on mobile */
+  .client-marquee-container,
+  .space-gallery-container,
+  .testimonials-section,
+  .cta-section {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    position: relative !important;
+    left: 50% !important;
+    right: 50% !important;
+    margin-left: -50vw !important;
+    margin-right: -50vw !important;
+  }
+
+  /* Quote carousel stays centered on mobile (not edge-to-edge) */
+  .quote-carousel-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    position: relative !important;
+  }
+
+  /* CTA section needs padding restored for content */
+  .cta-section {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+
+  /* Testimonials section: edge-to-edge with no padding */
+  .testimonials-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Fix portfolio modal width */
+  .portfolio-modal {
+    width: 100% !important;
+    max-width: 100vw;
+  }
+
+  /* Fix video modal width */
+  .video-modal {
+    width: 100% !important;
+    max-width: 100vw;
+  }
+}
+
+/* =====================================
+   2. CONTENT CUTOFF FIXES (vh → dvh)
+   ===================================== */
+
+@media (max-width: 768px) {
+  /* Bottom tabs: Use dvh instead of vh to account for address bar */
+  .bottom-tab-panel.faq-panel {
+    height: calc(90dvh + 42px) !important;
+    bottom: calc(-90dvh) !important;
+  }
+
+  .bottom-tab-panel.contact-panel {
+    height: calc(80dvh + 42px) !important;
+    bottom: calc(-80dvh) !important;
+  }
+
+  /* Content box: Use dvh for proper positioning */
+  .stateExpanding .content-box {
+    top: 80dvh !important;
+    min-height: 20dvh !important;
+    padding-top: 0 !important;
+    z-index: 100 !important;
+    position: absolute !important;
+  }
+
+  /* Ensure content-inner has proper top spacing */
+  .content-inner {
+    padding-top: 40px !important;
+    margin-top: 0 !important;
+  }
+
+  /* First element in content should have extra margin */
+  .content-inner > *:first-child {
+    margin-top: 20px !important;
+  }
+
+  /* Ensure sub-quadrants don't overflow their bounds */
+  .sub-quadrant {
+    max-height: 40dvh !important;
+    overflow: hidden !important;
+  }
+
+  /* Selected quadrants: Use dvh */
+  .quadrant.selected {
+    height: 40dvh !important;
+  }
+
+  /* Modal content: Adjust for mobile address bar */
+  .modal-content {
+    max-height: calc(100dvh - 40px) !important;
+  }
+}
+
+/* ============================
+   3. CAROUSEL CENTERING FIXES
+   ============================ */
+
+@media (max-width: 768px) {
+  /* Quote carousel: Full width on mobile */
+  .quote-carousel-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 20px 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    overflow-x: clip !important; /* Better than hidden for subpixel rendering */
+  }
+
+  /* Ensure carousel track doesn't overflow */
+  .carousel-track {
+    width: 100% !important;
+    display: flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  /* Ensure each slide is properly sized - exactly 100% */
+  .quote-slide {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  /* Quote boxes should have padding instead of container margin */
+  .quote-box-dark,
+  .author-box-light {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Remove borders that add to width on mobile */
+  .author-box-light {
+    border-left: 1px solid #eee !important;
+  }
+
+  /* Modal carousel: Responsive sizing for mobile */
+  .modal-carousel-container {
+    margin-bottom: 15px !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  .modal-carousel-container::before {
+    display: none !important;
+  }
+
+  .modal-carousel {
+    position: relative !important;
+    height: auto !important;
+  }
+
+  .modal-carousel-item {
+    position: relative !important;
+    height: auto !important;
+  }
+
+  .modal-carousel-item.active {
+    position: relative !important;
+  }
+
+  .modal-carousel-item img {
+    max-height: 40vh !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+  }
+
+  /* Also fix single image container */
+  .modal-image-container {
+    min-height: 0 !important;
+    margin-bottom: 15px !important;
+  }
+
+  .modal-image-container img {
+    max-height: 40vh !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Carousel navigation buttons: Increase tap target size */
+  .modal-carousel-prev,
+  .modal-carousel-next {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .modal-carousel-prev {
+    left: 10px !important;
+  }
+
+  .modal-carousel-next {
+    right: 10px !important;
+  }
+
+  /* Carousel dots: Make them larger for touch */
+  .modal-carousel-dots {
+    bottom: 10px;
+  }
+
+  .modal-carousel-dot {
+    width: 10px;
+    height: 10px;
+    margin: 0 6px;
+  }
+}
+
+/* =======================
+   4. MODAL LAYOUT FIXES
+   ======================= */
+
+@media (max-width: 768px) {
+  /* Modal header: Keep 3-column grid but tighter spacing */
+  .modal-header {
+    grid-template-columns: auto 1fr auto !important;
+    gap: 8px;
+    padding: 12px 15px;
+    align-items: center;
+  }
+
+  /* Nav buttons: Smaller and tighter */
+  .modal-nav {
+    gap: 8px !important;
+  }
+
+  .modal-nav-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  /* Language toggle: Smaller text */
+  .modal-language-toggle {
+    font-size: 13px !important;
+  }
+
+  /* Header actions (keyboard + close): Tighter */
+  .modal-header-actions {
+    gap: 6px !important;
+  }
+
+  .modal-hotkey-btn,
+  .modal-close-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  /* Modal body: Minimal padding for more content space */
+  .modal-body {
+    padding: 15px !important;
+  }
+
+  /* Remove excessive margins from modal content */
+  .modal-carousel-container,
+  .modal-image-container,
+  .modal-video-container {
+    margin-bottom: 15px !important;
+  }
+
+  /* Modal info: Single column on mobile */
+  .modal-info {
+    grid-template-columns: 1fr !important;
+    gap: 15px;
+  }
+
+  /* Modal info item: Full width */
+  .modal-info-item {
+    min-width: 0 !important;
+  }
+
+  /* Video modal: Reduce padding */
+  .video-modal-content {
+    width: 95%;
+    max-width: calc(100vw - 40px);
+    padding: 10px;
+  }
+
+  /* Hotkey modal: Single column */
+  .hotkey-sections,
+  .hotkey-sections-vertical {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  /* Hide vertical divider line on mobile */
+  .hotkey-sections-vertical::after,
+  .hotkey-sections::after {
+    display: none !important;
+  }
+}
+
+/* ============================
+   5. BOTTOM TABS MOBILE FIXES
+   ============================ */
+
+@media (max-width: 768px) {
+  /* Bottom tabs: Remove complex width calculations */
+  .bottom-tabs {
+    width: 100% !important;
+    max-width: 100%;
+    left: 0;
+    transform: none;
+  }
+
+  .bottom-tab-panel {
+    width: 100% !important;
+    max-width: 100%;
+    left: 0;
+    transform: none;
+  }
+}
+
+/* ===================
+   6. GRID FIXES
+   =================== */
+
+@media (max-width: 768px) {
+  /* Team grid: Single column on mobile */
+  .team-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  .team-member {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  /* Portfolio grid: 2 columns max on mobile */
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+  }
+
+  /* Space gallery: Single column on mobile */
+  .space-gallery-grid {
+    grid-template-columns: 1fr !important;
+    gap: 15px;
+  }
+}
+
+/* ================================
+   7. FIXED UI ELEMENTS (NOTCH SAFE)
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Language toggle: Account for notch */
+  .language-toggle {
+    top: max(30px, env(safe-area-inset-top)) !important;
+    left: max(20px, env(safe-area-inset-left)) !important;
+  }
+
+  /* Audio toggle: Account for notch */
+  .audio-toggle {
+    top: max(24px, env(safe-area-inset-top)) !important;
+    right: max(20px, env(safe-area-inset-right)) !important;
+  }
+}
+
+/* =========================
+   8. TESTIMONIALS MOBILE FIX
+   ========================= */
+
+@media (max-width: 900px) {
+  .testimonials-section {
+    padding: 40px 20px !important;
+  }
+
+  .testimonial-card {
+    padding: 25px 20px;
+  }
+}
+
+/* ======================
+   9. CONTENT BOX PADDING
+   ====================== */
+
+@media (max-width: 768px) {
+  .content-box {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .section-content {
+    padding: 30px 0;
+  }
+}
+
+/* ==========================
+   10. SAFE AREA INSETS (iOS)
+   ========================== */
+
+@media (max-width: 768px) {
+  /* Apply safe area insets to body */
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Apply to bottom tabs */
+  .bottom-tabs {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Show copy buttons always on mobile (no hover state) */
+  .copy-btn {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+}

@@ -364,11 +364,17 @@ body.contact-active .container {
 
 /* Copyable container with copy button */
 .copyable-container {
-  display: flex;
-  align-items: flex-start;
+  display: inline-flex;
+  align-items: baseline;
   gap: 6px;
   position: relative;
   cursor: pointer;
+  flex-wrap: wrap;
+}
+
+.copyable-container p {
+  display: inline;
+  margin: 0;
 }
 
 .copy-btn {
@@ -380,7 +386,10 @@ body.contact-active .container {
   transition: all 200ms ease;
   position: relative;
   flex-shrink: 0;
-  margin-top: 3px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: baseline;
+  margin-left: 4px;
   opacity: 0;
   transform: translateX(-10px);
 }

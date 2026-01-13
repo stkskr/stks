@@ -81,10 +81,10 @@
     width: 90%;
   }
 
-  /* Mobile: Content box sits below 80vh header (40vh + 40vh) */
+  /* Mobile: Content box sits below 80dvh header (40dvh + 40dvh) */
   .stateExpanding .content-box {
-    top: 80vh;
-    min-height: 20vh;
+    top: 80dvh;
+    min-height: 20dvh;
   }
 
   /* Reduce padding on mobile */
@@ -123,30 +123,35 @@
 
 .company-download-btn .download-arrow {
   transform-origin: center;
-  /* Auto-repeat animation every 4 seconds */
-  animation: download-bounce 4s ease-in-out infinite;
+  transition: transform 200ms ease;
 }
 
-/* Speed up on hover */
+/* Fun bouncy animation on hover */
 .company-download-btn:hover .download-arrow {
-  animation-duration: 600ms;
+  animation: download-bounce-hover 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-@keyframes download-bounce {
-  0%, 100% {
-    transform: translateY(0);
+@keyframes download-bounce-hover {
+  0% {
+    transform: translateY(0) scale(1);
   }
-  3% {
-    transform: translateY(-4px);
+  15% {
+    transform: translateY(-6px) scale(1.1);
   }
-  6% {
-    transform: translateY(0);
+  30% {
+    transform: translateY(0) scale(0.95);
   }
-  9% {
-    transform: translateY(-2px);
+  45% {
+    transform: translateY(-4px) scale(1.05);
   }
-  12%, 88% {
-    transform: translateY(0);
+  60% {
+    transform: translateY(0) scale(0.98);
+  }
+  75% {
+    transform: translateY(-2px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -1138,7 +1143,9 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
 }
 
 .quote-carousel-prev:hover,
-.quote-carousel-next:hover {
+.quote-carousel-next:hover,
+.quote-carousel-prev.hovered,
+.quote-carousel-next.hovered {
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-50%) scale(1.05);
@@ -1411,10 +1418,17 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   object-fit: contain;
   filter: grayscale(100%) !important;
   opacity: 0.6;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
 }
 
-.marquee-item img:hover {
+/* Pause animation on container hover for better Safari hover detection */
+.client-marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Use class-based hover state for better Safari compatibility */
+.marquee-item.hovered img {
   opacity: 1;
 }
 

@@ -178,10 +178,10 @@
    ======================================== */
 
 @media (max-width: 768px) {
-  /* EXPANDED STATE: Selected quad takes 40vh */
+  /* EXPANDED STATE: Selected quad takes 40dvh */
   .quadrant.selected {
     width: 100% !important;
-    height: 40vh !important;
+    height: 40dvh !important;
     top: 0 !important;
     left: 0 !important;
   }
@@ -192,9 +192,9 @@
   .servicesSelected .white-sub,
   .portfolioSelected .white-sub {
     left: 0 !important;
-    top: 40vh !important;
+    top: 40dvh !important;
     width: 100% !important;
-    height: 40vh !important;
+    height: 40dvh !important;
   }
 
   /* Adjust sub-quadrant text size */

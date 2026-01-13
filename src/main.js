@@ -6,6 +6,7 @@ import './styles/content.css';
 import './styles/bottomtabs.css';
 import './styles/videomodal.css';
 import './styles/hotkey.css';
+import './styles/mobile-fixes.css'; /* Critical mobile layout fixes */
 
 import { router } from './core/router.js';
 import { stateManager } from './core/state.js';

@@ -162,29 +162,32 @@ export class GridQuadrant {
         });
       }
 
-      // Safari scroll kickstart: Force body to be recognized as scrollable
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          // Force Safari to recognize body as scroll target
-          window.scrollTo(0, 1);
-          window.scrollTo(0, 0);
+      // Safari scroll kickstart: Only run when actually expanding (not on language change)
+      // This prevents scrolling to top when switching languages
+      if (appState === 'expanding') {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            // Force Safari to recognize body as scroll target
+            window.scrollTo(0, 1);
+            window.scrollTo(0, 0);
 
-          // Add passive scroll listener to force Safari to attach wheel handlers to body
-          if (!document.body._scrollListenerAdded) {
-            document.body.addEventListener('scroll', () => {}, { passive: true });
-            document.body.addEventListener('wheel', () => {}, { passive: true });
-            document.body.addEventListener('touchmove', () => {}, { passive: true });
-            window.addEventListener('scroll', () => {}, { passive: true });
-            window.addEventListener('wheel', () => {}, { passive: true });
-            window.addEventListener('touchmove', () => {}, { passive: true });
-            document.body._scrollListenerAdded = true;
-          }
+            // Add passive scroll listener to force Safari to attach wheel handlers to body
+            if (!document.body._scrollListenerAdded) {
+              document.body.addEventListener('scroll', () => {}, { passive: true });
+              document.body.addEventListener('wheel', () => {}, { passive: true });
+              document.body.addEventListener('touchmove', () => {}, { passive: true });
+              window.addEventListener('scroll', () => {}, { passive: true });
+              window.addEventListener('wheel', () => {}, { passive: true });
+              window.addEventListener('touchmove', () => {}, { passive: true });
+              document.body._scrollListenerAdded = true;
+            }
 
-          // Force style recalc on body
-          document.body.style.willChange = 'scroll-position';
-          void document.body.offsetHeight;
-        }, 50);
-      });
+            // Force style recalc on body
+            document.body.style.willChange = 'scroll-position';
+            void document.body.offsetHeight;
+          }, 50);
+        });
+      }
     } else {
       // Reset scroll position when returning to homepage
       window.scrollTo(0, 0);
