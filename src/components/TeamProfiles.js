@@ -67,6 +67,26 @@ export class TeamProfiles {
       </div>
     `;
 
+    // Add tap to toggle on mobile (only one open at a time)
+    const isMobile = () => window.innerWidth <= 768;
+
+    card.addEventListener('click', () => {
+      if (isMobile()) {
+        const isCurrentlyActive = card.classList.contains('mobile-active');
+
+        // Close all other profiles first
+        const allCards = this.element.querySelectorAll('.team-member');
+        allCards.forEach(otherCard => {
+          otherCard.classList.remove('mobile-active');
+        });
+
+        // If this card wasn't active, open it (accordion behavior)
+        if (!isCurrentlyActive) {
+          card.classList.add('mobile-active');
+        }
+      }
+    });
+
     return card;
   }
 

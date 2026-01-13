@@ -92,6 +92,7 @@
   .cta-section {
     padding-left: 40px !important;
     padding-right: 40px !important;
+    padding-bottom: 100px !important;
   }
 
   /* Testimonials section: edge-to-edge with no padding */
@@ -120,8 +121,8 @@
 @media (max-width: 768px) {
   /* Bottom tabs: Use dvh instead of vh to account for address bar */
   .bottom-tab-panel.faq-panel {
-    height: calc(90dvh + 42px) !important;
-    bottom: calc(-90dvh) !important;
+    height: calc(80dvh + 42px) !important;
+    bottom: calc(-80dvh) !important;
   }
 
   .bottom-tab-panel.contact-panel {
@@ -160,9 +161,16 @@
     height: 40dvh !important;
   }
 
-  /* Modal content: Adjust for mobile address bar */
+  /* Modal content: Adjust for mobile address bar and ensure proper scrolling */
   .modal-content {
-    max-height: calc(100dvh - 40px) !important;
+    max-height: calc(100dvh - 150px) !important;
+    width: 95% !important;
+    max-width: calc(100vw - 20px) !important;
+    /* Ensure flexbox layout for scrollable body */
+    display: flex !important;
+    flex-direction: column !important;
+    /* Prevent the modal itself from scrolling */
+    overflow: hidden !important;
   }
 }
 
@@ -222,8 +230,12 @@
   /* Modal carousel: Responsive sizing for mobile */
   .modal-carousel-container {
     margin-bottom: 15px !important;
-    min-height: 0 !important;
     background: transparent !important;
+    position: relative !important;
+    /* Set consistent height to prevent jerky transitions */
+    height: 40vh !important;
+    min-height: 250px !important;
+    max-height: 400px !important;
   }
 
   .modal-carousel-container::before {
@@ -231,24 +243,32 @@
   }
 
   .modal-carousel {
-    position: relative !important;
-    height: auto !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .modal-carousel-item {
-    position: relative !important;
-    height: auto !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .modal-carousel-item.active {
-    position: relative !important;
+    position: absolute !important;
   }
 
   .modal-carousel-item img {
-    max-height: 40vh !important;
-    min-height: 0 !important;
+    max-height: 100% !important;
     max-width: 100% !important;
-    width: 100% !important;
+    width: auto !important;
     height: auto !important;
     object-fit: contain !important;
     display: block !important;
@@ -256,15 +276,24 @@
 
   /* Also fix single image container */
   .modal-image-container {
-    min-height: 0 !important;
     margin-bottom: 15px !important;
+    position: relative !important;
+    /* Match carousel height for consistency */
+    height: 40vh !important;
+    min-height: 250px !important;
+    max-height: 400px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .modal-image-container img {
-    max-height: 40vh !important;
-    min-height: 0 !important;
-    width: 100% !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
+    width: auto !important;
     height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
   }
 
   /* Carousel navigation buttons: Increase tap target size */
@@ -303,10 +332,27 @@
 @media (max-width: 768px) {
   /* Modal header: Keep 3-column grid but tighter spacing */
   .modal-header {
-    grid-template-columns: auto 1fr auto !important;
+    grid-template-columns: 1fr auto 1fr !important;
     gap: 8px;
     padding: 12px 15px;
     align-items: center;
+    /* Ensure header doesn't shrink */
+    flex-shrink: 0 !important;
+  }
+
+  /* Nav buttons should stay on the left */
+  .modal-nav {
+    justify-self: start !important;
+  }
+
+  /* Language toggle stays centered */
+  .modal-language-toggle {
+    justify-self: center !important;
+  }
+
+  /* Header actions (just close button now) should stay on the right */
+  .modal-header-actions {
+    justify-self: end !important;
   }
 
   /* Nav buttons: Smaller and tighter */
@@ -330,16 +376,29 @@
     gap: 6px !important;
   }
 
-  .modal-hotkey-btn,
+  /* Hide keyboard icon on mobile */
+  .modal-hotkey-btn {
+    display: none !important;
+  }
+
   .modal-close-btn {
     width: 36px !important;
     height: 36px !important;
     min-width: 36px !important;
   }
 
-  /* Modal body: Minimal padding for more content space */
+  /* Modal body: Minimal padding and improved scrolling */
   .modal-body {
     padding: 15px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    /* Prevent scroll chaining to background */
+    overscroll-behavior: contain !important;
+    /* Ensure it's a scroll container */
+    position: relative !important;
+    /* Add momentum scrolling for smoother feel */
+    scroll-behavior: smooth;
   }
 
   /* Remove excessive margins from modal content */
@@ -418,9 +477,9 @@
     max-width: 100%;
   }
 
-  /* Portfolio grid: 2 columns max on mobile */
+  /* Portfolio grid: Single column on mobile */
   .portfolio-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: 1fr !important;
     gap: 10px;
   }
 
@@ -428,6 +487,12 @@
   .space-gallery-grid {
     grid-template-columns: 1fr !important;
     gap: 15px;
+  }
+
+  /* CTA heading: Keep "Have a project?" on one line */
+  .cta-heading {
+    font-size: 2.2rem !important;
+    white-space: nowrap !important;
   }
 }
 

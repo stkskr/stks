@@ -177,7 +177,7 @@ export class Content {
     return `
       <div class="cta-section">
         <h2 class="cta-heading">Have a project?</h2>
-        <button class="cta-button">Let's talk</button>
+        <button type="button" class="cta-button">Let's talk</button>
       </div>
     `;
   }
@@ -186,7 +186,9 @@ export class Content {
     // Attach click handlers to all Let's Talk buttons
     const ctaButtons = this.element.querySelectorAll('.cta-button');
     ctaButtons.forEach(button => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         // Dispatch custom event to open contact tab
         window.dispatchEvent(new CustomEvent('openContactTab'));
       });

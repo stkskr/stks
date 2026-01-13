@@ -49,15 +49,15 @@
 }
 
 .about-title {
-  font-size: 1.5em;
+  font-size: 1.3em;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   color: var(--color-text-dark);
 }
 
 .about-subtitle {
-  font-size: 1.5rem!important;
-  line-height: 43px!important;
+  font-size: 1.3rem!important;
+  line-height: 38px!important;
   margin-bottom: 35px!important;
   color: var(--color-text-dark);
 }
@@ -1768,11 +1768,30 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   }
 
   .team-grid {
-    gap: 50px 20px;
+    gap: 100px 20px;
   }
 
   .team-member {
     width: 100%;
+    margin-bottom: 60px;
+  }
+
+  /* Mobile tap to toggle profile */
+  .team-member.mobile-active .diamond-image {
+    filter: grayscale(0%);
+    transform: rotate(-45deg) scale(1);
+  }
+
+  .team-member.mobile-active .initial-overlay {
+    opacity: 0;
+  }
+
+  .team-member.mobile-active .profile-reveal {
+    max-height: 500px;
+    opacity: 1;
+    padding: 20px;
+    margin-top: 13px;
+    margin-bottom: 5px;
   }
 
   .initial-overlay {

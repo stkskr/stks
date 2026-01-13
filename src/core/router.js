@@ -79,6 +79,9 @@ class Router {
     const route = this.parseRoute(window.location.pathname);
     const currentState = stateManager.getState();
 
+    // Update HTML lang attribute for font selection
+    document.documentElement.setAttribute('lang', route.language);
+
     // Check if we're just changing language (same section, different language)
     const isLanguageChangeOnly =
       currentState.currentSection === route.section &&

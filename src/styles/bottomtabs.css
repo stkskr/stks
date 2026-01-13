@@ -232,6 +232,8 @@
 .bottom-tab-btn.faq-btn {
   background: #c8c8c8;
   color: white;
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 /* Arrow styling */
@@ -240,13 +242,15 @@
 }
 
 /* Disable background scrolling when FAQ/Contact is active */
+/* Note: Scroll locking is now handled via JavaScript (position: fixed)
+   to preserve scroll position. The overflow: hidden approach was causing
+   scroll-to-top issues. */
 body.faq-active,
 body.contact-active,
 body.faq-active .container,
 body.contact-active .container {
-  /* Safari fix: Use pan-y instead of none to allow mouse events while preventing scroll */
+  /* Safari fix: Use pan-y instead of none to allow mouse events */
   touch-action: pan-y;
-  overflow: hidden !important;
   /* Safari-specific: Disable momentum scrolling on background */
   -webkit-overflow-scrolling: auto;
 }

@@ -47,7 +47,29 @@ export class BottomTabs {
     faqBtn.addEventListener('click', () => this.openTab('faq'));
 
     // Listen for custom event to open contact tab from anywhere
-    window.addEventListener('openContactTab', () => this.openTab('contact'));
+    window.addEventListener('openContactTab', () => {
+      this.openTab('contact');
+    });
+  }
+
+  lockScroll() {
+    this.savedScrollY = window.scrollY || window.pageYOffset;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${this.savedScrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+  }
+
+  unlockScroll() {
+    const y = this.savedScrollY || 0;
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    window.scrollTo(0, y);
+    this.savedScrollY = 0;
   }
 
   openTab(tab) {
@@ -61,8 +83,11 @@ export class BottomTabs {
     this.container.classList.remove('contact-active', 'faq-active');
 
     if (tab) {
+      // Lock scroll BEFORE adding classes that trigger CSS changes
+      this.lockScroll();
+
       this.container.classList.add(`${tab}-active`);
-      document.body.classList.add(`${tab}-active`); // Add to body for CSS touch-action
+      document.body.classList.add(`${tab}-active`);
       this.renderContent(tab);
       this.updateArrows();
 
@@ -109,6 +134,9 @@ export class BottomTabs {
     this.container.classList.remove('active', 'contact-active', 'faq-active');
     document.body.classList.remove('faq-active', 'contact-active'); // Remove from body
     this.updateArrows();
+
+    // Unlock scroll when closing tab
+    this.unlockScroll();
 
     // Remove touch handler if it exists
     if (this.touchStartHandler) {

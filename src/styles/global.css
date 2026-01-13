@@ -1,3 +1,32 @@
+/* Pretendard Font (Korean) */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/assets/fonts/pretendard/Pretendard-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/assets/fonts/pretendard/Pretendard-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/assets/fonts/pretendard/Pretendard-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/assets/fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -18,7 +47,8 @@
 body {
   margin: 0;
   background: var(--color-content-white);
-  font-family: system-ui, -apple-system, sans-serif;
+  /* English: Poppins, Korean: Pretendard */
+  font-family: 'Poppins', 'Pretendard', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Prevent rubber-banding on iOS */
@@ -26,6 +56,11 @@ body {
   position: fixed;
   width: 100%;
   height: 100%;
+}
+
+/* Korean language - use Pretendard first */
+html[lang="ko"] body {
+  font-family: 'Pretendard', 'Poppins', system-ui, -apple-system, sans-serif;
 }
 
 /* When expanded, body becomes the scroll container */

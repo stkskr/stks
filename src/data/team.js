@@ -131,8 +131,8 @@ export const teamData = [
     name: 'Hyolim Ahn',
     initial: 'H',
     role: {
-      ko: 'Senior Copywriter',
-      en: 'Senior Copywriter',
+      ko: 'Translation Specialist',
+      en: 'Translation Specialist',
     },
     image: '/assets/images/profileHyolim.png',
     education: {
