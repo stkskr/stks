@@ -550,14 +550,16 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 300ms ease;
+  /* Use visibility instead of pointer-events - more reliable on mobile */
+  visibility: hidden;
+  transition: opacity 300ms ease, visibility 0s linear 300ms;
   padding: 40px 20px;
 }
 
 .portfolio-modal.active {
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
+  transition: opacity 300ms ease;
 }
 
 .modal-content {
@@ -841,21 +843,24 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   display: block;
 }
 
-/* Carousel slide animations */
-.modal-carousel-item.enter-next {
-  animation: slideInFromRight 0.4s ease-out forwards;
-}
+/* Carousel slide animations - DESKTOP ONLY */
+/* Mobile has its own animations in mobile-fixes.css */
+@media (min-width: 769px) {
+  .modal-carousel-item.enter-next {
+    animation: slideInFromRight 0.4s ease-out forwards;
+  }
 
-.modal-carousel-item.enter-prev {
-  animation: slideInFromLeft 0.4s ease-out forwards;
-}
+  .modal-carousel-item.enter-prev {
+    animation: slideInFromLeft 0.4s ease-out forwards;
+  }
 
-.modal-carousel-item.exit-next {
-  animation: slideOutToLeft 0.4s ease-out forwards;
-}
+  .modal-carousel-item.exit-next {
+    animation: slideOutToLeft 0.4s ease-out forwards;
+  }
 
-.modal-carousel-item.exit-prev {
-  animation: slideOutToRight 0.4s ease-out forwards;
+  .modal-carousel-item.exit-prev {
+    animation: slideOutToRight 0.4s ease-out forwards;
+  }
 }
 
 @keyframes slideInFromRight {

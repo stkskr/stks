@@ -101,6 +101,9 @@ export class ModalPortfolio {
       }
     });
 
+    // NOTE: Removed touchmove preventDefault on backdrop - it was causing iOS scroll issues
+    // Background is now protected by: portal to body + inert attribute + pointer-events: none fallback
+
     // Arrow key navigation handler
     this.handleKeyDown = (e) => {
       // Only handle keys when modal is active
@@ -131,22 +134,66 @@ export class ModalPortfolio {
 
   lockScroll() {
     this.savedScrollY = window.scrollY || window.pageYOffset;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${this.savedScrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.width = "100%";
+    // Simple class-based lock - no body top offset trick which causes iOS gesture issues
+    document.documentElement.classList.add('modal-open');
+
+    // Inert the background to prevent ALL interaction
+    const appContainer = document.getElementById('app') || document.querySelector('.container');
+    if (appContainer) {
+      appContainer.setAttribute('inert', '');
+      appContainer.setAttribute('aria-hidden', 'true');
+    }
   }
 
   unlockScroll() {
-    const y = this.savedScrollY || 0;
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.left = "";
-    document.body.style.right = "";
-    document.body.style.width = "";
-    window.scrollTo(0, y);
+    document.documentElement.classList.remove('modal-open');
+    window.scrollTo(0, this.savedScrollY || 0);
     this.savedScrollY = 0;
+
+    // Remove inert from background
+    const appContainer = document.getElementById('app') || document.querySelector('.container');
+    if (appContainer) {
+      appContainer.removeAttribute('inert');
+      appContainer.removeAttribute('aria-hidden');
+    }
+  }
+
+  // iOS scroll fix - uses "1px nudge" trick instead of preventDefault
+  // This avoids non-passive touchmove listeners which cause iOS scroll dead zones
+  setupMobileScrollCapture() {
+    const el = this.element.querySelector('.modal-body');
+    if (!el) return;
+
+    // Only setup once
+    if (el._scrollCaptureSetup) return;
+    el._scrollCaptureSetup = true;
+
+    // Manual scroll implementation for iOS
+    // This completely bypasses WebKit's gesture recognition issues
+    let startY = 0;
+    let startScrollTop = 0;
+    let isScrolling = false;
+
+    el.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startY = touch.clientY;
+      startScrollTop = el.scrollTop;
+      isScrolling = true;
+    }, { passive: true });
+
+    el.addEventListener('touchmove', (e) => {
+      if (!isScrolling) return;
+
+      const touch = e.touches[0];
+      const deltaY = startY - touch.clientY;
+
+      // Manually set scroll position
+      el.scrollTop = startScrollTop + deltaY;
+    }, { passive: true });
+
+    el.addEventListener('touchend', () => {
+      isScrolling = false;
+    }, { passive: true });
   }
 
   navigate(direction) {
@@ -223,6 +270,7 @@ export class ModalPortfolio {
         modalBody.innerHTML = content;
         this.element.classList.add('active');
         this.attachCarouselListeners();
+        this.setupMobileScrollCapture();
       }
 
       this.updateNavigationButtons();
@@ -488,16 +536,21 @@ export class ModalPortfolio {
 
       const currentItem = items[currentIndex];
       const nextItem = items[index];
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
       // Remove all animation classes from all items first
       items.forEach((item) => {
-        item.classList.remove('exit-next', 'exit-prev', 'enter-next', 'enter-prev');
+        item.classList.remove('exit-next', 'exit-prev', 'enter-next', 'enter-prev', 'is-animating');
       });
 
-      // Add exit animation to current item
+      // On mobile: keep .active on currentItem during animation so it maintains height
+      // Add .is-animating to make both slides absolute overlays during transition
       if (currentItem) {
-        currentItem.classList.remove('active');
-        // Use requestAnimationFrame to ensure the class removal is processed
+        if (isMobile) {
+          currentItem.classList.add('is-animating');
+        } else {
+          currentItem.classList.remove('active');
+        }
         requestAnimationFrame(() => {
           currentItem.classList.add(`exit-${direction}`);
         });
@@ -506,16 +559,24 @@ export class ModalPortfolio {
       // Add enter animation to next item
       if (nextItem) {
         nextItem.classList.add('active');
+        if (isMobile) {
+          nextItem.classList.add('is-animating');
+        }
         requestAnimationFrame(() => {
           nextItem.classList.add(`enter-${direction}`);
         });
       }
 
       // Clean up animation classes after transition completes
+      // On mobile: NOW remove .active from the old item
       setTimeout(() => {
         items.forEach((item) => {
-          item.classList.remove('exit-next', 'exit-prev', 'enter-next', 'enter-prev');
+          item.classList.remove('exit-next', 'exit-prev', 'enter-next', 'enter-prev', 'is-animating');
         });
+        // Remove active from old item AFTER animation completes (mobile fix)
+        if (currentItem && currentItem !== nextItem) {
+          currentItem.classList.remove('active');
+        }
       }, 450);
 
       indicators.forEach((indicator, i) => {
@@ -542,7 +603,9 @@ export class ModalPortfolio {
   }
 
   mount(parent) {
-    parent.appendChild(this.element);
+    // Portal modal to document.body to escape stacking context issues on mobile
+    // This ensures the modal is completely outside the app container hierarchy
+    document.body.appendChild(this.element);
     this.hotkeyModal.mount(document.body);
   }
 }

@@ -79,6 +79,26 @@ body.stateExpanding {
   min-height: 100vh;
 }
 
+/* Modal scroll lock - must beat body.stateExpanding */
+html.modal-open,
+html.modal-open body {
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
+/* This is the key: it beats body.stateExpanding with higher specificity */
+html.modal-open body.stateExpanding {
+  position: fixed !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+/* CSS fallback for browsers that don't support inert attribute */
+/* The container gets [inert] attribute via JS, but pointer-events is a fallback */
+.container[inert] {
+  pointer-events: none !important;
+}
+
 .container {
   position: relative;
   top: 0;
