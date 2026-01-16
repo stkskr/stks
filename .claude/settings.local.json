@@ -16,7 +16,8 @@
       "Bash(powershell -Command:*)",
       "Bash(sort:*)",
       "Bash(cat:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(open:*)"
     ]
   }
 }

@@ -537,6 +537,48 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   padding: 20px;
 }
 
+/* Scroll to Top Button */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease, background 0.2s ease, transform 0.2s ease;
+  z-index: 10001;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.scroll-to-top-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 1);
+}
+
+.scroll-to-top-btn:active {
+  transform: scale(0.9);
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top-btn {
+    bottom: 80px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* Portfolio Modal */
 .portfolio-modal {
   position: fixed;
@@ -1449,9 +1491,11 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
 }
 
 /* Pause animation on container hover for better Safari hover detection */
+/* Removed hover pause effect for continuous scrolling
 .client-marquee-container:hover .marquee-track {
   animation-play-state: paused;
 }
+*/
 
 /* Use class-based hover state for better Safari compatibility */
 .marquee-item.hovered img {
@@ -1543,9 +1587,11 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   will-change: transform;
 }
 
+/* Removed hover pause effect for continuous scrolling
 .space-gallery-container:hover .space-marquee-track {
   animation-play-state: paused;
 }
+*/
 
 .space-marquee-item {
   flex-shrink: 0;

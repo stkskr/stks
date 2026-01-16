@@ -185,7 +185,7 @@
   .modal-content {
     /* Let modal fit content, but don't exceed viewport */
     height: auto !important;
-    max-height: calc(100dvh - 40px) !important;
+    max-height: calc(100dvh - 120px) !important;
     /* Fill parent width (parent has 10px side padding) */
     width: 100% !important;
     max-width: 100% !important;
@@ -293,9 +293,12 @@
     overflow: hidden !important;
   }
 
-  /* Default: slides hidden but exist in DOM */
+  /* Default: slides hidden and absolutely positioned (don't take up space) */
   .modal-carousel-item {
     display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     visibility: hidden !important;
     opacity: 0 !important;
     width: 100% !important;
@@ -791,5 +794,15 @@
   .copy-btn {
     opacity: 1 !important;
     transform: translateX(0) !important;
+  }
+
+  /* About page: smaller title and subtitle on mobile */
+  .about-title {
+    font-size: 1.1em !important;
+  }
+
+  .about-subtitle {
+    font-size: 0.95rem !important;
+    line-height: 28px !important;
   }
 }

@@ -16,6 +16,7 @@ import { LanguageToggle } from './components/LanguageToggle.js';
 import { AudioToggle } from './components/AudioToggle.js';
 import { CloseButton } from './components/CloseButton.js';
 import { BottomTabs } from './components/BottomTabs.js';
+import { ScrollToTop } from './components/ScrollToTop.js';
 import { initializeMarqueeHover } from './utils/marquee.js';
 import { keyboardHandler } from './utils/keyboard.js';
 
@@ -27,6 +28,7 @@ class App {
     this.audioToggle = new AudioToggle();
     this.closeButton = new CloseButton();
     this.bottomTabs = new BottomTabs();
+    this.scrollToTop = new ScrollToTop();
 
     this.mount();
     this.init();
@@ -39,19 +41,19 @@ class App {
     this.languageToggle.mount(document.body);
     this.audioToggle.mount(document.body);
     this.bottomTabs.mount(document.body);
+    this.scrollToTop.mount(document.body);
   }
 
   init() {
     stateManager.subscribe((state) => {
       this.contentArea.render(state);
 
-      // Initialize marquee hover after content renders (when clients section is active)
-      if (state.currentSection === 'clients') {
-        // Use a small delay to ensure DOM is ready
-        setTimeout(() => {
-          initializeMarqueeHover();
-        }, 100);
-      }
+      // Marquee hover slowdown disabled for continuous scrolling
+      // if (state.currentSection === 'clients') {
+      //   setTimeout(() => {
+      //     initializeMarqueeHover();
+      //   }, 100);
+      // }
     });
 
     router.init();

@@ -285,6 +285,11 @@ export class ModalPortfolio {
       iframe.src = '';
     }
 
+    // Scroll modal to top when switching projects
+    if (modalBody) {
+      modalBody.scrollTop = 0;
+    }
+
     // Get current height
     const currentHeight = modalContent.offsetHeight;
 
