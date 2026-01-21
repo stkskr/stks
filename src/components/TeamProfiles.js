@@ -17,6 +17,96 @@ export class TeamProfiles {
     });
   }
 
+  isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  getViewportHeight() {
+    // iOS Safari address bar changes window.innerHeight during scroll
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
+
+  scrollCardIntoView(card) {
+    const reveal = card.querySelector('.profile-reveal');
+    if (!reveal) return;
+
+    // Wait for CSS transition to complete (400ms), then check if scroll is needed
+    setTimeout(() => {
+      const rect = reveal.getBoundingClientRect();
+      const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+      // Only scroll if the bottom of the reveal is below the viewport
+      if (rect.bottom > viewportHeight - 50) {
+        reveal.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }, 450);
+  }
+
+  bindMobileCardToggle() {
+    const grid = this.element;
+
+    // Only bind once, even if render() is called multiple times
+    if (!grid || grid.dataset.mobileToggleBound === '1') return;
+    grid.dataset.mobileToggleBound = '1';
+
+    const closeAll = () => {
+      grid.querySelectorAll('.team-member.mobile-active').forEach(c => {
+        c.classList.remove('mobile-active');
+      });
+    };
+
+    const openCard = (card) => {
+      card.classList.add('mobile-active');
+      this.scrollCardIntoView(card);
+    };
+
+    const onPointerUpCapture = (e) => {
+      if (!this.isMobile()) return;
+
+      // Only left click or touch
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+      // Do not hijack taps on actual interactive elements
+      const interactive = e.target.closest('a, button, input, textarea, select, label');
+      if (interactive) return;
+
+      const card = e.target.closest('.team-member');
+      if (!card || !grid.contains(card)) return;
+
+      // Don't use preventDefault - it can block iOS scroll
+      // touch-action: manipulation in CSS handles double-tap zoom
+      e.stopPropagation();
+
+      const wasActive = card.classList.contains('mobile-active');
+
+      closeAll();
+
+      if (!wasActive) {
+        openCard(card);
+      }
+    };
+
+    // Capture phase is critical - cannot be blocked by child elements
+    grid.addEventListener('pointerup', onPointerUpCapture, { capture: true });
+
+    // Close when tapping outside cards
+    document.addEventListener('pointerup', (e) => {
+      if (!this.isMobile()) return;
+      if (!grid.contains(e.target)) {
+        closeAll();
+      }
+    }, { capture: true });
+
+    // Desktop: scroll on hover
+    grid.addEventListener('mouseenter', (e) => {
+      if (this.isMobile()) return;
+      const card = e.target.closest('.team-member');
+      if (card) {
+        this.scrollCardIntoView(card);
+      }
+    }, { capture: true });
+  }
+
   render() {
     // Clear existing profiles
     this.element.innerHTML = '';
@@ -26,6 +116,9 @@ export class TeamProfiles {
       const profileCard = this.createProfileCard(member);
       this.element.appendChild(profileCard);
     });
+
+    // Setup delegated mobile handler (only once)
+    this.bindMobileCardToggle();
   }
 
   createProfileCard(member) {
@@ -67,63 +160,12 @@ export class TeamProfiles {
       </div>
     `;
 
-    // Add tap to toggle on mobile (only one open at a time)
-    const isMobile = () => window.innerWidth <= 768;
-
-    // Track touch movement to distinguish tap from scroll
-    let touchStartY = 0;
-    let touchStartTime = 0;
-    let isTouchMoving = false;
-
-    const handleTouchStart = (e) => {
-      if (isMobile()) {
-        touchStartY = e.touches[0].clientY;
-        touchStartTime = Date.now();
-        isTouchMoving = false;
+    // Desktop only: scroll into view on hover
+    card.addEventListener('mouseenter', () => {
+      if (!this.isMobile()) {
+        this.scrollCardIntoView(card);
       }
-    };
-
-    const handleTouchMove = (e) => {
-      if (isMobile()) {
-        const touchMoveY = e.touches[0].clientY;
-        const moveDistance = Math.abs(touchMoveY - touchStartY);
-
-        // If moved more than 5px, consider it scrolling (stricter threshold)
-        if (moveDistance > 5) {
-          isTouchMoving = true;
-        }
-      }
-    };
-
-    const handleTouchEnd = (e) => {
-      if (isMobile()) {
-        const touchDuration = Date.now() - touchStartTime;
-
-        // Very strict: Only trigger if it's a quick tap (< 200ms) with minimal movement
-        if (!isTouchMoving && touchDuration < 200) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const isCurrentlyActive = card.classList.contains('mobile-active');
-
-          // Close all other profiles first
-          const allCards = this.element.querySelectorAll('.team-member');
-          allCards.forEach(otherCard => {
-            otherCard.classList.remove('mobile-active');
-          });
-
-          // If this card wasn't active, open it (accordion behavior)
-          if (!isCurrentlyActive) {
-            card.classList.add('mobile-active');
-          }
-        }
-      }
-    };
-
-    // Touch event listeners for mobile
-    card.addEventListener('touchstart', handleTouchStart, { passive: true });
-    card.addEventListener('touchmove', handleTouchMove, { passive: true });
-    card.addEventListener('touchend', handleTouchEnd, { passive: false });
+    });
 
     return card;
   }

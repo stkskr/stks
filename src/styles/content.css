@@ -126,32 +126,29 @@
   transition: transform 200ms ease;
 }
 
-/* Fun bouncy animation on hover */
+/* Subtle bouncy animation on hover */
 .company-download-btn:hover .download-arrow {
-  animation: download-bounce-hover 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: download-bounce-hover 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes download-bounce-hover {
   0% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
-  15% {
-    transform: translateY(-6px) scale(1.1);
+  20% {
+    transform: translateY(-4px);
   }
-  30% {
-    transform: translateY(0) scale(0.95);
-  }
-  45% {
-    transform: translateY(-4px) scale(1.05);
+  40% {
+    transform: translateY(1px);
   }
   60% {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(-2px);
   }
-  75% {
-    transform: translateY(-2px) scale(1.02);
+  80% {
+    transform: translateY(0.5px);
   }
   100% {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -1656,15 +1653,21 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   opacity: 1;
   transition: opacity 0.3s ease;
   flex-basis:25%;
+  /* Mobile tap behavior */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.team-grid:has(.team-member:hover) .team-member:not(:hover) {
-  opacity: 0.8;
-}
+/* Desktop only - hover effects to prevent sticky hover on mobile */
+@media (min-width: 769px) {
+  .team-grid:has(.team-member:hover) .team-member:not(:hover) {
+    opacity: 0.8;
+  }
 
-.team-member:hover,
-.team-member:active {
-  z-index: 1001 !important;
+  .team-member:hover,
+  .team-member:active {
+    z-index: 1001 !important;
+  }
 }
 
 /* Diamond Photo Container */
@@ -1717,14 +1720,16 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   transition: opacity 0.4s ease;
 }
 
-/* Hover States */
-.team-member:hover .diamond-image {
-  filter: grayscale(0%);
-  transform: rotate(-45deg) scale(1);
-}
+/* Hover States - Desktop only to prevent sticky hover on mobile */
+@media (min-width: 769px) {
+  .team-member:hover .diamond-image {
+    filter: grayscale(0%);
+    transform: rotate(-45deg) scale(1);
+  }
 
-.team-member:hover .initial-overlay {
-  opacity: 0;
+  .team-member:hover .initial-overlay {
+    opacity: 0;
+  }
 }
 
 /* Profile Text */
@@ -1746,7 +1751,7 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
 .member-info .role {
   font-size: 0.9rem;
   color: #777;
-  margin-bottom: 0;
+  margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
@@ -1761,14 +1766,12 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   opacity: 0;
   transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
               opacity 0.3s ease,
-              padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              margin 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+              padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   font-size: 0.85rem;
   line-height: 1.7;
   color: #555;
   padding: 0 20px;
-  margin-top: 0;
   background: #ffffff;
   border: 1px solid #ddd;
   border-top: 3px solid var(--color-red);
@@ -1776,13 +1779,16 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   width: 100%;
   box-sizing: border-box;
+  scroll-margin-bottom: 100px; /* Space below when scrolled into view */
 }
 
-.team-member:hover .profile-reveal {
-  max-height: 500px;
-  opacity: 1;
-  padding: 20px;
-  margin-top: 20px;
+/* Desktop only - hover to reveal (disabled on mobile to prevent sticky hover) */
+@media (min-width: 769px) {
+  .team-member:hover .profile-reveal {
+    max-height: 500px;
+    opacity: 1;
+    padding: 20px;
+  }
 }
 
 .edu-section {
@@ -1854,6 +1860,10 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
   }
 
   /* Mobile tap to toggle profile */
+  .team-member.mobile-active {
+    z-index: 1001 !important;
+  }
+
   .team-member.mobile-active .diamond-image {
     filter: grayscale(0%);
     transform: rotate(-45deg) scale(1);
@@ -1867,8 +1877,6 @@ body.portfolioSelected .language-toggle.scrolled .lang-separator {
     max-height: 500px;
     opacity: 1;
     padding: 20px;
-    margin-top: 13px;
-    margin-bottom: 5px;
   }
 
   .initial-overlay {
