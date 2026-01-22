@@ -1,6 +1,6 @@
 import { stateManager } from '../core/state.js';
 import { router } from '../core/router.js';
-import { siteContent } from '../data/content.js';
+import { quadrantContent } from '../data/quadrants.js';
 import { languageManager } from '../core/language.js';
 import { createElement, setHTML } from '../utils/dom.js';
 import { ModalVideo } from './ModalVideo.js';
@@ -213,8 +213,7 @@ export class GridQuadrant {
     });
 
     if (currentSection) {
-      const subtitle = siteContent[currentSection].subtitle;
-      const lines = languageManager.getContent(subtitle, language);
+      const lines = languageManager.getContent(quadrantContent[currentSection], language);
       const subtitleHTML = lines.join('<br>');
 
       setHTML(this.blueSubText, subtitleHTML);

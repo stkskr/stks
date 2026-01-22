@@ -1,4 +1,4 @@
-import { siteContent } from '../data/content.js';
+import { aboutContent } from '../data/about.js';
 import { languageManager } from '../core/language.js';
 import { createElement } from '../utils/dom.js';
 import { GridPortfolio } from './GridPortfolio.js';
@@ -42,27 +42,27 @@ export class Content {
       this.renderAbout(language);
     } else if (section === 'clients') {
       this.renderClients(language);
-    } else {
-      this.renderStandardContent(section, language);
     }
   }
 
   renderAbout(language) {
-    const content = siteContent.about;
-    const body = languageManager.getContent(content.body, language);
-    const lines = body.split('\n');
+    const title = languageManager.getContent(aboutContent.title, language);
+    const subtitle = languageManager.getContent(aboutContent.subtitle, language);
+    const downloadBtn = languageManager.getContent(aboutContent.downloadButton, language);
+    const videoTitle = languageManager.getContent(aboutContent.video.title, language);
+    const headings = aboutContent.sectionHeadings;
 
     this.innerElement.innerHTML = `
       <div class="about-content">
-        <h2 class="about-title">${lines[0]}</h2>
-        <p class="about-subtitle">${lines[1]}</p>
+        <h2 class="about-title">${title}</h2>
+        <p class="about-subtitle">${subtitle}</p>
 
         <div class="about-video">
           <iframe
             width="100%"
             height="100%"
-            src="https://www.youtube.com/embed/OCWZ5-vivHk?modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&controls=0&playsinline=1"
-            title="Sticks & Stones Introduction"
+            src="${aboutContent.video.url}"
+            title="${videoTitle}"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
@@ -75,14 +75,14 @@ export class Content {
             <path class="download-arrow" d="M6 10L10 14L14 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path class="download-tray" d="M3 17H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
           </svg>
-          <span>${language === 'ko' ? '회사소개서 Download' : 'Download Company Profile'}</span>
+          <span>${downloadBtn}</span>
         </a>
       </div>
     `;
 
     // Add "Meet our team" title
     const teamTitleDiv = createElement('div', 'team-section-title');
-    teamTitleDiv.innerHTML = `<h2>Meet our team</h2>`;
+    teamTitleDiv.innerHTML = `<h2>${languageManager.getContent(headings.team, language)}</h2>`;
     this.innerElement.appendChild(teamTitleDiv);
 
     // Add team profiles after the title
@@ -90,7 +90,7 @@ export class Content {
 
     // Add "Clients say" title
     const clientsTitleDiv = createElement('div', 'team-section-title');
-    clientsTitleDiv.innerHTML = `<h2>Clients say</h2>`;
+    clientsTitleDiv.innerHTML = `<h2>${languageManager.getContent(headings.clientsSay, language)}</h2>`;
     this.innerElement.appendChild(clientsTitleDiv);
 
     // Add quote carousel after clients title
@@ -98,7 +98,7 @@ export class Content {
 
     // Add "Our clients" title
     const clientLogosTitleDiv = createElement('div', 'team-section-title');
-    clientLogosTitleDiv.innerHTML = `<h2>Our clients</h2>`;
+    clientLogosTitleDiv.innerHTML = `<h2>${languageManager.getContent(headings.ourClients, language)}</h2>`;
     this.innerElement.appendChild(clientLogosTitleDiv);
 
     // Add client marquee
@@ -106,7 +106,7 @@ export class Content {
 
     // Add "Our space" title
     const spaceTitleDiv = createElement('div', 'team-section-title');
-    spaceTitleDiv.innerHTML = `<h2>Our space</h2>`;
+    spaceTitleDiv.innerHTML = `<h2>${languageManager.getContent(headings.ourSpace, language)}</h2>`;
     this.innerElement.appendChild(spaceTitleDiv);
 
     // Add space gallery
@@ -116,19 +116,6 @@ export class Content {
     const ctaDiv = createElement('div');
     ctaDiv.innerHTML = this.renderCallToAction(language);
     this.innerElement.appendChild(ctaDiv);
-    this.attachCTAListeners();
-  }
-
-  renderStandardContent(section, language) {
-    const content = siteContent[section];
-    const body = languageManager.getContent(content.body, language);
-
-    this.innerElement.innerHTML = `
-      <div class="standard-content">
-        <p>${body}</p>
-      </div>
-      ${this.renderCallToAction(language)}
-    `;
     this.attachCTAListeners();
   }
 
@@ -174,10 +161,13 @@ export class Content {
   }
 
   renderCallToAction(language) {
+    const heading = languageManager.getContent(aboutContent.cta.heading, language);
+    const button = languageManager.getContent(aboutContent.cta.button, language);
+
     return `
       <div class="cta-section">
-        <h2 class="cta-heading">Have a project?</h2>
-        <button type="button" class="cta-button">Let's talk</button>
+        <h2 class="cta-heading">${heading}</h2>
+        <button type="button" class="cta-button">${button}</button>
       </div>
     `;
   }

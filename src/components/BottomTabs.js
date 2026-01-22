@@ -1,6 +1,8 @@
 import { stateManager } from '../core/state.js';
 import { createElement } from '../utils/dom.js';
 import { faqData, faqCategoryLabels } from '../data/faq.js';
+import { contactContent } from '../data/contact.js';
+import { uiContent } from '../data/ui.js';
 import { languageManager } from '../core/language.js';
 
 export class BottomTabs {
@@ -172,8 +174,21 @@ export class BottomTabs {
 
   handleStateChange(state) {
     this.language = state.language;
+    // Update tab labels when language changes
+    this.updateTabLabels();
     if (this.activeTab) {
       this.renderContent(this.activeTab);
+    }
+  }
+
+  updateTabLabels() {
+    const faqLabel = this.container.querySelector('.faq-btn .tab-label');
+    const contactLabel = this.container.querySelector('.contact-btn .tab-label');
+    if (faqLabel) {
+      faqLabel.textContent = languageManager.getContent(uiContent.tabs.faq, this.language);
+    }
+    if (contactLabel) {
+      contactLabel.textContent = languageManager.getContent(uiContent.tabs.contact, this.language);
     }
   }
 
@@ -321,22 +336,34 @@ export class BottomTabs {
   }
 
   renderContactContent() {
+    const lang = this.language;
+    const heading = languageManager.getContent(contactContent.heading, lang);
+    const phoneLabel = languageManager.getContent(contactContent.phone.label, lang);
+    const emailLabel = languageManager.getContent(contactContent.email.label, lang);
+    const officeLabel = languageManager.getContent(contactContent.office.label, lang);
+    const officeAddress = languageManager.getContent(contactContent.office.address, lang);
+    const officeAddressPlain = languageManager.getContent(contactContent.office.addressPlain, lang);
+    const tagline = languageManager.getContent(contactContent.tagline, lang);
+    const companyInfo = languageManager.getContent(contactContent.companyInfo, lang);
+    const copyEmailLabel = languageManager.getContent(uiContent.tooltips.copyEmail, lang);
+    const copyAddressLabel = languageManager.getContent(uiContent.tooltips.copyAddress, lang);
+
     return `
       <div class="contact-measure-container">
         <div class="contact-content">
           <div class="contact-info">
-            <h2>Contact</h2>
+            <h2>${heading}</h2>
 
             <div class="contact-section">
-              <h3>Phone:</h3>
-              <p>02-793-7857</p>
+              <h3>${phoneLabel}</h3>
+              <p>${contactContent.phone.number}</p>
             </div>
 
             <div class="contact-section">
-              <h3>Email:</h3>
+              <h3>${emailLabel}</h3>
               <div class="copyable-container">
-                <p>talk@stks.kr</p>
-                <button class="copy-btn" data-copy="talk@stks.kr" aria-label="Copy email">
+                <p>${contactContent.email.address}</p>
+                <button class="copy-btn" data-copy="${contactContent.email.address}" aria-label="${copyEmailLabel}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -347,12 +374,10 @@ export class BottomTabs {
             </div>
 
             <div class="contact-section">
-              <h3>Office:</h3>
+              <h3>${officeLabel}</h3>
               <div class="copyable-container">
-                <p>${this.language === 'ko'
-                  ?'서울 용산구<br>녹사평대로26길 42<br>스틱스앤스톤스 빌딩'
-                  : '42, Noksapyeong-daero 26-gil, <br>Yongsan-gu, Seoul, <br>Republic of Korea'}</p>
-                <button class="copy-btn" data-copy="${this.language === 'ko' ? '서울 용산구 녹사평대로26길 42 스틱스앤스톤스 빌딩' : '42, Noksapyeong-daero 26-gil, Yongsan-gu, Seoul, Republic of Korea'}" aria-label="Copy address">
+                <p>${officeAddress}</p>
+                <button class="copy-btn" data-copy="${officeAddressPlain}" aria-label="${copyAddressLabel}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -363,22 +388,17 @@ export class BottomTabs {
             </div>
 
             <div class="contact-section">
-              <p class="contact-tagline">${this.language === 'ko'
-                ? 'Words that stick, boosting brands. <br> 글로벌 브랜딩과 마케팅에 특화된 영어 전문 카피라이팅 회사, 스틱스앤스톤스 서울.'
-                : 'Words that stick, boosting brands. <br> A specialized English copywriting agency for global branding and marketing, Sticks & Stones Seoul.'
-              }</p>
+              <p class="contact-tagline">${tagline}</p>
             </div>
 
             <div class="contact-section">
-              <p>${this.language === 'ko'
-                ?'(주)스틱스앤스톤스 119-88-00409<br>대표자: Richard King Kim'
-                : 'Sticks and Stones 119-88-00409<br>CEO: Richard King Kim'}</p>
+              <p>${companyInfo}</p>
             </div>
           </div>
 
           <div class="contact-map">
             <iframe
-              src="https://www.google.com/maps?q=서울특별시+용산구+녹사평대로26길+42&output=embed"
+              src="https://www.google.com/maps?q=${contactContent.map.query}&output=embed"
               width="100%"
               height="100%"
               style="border:0;"
@@ -449,7 +469,7 @@ export class BottomTabs {
 
           navigator.clipboard.writeText(textToCopy).then(() => {
             // Show tooltip with language-specific message
-            tooltip.textContent = this.language === 'ko' ? '복사 완료!' : 'Copied!';
+            tooltip.textContent = languageManager.getContent(uiContent.tooltips.copied, this.language);
             tooltip.classList.add('show');
 
             // Hide tooltip after 2 seconds

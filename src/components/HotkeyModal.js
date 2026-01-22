@@ -1,63 +1,76 @@
 import { createElement } from '../utils/dom.js';
 import { stateManager } from '../core/state.js';
+import { keyboardContent } from '../data/keyboard.js';
+import { languageManager } from '../core/language.js';
 
 export class HotkeyModal {
   constructor() {
     this.element = createElement('div', 'hotkey-modal');
     this.isOpen = false;
+    this.language = 'ko';
     this.render();
     this.setupEventListeners();
+    stateManager.subscribe((state) => {
+      if (state.language !== this.language) {
+        this.language = state.language;
+        this.render();
+      }
+    });
   }
 
   render() {
+    const lang = this.language;
+    const t = keyboardContent;
+    const s = t.sections;
+
     this.element.innerHTML = `
       <div class="hotkey-modal-overlay"></div>
       <div class="hotkey-modal-content">
         <button class="hotkey-modal-close">✕</button>
-        <h2 class="hotkey-modal-title">Keyboard Shortcuts</h2>
+        <h2 class="hotkey-modal-title">${languageManager.getContent(t.title, lang)}</h2>
 
         <div class="hotkey-sections hotkey-sections-vertical">
           <div class="hotkey-column-left">
             <div class="hotkey-section">
-              <h3>Portfolio</h3>
+              <h3>${languageManager.getContent(s.portfolio.title, lang)}</h3>
               <div class="hotkey-list">
                 <div class="hotkey-item">
                   <kbd>←</kbd> <kbd>→</kbd>
-                  <span>Navigate Projects</span>
+                  <span>${languageManager.getContent(s.portfolio.shortcuts.navigateProjects, lang)}</span>
                 </div>
                 <div class="hotkey-item">
                   <kbd>Shift</kbd> + <kbd>←</kbd> <kbd>→</kbd>
-                  <span>Navigate Images</span>
+                  <span>${languageManager.getContent(s.portfolio.shortcuts.navigateImages, lang)}</span>
                 </div>
               </div>
             </div>
 
             <div class="hotkey-section">
-              <h3>Language</h3>
+              <h3>${languageManager.getContent(s.language.title, lang)}</h3>
               <div class="hotkey-list">
                 <div class="hotkey-item hotkey-item-inline">
                   <div class="hotkey-inline-group">
                     <kbd>E</kbd>
-                    <span>English</span>
+                    <span>${languageManager.getContent(s.language.shortcuts.english, lang)}</span>
                   </div>
                   <div class="hotkey-inline-group">
                     <kbd>K</kbd>
-                    <span>Korean</span>
+                    <span>${languageManager.getContent(s.language.shortcuts.korean, lang)}</span>
                   </div>
                 </div>
                 <div class="hotkey-item">
                   <kbd>L</kbd>
-                  <span>Toggle Language</span>
+                  <span>${languageManager.getContent(s.language.shortcuts.toggle, lang)}</span>
                 </div>
               </div>
             </div>
 
             <div class="hotkey-section">
-              <h3>Audio</h3>
+              <h3>${languageManager.getContent(s.audio.title, lang)}</h3>
               <div class="hotkey-list">
                 <div class="hotkey-item">
                   <kbd>M</kbd>
-                  <span>Mute / Unmute</span>
+                  <span>${languageManager.getContent(s.audio.shortcuts.mute, lang)}</span>
                 </div>
               </div>
             </div>
@@ -65,27 +78,27 @@ export class HotkeyModal {
 
           <div class="hotkey-column-right">
             <div class="hotkey-section">
-              <h3>Site Navigation</h3>
+              <h3>${languageManager.getContent(s.navigation.title, lang)}</h3>
               <div class="hotkey-list">
                 <div class="hotkey-item">
                   <kbd>A</kbd>
-                  <span>About</span>
+                  <span>${languageManager.getContent(s.navigation.shortcuts.about, lang)}</span>
                 </div>
                 <div class="hotkey-item">
                   <kbd>S</kbd>
-                  <span>Services</span>
+                  <span>${languageManager.getContent(s.navigation.shortcuts.services, lang)}</span>
                 </div>
                 <div class="hotkey-item">
                   <kbd>C</kbd>
-                  <span>Clients Say</span>
+                  <span>${languageManager.getContent(s.navigation.shortcuts.clientsSay, lang)}</span>
                 </div>
                 <div class="hotkey-item">
                   <kbd>P</kbd>
-                  <span>Portfolio</span>
+                  <span>${languageManager.getContent(s.navigation.shortcuts.portfolio, lang)}</span>
                 </div>
                 <div class="hotkey-item">
                   <kbd>B</kbd>
-                  <span>Back (Close)</span>
+                  <span>${languageManager.getContent(s.navigation.shortcuts.back, lang)}</span>
                 </div>
               </div>
             </div>
@@ -96,11 +109,12 @@ export class HotkeyModal {
   }
 
   setupEventListeners() {
-    const closeBtn = this.element.querySelector('.hotkey-modal-close');
-    closeBtn.addEventListener('click', () => this.close());
-
-    const overlay = this.element.querySelector('.hotkey-modal-overlay');
-    overlay.addEventListener('click', () => this.close());
+    // Use event delegation so listeners survive re-renders
+    this.element.addEventListener('click', (e) => {
+      if (e.target.closest('.hotkey-modal-close') || e.target.classList.contains('hotkey-modal-overlay')) {
+        this.close();
+      }
+    });
 
     // Keyboard handler
     this.handleKeyDown = (e) => {

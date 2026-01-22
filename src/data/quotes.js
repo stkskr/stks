@@ -13,12 +13,12 @@ export const quotesData = [
   {
     quote: {
       ko: '해외의 감도와 한국적 맥락을 모두 이해하는, 보기 드문 감각의 팀입니다.',
-      en: '해외의 감도와 한국적 맥락을 모두 이해하는, 보기 드문 감각의 팀입니다.',
+      en: 'A rare team that understands both global sensibility and Korean context.',
     },
     author: 'Sam Seoul',
     role: {
       ko: '이해승 이사님',
-      en: '이해승 이사님',
+      en: 'Lee Hae-seung, Director',
     },
   },
   {
@@ -35,12 +35,12 @@ export const quotesData = [
   {
     quote: {
       ko: '브랜드를 이해하는 실력과 매력적으로 표현하는 센스를 겸비한 팀',
-      en: '브랜드를 이해하는 실력과 매력적으로 표현하는 센스를 겸비한 팀',
+      en: 'A team that combines brand expertise with a talent for compelling expression.',
     },
     author: 'TBWA',
     role: {
       ko: '오혜주 수석국장',
-      en: '오혜주 수석국장',
+      en: 'Oh Hye-joo, Senior Director',
     },
   },
   {
@@ -57,12 +57,12 @@ export const quotesData = [
   {
     quote: {
       ko: '각 나라마다의 독특한 문화코드를 심어 클라이언트의 사업을 성공으로 이끕니다.',
-      en: '각 나라마다의 독특한 문화코드를 심어 클라이언트의 사업을 성공으로 이끕니다.',
+      en: 'They embed unique cultural codes of each country to lead clients to success.',
     },
     author: 'Innocean',
     role: {
       ko: '김정환 NEXT 그룹장',
-      en: '김정환 NEXT 그룹장',
+      en: 'Kim Jeong-hwan, NEXT Group Head',
     },
   },
   {
@@ -79,45 +79,45 @@ export const quotesData = [
   {
     quote: {
       ko: '단어의 작은 뉘앙스 차이조차 놓치지 않는 섬세함. 일하는 내내 좋은 파트너를 만났다는 즐거움을 느끼게 해주었습니다.',
-      en: '단어의 작은 뉘앙스 차이조차 놓치지 않는 섬세함. 일하는 내내 좋은 파트너를 만났다는 즐거움을 느끼게 해주었습니다.',
+      en: 'Their attention to even the smallest nuances in words made me feel throughout that we had found the right partner.',
     },
     author: 'SK Planet',
     role: {
       ko: '윤태구 국장',
-      en: '윤태구 국장',
+      en: 'Yun Tae-gu, Director',
     },
   },
   {
     quote: {
       ko: '클라이언트의 고민을 다각도로 점검해주셔서 내부 설득에 큰 도움이 되었어요.',
-      en: '클라이언트의 고민을 다각도로 점검해주셔서 내부 설득에 큰 도움이 되었어요.',
+      en: 'Their multi-angle analysis of our challenges was a huge help in getting internal buy-in.',
     },
     author: 'TBWA',
     role: {
       ko: '홍민지 부장',
-      en: '홍민지 부장',
+      en: 'Hong Min-ji, Manager',
     },
   },
   {
     quote: {
       ko: '스틱스앤스톤스와 함께하는 작업은 늘 즐겁다!',
-      en: '스틱스앤스톤스와 함께하는 작업은 늘 즐겁다!',
+      en: 'Working with Sticks & Stones is always a joy!',
     },
     author: 'Dexter Krema',
     role: {
       ko: '송은혜 차장',
-      en: '송은혜 차장',
+      en: 'Song Eun-hye, Assistant Manager',
     },
   },
   {
     quote: {
       ko: '세심한 제안과 열정적 지원으로, 프로젝트 내내 든든한 파트너십을 느낄 수 있었습니다.',
-      en: '세심한 제안과 열정적 지원으로, 프로젝트 내내 든든한 파트너십을 느낄 수 있었습니다.',
+      en: 'Their thoughtful proposals and passionate support made us feel a solid partnership throughout.',
     },
     author: 'Innocean',
     role: {
       ko: '이유진 매니저',
-      en: '이유진 매니저',
+      en: 'Lee Yu-jin, Manager',
     },
   },
   {
@@ -134,23 +134,23 @@ export const quotesData = [
   {
     quote: {
       ko: '프로젝트 기간 내내 문제를 함께 고민하고 해결하려는 열정과 파트너십에 감명 받았습니다.',
-      en: '프로젝트 기간 내내 문제를 함께 고민하고 해결하려는 열정과 파트너십에 감명 받았습니다.',
+      en: 'I was impressed by their passion and partnership in tackling problems together throughout the project.',
     },
     author: 'SK Planet',
     role: {
       ko: '박지연 플래너',
-      en: '박지연 플래너',
+      en: 'Park Ji-yeon, Planner',
     },
   },
   {
     quote: {
       ko: 'Detail까지 챙겨주시는 세심함과 Customized Solution을 제시해 주시는 완벽함.',
-      en: 'Detail까지 챙겨주시는 세심함과 Customized Solution을 제시해 주시는 완벽함.',
+      en: 'Meticulous attention to detail and perfectly customized solutions.',
     },
     author: 'SK Chemical',
     role: {
       ko: '강양리 대리',
-      en: '강양리 대리',
+      en: 'Kang Yang-ri, Assistant Manager',
     },
   },
   {
