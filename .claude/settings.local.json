@@ -17,7 +17,15 @@
       "Bash(sort:*)",
       "Bash(cat:*)",
       "Bash(npm run build:*)",
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "WebFetch(domain:www.v01.io)",
+      "WebFetch(domain:developer.samsung.com)",
+      "WebFetch(domain:forum.developer.samsung.com)",
+      "WebFetch(domain:www.ctrl.blog)",
+      "WebFetch(domain:medium.com)",
+      "Bash(cd:*)",
+      "Bash(del:*)",
+      "Bash(npx vite build)"
     ]
   }
 }

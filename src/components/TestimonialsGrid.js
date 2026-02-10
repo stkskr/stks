@@ -1,6 +1,6 @@
 import { createElement } from '../utils/dom.js';
 import { languageManager } from '../core/language.js';
-import { testimonials } from '../data/testimonials.js';
+import testimonials from '../data/testimonials.json';
 
 export class TestimonialsGrid {
   constructor() {

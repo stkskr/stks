@@ -1,4 +1,4 @@
-import { aboutContent } from '../data/about.js';
+import aboutContent from '../data/about.json';
 import { languageManager } from '../core/language.js';
 import { createElement } from '../utils/dom.js';
 import { GridPortfolio } from './GridPortfolio.js';

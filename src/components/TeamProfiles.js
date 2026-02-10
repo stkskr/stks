@@ -1,4 +1,4 @@
-import { teamData } from '../data/team.js';
+import teamData from '../data/team.json';
 import { languageManager } from '../core/language.js';
 import { createElement } from '../utils/dom.js';
 import { stateManager } from '../core/state.js';

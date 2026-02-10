@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STKS Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    /* Header */
+    .header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h1 { font-size: 18px; font-weight: 600; letter-spacing: 1px; }
+    .header-right { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+    .header-right .username { opacity: 0.8; }
+
+    /* Buttons */
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      padding: 8px 16px;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: #4338ca; }
+
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger:hover:not(:disabled) { background: #dc2626; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #d1d5db;
+      color: #374151;
+    }
+    .btn-outline:hover:not(:disabled) { background: #f3f4f6; }
+
+    .btn-ghost { background: transparent; color: #fff; padding: 6px 12px; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    .btn-small { padding: 4px 10px; font-size: 12px; }
+
+    /* Login screen */
+    .login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 24px;
+    }
+    .login-screen h1 { font-size: 28px; color: #1a1a2e; }
+    .login-screen p { color: #6b7280; }
+    .login-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #24292e;
+      color: #fff;
+      border-radius: 8px;
+    }
+    .login-btn:hover { background: #1b1f23; }
+    .login-btn svg { width: 20px; height: 20px; fill: #fff; }
+
+    .error-msg {
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #fecaca;
+    }
+
+    /* Dashboard */
+    .dashboard { display: none; }
+    .dashboard.visible { display: block; }
+
+    /* Tab navigation */
+    .tab-nav {
+      display: flex;
+      gap: 4px;
+      padding: 12px 24px 0;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      background: transparent;
+      border-radius: 8px 8px 0 0;
+      color: #6b7280;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #374151; background: #f9fafb; }
+    .tab-btn.active {
+      color: #4f46e5;
+      border-bottom-color: #4f46e5;
+      background: #f5f3ff;
+    }
+
+    /* Editor area */
+    .editor-area {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+
+    .editor-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .editor-card h3 {
+      font-size: 16px;
+      color: #111827;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* Bilingual field layout */
+    .bilingual-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .field-group { display: flex; flex-direction: column; gap: 4px; }
+    .field-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .field-group input,
+    .field-group textarea {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .field-group input:focus,
+    .field-group textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+    }
+    .field-group textarea { resize: vertical; min-height: 80px; }
+
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lang-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .lang-badge.ko { background: #dbeafe; color: #1e40af; }
+    .lang-badge.en { background: #fef3c7; color: #92400e; }
+
+    /* Save bar */
+    .save-bar {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+    }
+    .save-status { font-size: 14px; color: #6b7280; }
+    .save-status.success { color: #059669; }
+    .save-status.error { color: #dc2626; }
+    .save-status.saving { color: #d97706; }
+
+    /* Array editor */
+    .array-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      position: relative;
+      background: #fafafa;
+    }
+    .array-item:hover { background: #f9fafb; }
+
+    .array-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .array-item-header .item-number {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+    }
+    .array-item-actions { display: flex; gap: 4px; }
+
+    .array-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* Single-value field (non-bilingual) */
+    .single-field { margin-bottom: 16px; }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .bilingual-row { grid-template-columns: 1fr; }
+      .tab-nav { padding: 8px 12px 0; }
+      .tab-btn { padding: 8px 14px; font-size: 13px; }
+      .editor-area { padding: 0 12px; margin: 12px auto; }
+      .editor-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login-screen" class="login-screen">
+  <h1>STKS Admin</h1>
+  <p>Sign in with GitHub to manage site content.</p>
+  <button class="login-btn" onclick="startLogin()">
+    <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    Login with GitHub
+  </button>
+  <div id="login-error" class="error-msg" style="display:none"></div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="dashboard">
+  <div class="header">
+    <h1>STKS Admin</h1>
+    <div class="header-right">
+      <span class="username" id="username-display"></span>
+      <button class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="tab-nav" id="tab-nav">
+    <button class="tab-btn active" data-tab="about">About</button>
+    <button class="tab-btn" data-tab="contact">Contact</button>
+    <button class="tab-btn" data-tab="faq">FAQ</button>
+    <button class="tab-btn" data-tab="quotes">Quotes</button>
+    <button class="tab-btn" data-tab="testimonials">Testimonials</button>
+    <button class="tab-btn" data-tab="team">Team</button>
+  </div>
+
+  <div class="editor-area" id="editor-area"></div>
+
+  <div class="save-bar">
+    <span class="save-status" id="save-status">Ready</span>
+    <button class="btn-primary" id="save-btn" onclick="saveCurrentFile()">Save Changes</button>
+  </div>
+</div>
+
+<script>
+// ─── Config ───────────────────────────────────────────
+const REPO_OWNER = 'stkskr';
+const REPO_NAME = 'stkjs';
+const BRANCH = 'main';
+const DATA_PATH = 'src/data';
+
+const FILES = {
+  about: { path: `${DATA_PATH}/about.json`, label: 'About' },
+  contact: { path: `${DATA_PATH}/contact.json`, label: 'Contact' },
+  faq: { path: `${DATA_PATH}/faq.json`, label: 'FAQ' },
+  quotes: { path: `${DATA_PATH}/quotes.json`, label: 'Quotes' },
+  testimonials: { path: `${DATA_PATH}/testimonials.json`, label: 'Testimonials' },
+  team: { path: `${DATA_PATH}/team.json`, label: 'Team' },
+};
+
+// ─── State ────────────────────────────────────────────
+let token = null;
+let currentTab = 'about';
+let fileCache = {};    // { [tab]: { data, sha } }
+let dirtyTabs = {};    // { [tab]: true } if unsaved
+
+// ─── Auth ─────────────────────────────────────────────
+function startLogin() {
+  window.location.href = '/api/auth/github';
+}
+
+function logout() {
+  sessionStorage.removeItem('gh_token');
+  token = null;
+  fileCache = {};
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('login-screen').style.display = '';
+}
+
+function initAuth() {
+  // Check hash for token or error
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+
+  if (params.has('error')) {
+    const errors = {
+      no_code: 'Authentication failed. No authorization code received.',
+      token_failed: 'Failed to exchange authorization code for token.',
+      unauthorized: 'Your GitHub account is not authorized to access this admin panel.',
+      server_error: 'Server error during authentication.',
+    };
+    const msg = errors[params.get('error')] || 'Unknown error occurred.';
+    document.getElementById('login-error').textContent = msg;
+    document.getElementById('login-error').style.display = '';
+    history.replaceState(null, '', '/admin');
+    return;
+  }
+
+  if (params.has('token')) {
+    token = params.get('token');
+    sessionStorage.setItem('gh_token', token);
+    history.replaceState(null, '', '/admin');
+  } else {
+    token = sessionStorage.getItem('gh_token');
+  }
+
+  if (token) {
+    showDashboard();
+  }
+}
+
+async function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').classList.add('visible');
+
+  // Fetch username
+  try {
+    const res = await ghFetch('https://api.github.com/user');
+    const user = await res.json();
+    document.getElementById('username-display').textContent = user.login;
+  } catch (e) {
+    document.getElementById('username-display').textContent = '';
+  }
+
+  // Setup tab listeners
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  // Load initial tab
+  switchTab('about');
+}
+
+// ─── GitHub API ───────────────────────────────────────
+function ghFetch(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      ...(options.headers || {}),
+    },
+  });
+}
+
+async function loadFile(tab) {
+  if (fileCache[tab]) return fileCache[tab];
+
+  const filePath = FILES[tab].path;
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}?ref=${BRANCH}`;
+
+  const res = await ghFetch(url);
+  if (!res.ok) throw new Error(`Failed to load ${filePath}: ${res.status}`);
+
+  const fileData = await res.json();
+  const content = decodeContent(fileData.content);
+  const data = JSON.parse(content);
+
+  fileCache[tab] = { data, sha: fileData.sha };
+  return fileCache[tab];
+}
+
+async function saveFile(tab) {
+  const filePath = FILES[tab].path;
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
+
+  const { data, sha } = fileCache[tab];
+  const content = encodeContent(JSON.stringify(data, null, 2) + '\n');
+
+  const res = await ghFetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: `Update ${FILES[tab].label.toLowerCase()} content via admin`,
+      content,
+      sha,
+      branch: BRANCH,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || `Save failed: ${res.status}`);
+  }
+
+  const result = await res.json();
+  fileCache[tab].sha = result.content.sha;
+  dirtyTabs[tab] = false;
+}
+
+// UTF-8 safe base64 encode/decode
+function encodeContent(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+function decodeContent(base64) {
+  return decodeURIComponent(escape(atob(base64)));
+}
+
+// ─── Tab Switching ────────────────────────────────────
+async function switchTab(tab) {
+  // Save current edits to cache before switching
+  if (currentTab && fileCache[currentTab]) {
+    collectFormData(currentTab);
+  }
+
+  currentTab = tab;
+
+  // Update active tab button
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+
+  const area = document.getElementById('editor-area');
+  area.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280">Loading...</div>';
+
+  try {
+    await loadFile(tab);
+    renderEditor(tab);
+    setStatus('Ready');
+  } catch (e) {
+    area.innerHTML = `<div class="editor-card"><p style="color:#dc2626">Error loading file: ${escapeHtml(e.message)}</p><button class="btn-outline" style="margin-top:12px" onclick="switchTab('${tab}')">Retry</button></div>`;
+    setStatus('Error loading file', 'error');
+  }
+}
+
+// ─── Save ─────────────────────────────────────────────
+async function saveCurrentFile() {
+  if (!currentTab || !fileCache[currentTab]) return;
+
+  collectFormData(currentTab);
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saving...';
+  setStatus('Saving...', 'saving');
+
+  try {
+    await saveFile(currentTab);
+    setStatus('Saved successfully!', 'success');
+  } catch (e) {
+    setStatus('Save failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+  }
+}
+
+function setStatus(text, type = '') {
+  const el = document.getElementById('save-status');
+  el.textContent = text;
+  el.className = 'save-status' + (type ? ` ${type}` : '');
+}
+
+// ─── Renderers ────────────────────────────────────────
+function renderEditor(tab) {
+  const area = document.getElementById('editor-area');
+  const { data } = fileCache[tab];
+
+  switch (tab) {
+    case 'about': area.innerHTML = renderAboutEditor(data); break;
+    case 'contact': area.innerHTML = renderContactEditor(data); break;
+    case 'faq': area.innerHTML = renderFaqEditor(data); break;
+    case 'quotes': area.innerHTML = renderQuotesEditor(data); break;
+    case 'testimonials': area.innerHTML = renderTestimonialsEditor(data); break;
+    case 'team': area.innerHTML = renderTeamEditor(data); break;
+  }
+}
+
+// About editor
+function renderAboutEditor(data) {
+  return `
+    <div class="editor-card">
+      <h3>Title &amp; Subtitle</h3>
+      ${bilingualField('about-title', 'Title', data.title)}
+      ${bilingualTextarea('about-subtitle', 'Subtitle', data.subtitle)}
+    </div>
+    <div class="editor-card">
+      <h3>Video</h3>
+      <div class="single-field">
+        <div class="field-group">
+          <label>YouTube Embed URL</label>
+          <input type="text" data-field="about-video-url" value="${escapeAttr(data.video.url)}">
+        </div>
+      </div>
+      ${bilingualField('about-video-title', 'Video Title', data.video.title)}
+    </div>
+    <div class="editor-card">
+      <h3>Download Button</h3>
+      ${bilingualField('about-download', 'Button Text', data.downloadButton)}
+    </div>
+    <div class="editor-card">
+      <h3>Section Headings</h3>
+      ${bilingualField('about-heading-team', 'Team Heading', data.sectionHeadings.team)}
+      ${bilingualField('about-heading-clients-say', 'Clients Say Heading', data.sectionHeadings.clientsSay)}
+      ${bilingualField('about-heading-our-clients', 'Our Clients Heading', data.sectionHeadings.ourClients)}
+      ${bilingualField('about-heading-our-space', 'Our Space Heading', data.sectionHeadings.ourSpace)}
+    </div>
+    <div class="editor-card">
+      <h3>Call to Action</h3>
+      ${bilingualField('about-cta-heading', 'CTA Heading', data.cta.heading)}
+      ${bilingualField('about-cta-button', 'CTA Button', data.cta.button)}
+    </div>
+  `;
+}
+
+// Contact editor
+function renderContactEditor(data) {
+  return `
+    <div class="editor-card">
+      <h3>Heading</h3>
+      ${bilingualField('contact-heading', 'Heading', data.heading)}
+    </div>
+    <div class="editor-card">
+      <h3>Phone</h3>
+      ${bilingualField('contact-phone-label', 'Label', data.phone.label)}
+      <div class="single-field">
+        <div class="field-group">
+          <label>Number</label>
+          <input type="text" data-field="contact-phone-number" value="${escapeAttr(data.phone.number)}">
+        </div>
+      </div>
+    </div>
+    <div class="editor-card">
+      <h3>Email</h3>
+      ${bilingualField('contact-email-label', 'Label', data.email.label)}
+      <div class="single-field">
+        <div class="field-group">
+          <label>Address</label>
+          <input type="text" data-field="contact-email-address" value="${escapeAttr(data.email.address)}">
+        </div>
+      </div>
+    </div>
+    <div class="editor-card">
+      <h3>Office</h3>
+      ${bilingualField('contact-office-label', 'Label', data.office.label)}
+      ${bilingualTextarea('contact-office-address', 'Address (HTML)', data.office.address)}
+      ${bilingualField('contact-office-plain', 'Address (plain text)', data.office.addressPlain)}
+    </div>
+    <div class="editor-card">
+      <h3>Tagline</h3>
+      ${bilingualTextarea('contact-tagline', 'Tagline', data.tagline)}
+    </div>
+    <div class="editor-card">
+      <h3>Company Info</h3>
+      ${bilingualTextarea('contact-company', 'Company Info', data.companyInfo)}
+    </div>
+    <div class="editor-card">
+      <h3>Map</h3>
+      <div class="single-field">
+        <div class="field-group">
+          <label>Google Maps Query</label>
+          <input type="text" data-field="contact-map-query" value="${escapeAttr(data.map.query)}">
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// FAQ editor
+function renderFaqEditor(data) {
+  let html = `
+    <div class="editor-card">
+      <h3>Category Labels</h3>
+      ${Object.keys(data.faqCategoryLabels).map(cat =>
+        bilingualField(`faq-cat-${cat}`, cat.charAt(0).toUpperCase() + cat.slice(1), data.faqCategoryLabels[cat])
+      ).join('')}
+    </div>
+    <div class="editor-card">
+      <h3>FAQ Items</h3>
+      <div id="faq-items">
+  `;
+
+  data.faqData.forEach((item, i) => {
+    html += renderFaqItem(item, i);
+  });
+
+  html += `
+      </div>
+      <div class="array-controls">
+        <button class="btn-outline btn-small" onclick="addFaqItem()">+ Add FAQ Item</button>
+      </div>
+    </div>
+  `;
+  return html;
+}
+
+function renderFaqItem(item, i) {
+  const categories = ['services', 'pricing', 'process', 'legal', 'other'];
+  return `
+    <div class="array-item" data-index="${i}">
+      <div class="array-item-header">
+        <span class="item-number">FAQ #${i + 1}</span>
+        <div class="array-item-actions">
+          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveFaqItem(${i},-1)">Move Up</button>` : ''}
+          <button class="btn-danger btn-small" onclick="removeFaqItem(${i})">Delete</button>
+        </div>
+      </div>
+      <div class="single-field">
+        <div class="field-group">
+          <label>Category</label>
+          <select data-field="faq-item-${i}-category">
+            ${categories.map(c => `<option value="${c}" ${item.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      ${bilingualTextarea(`faq-item-${i}-q`, 'Question', item.question)}
+      ${bilingualTextarea(`faq-item-${i}-a`, 'Answer', item.answer)}
+    </div>
+  `;
+}
+
+// Quotes editor
+function renderQuotesEditor(data) {
+  let html = `<div class="editor-card"><h3>Quote Carousel Items</h3><div id="quotes-items">`;
+  data.forEach((item, i) => {
+    html += renderQuoteItem(item, i);
+  });
+  html += `</div><div class="array-controls"><button class="btn-outline btn-small" onclick="addQuoteItem()">+ Add Quote</button></div></div>`;
+  return html;
+}
+
+function renderQuoteItem(item, i) {
+  return `
+    <div class="array-item" data-index="${i}">
+      <div class="array-item-header">
+        <span class="item-number">Quote #${i + 1}</span>
+        <div class="array-item-actions">
+          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveQuoteItem(${i},-1)">Move Up</button>` : ''}
+          <button class="btn-danger btn-small" onclick="removeQuoteItem(${i})">Delete</button>
+        </div>
+      </div>
+      ${bilingualTextarea(`quote-${i}-text`, 'Quote', item.quote)}
+      <div class="single-field">
+        <div class="field-group">
+          <label>Author (company)</label>
+          <input type="text" data-field="quote-${i}-author" value="${escapeAttr(item.author)}">
+        </div>
+      </div>
+      ${bilingualField(`quote-${i}-role`, 'Role / Name', item.role)}
+    </div>
+  `;
+}
+
+// Testimonials editor
+function renderTestimonialsEditor(data) {
+  let html = `<div class="editor-card"><h3>Testimonials Grid Items</h3><div id="testimonials-items">`;
+  data.forEach((item, i) => {
+    html += renderTestimonialItem(item, i);
+  });
+  html += `</div><div class="array-controls"><button class="btn-outline btn-small" onclick="addTestimonialItem()">+ Add Testimonial</button></div></div>`;
+  return html;
+}
+
+function renderTestimonialItem(item, i) {
+  return `
+    <div class="array-item" data-index="${i}">
+      <div class="array-item-header">
+        <span class="item-number">Testimonial #${i + 1}</span>
+        <div class="array-item-actions">
+          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveTestimonialItem(${i},-1)">Move Up</button>` : ''}
+          <button class="btn-danger btn-small" onclick="removeTestimonialItem(${i})">Delete</button>
+        </div>
+      </div>
+      ${bilingualTextarea(`testimonial-${i}-quote`, 'Quote', item.quote)}
+      ${bilingualField(`testimonial-${i}-author`, 'Author', item.author)}
+    </div>
+  `;
+}
+
+// Team editor
+function renderTeamEditor(data) {
+  let html = `<div class="editor-card"><h3>Team Members</h3><div id="team-items">`;
+  data.forEach((member, i) => {
+    html += renderTeamItem(member, i);
+  });
+  html += `</div><div class="array-controls"><button class="btn-outline btn-small" onclick="addTeamItem()">+ Add Team Member</button></div></div>`;
+  return html;
+}
+
+function renderTeamItem(member, i) {
+  return `
+    <div class="array-item" data-index="${i}">
+      <div class="array-item-header">
+        <span class="item-number">Member #${i + 1}: ${escapeHtml(member.name.en || member.name.ko || '')}</span>
+        <div class="array-item-actions">
+          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveTeamItem(${i},-1)">Move Up</button>` : ''}
+          <button class="btn-danger btn-small" onclick="removeTeamItem(${i})">Delete</button>
+        </div>
+      </div>
+      ${bilingualField(`team-${i}-name`, 'Name', member.name)}
+      <div class="single-field">
+        <div class="field-group">
+          <label>Initial (shown on diamond)</label>
+          <input type="text" data-field="team-${i}-initial" value="${escapeAttr(member.initial)}" maxlength="2" style="width:60px">
+        </div>
+      </div>
+      ${bilingualField(`team-${i}-role`, 'Role', member.role)}
+      <div class="single-field">
+        <div class="field-group">
+          <label>Image Path</label>
+          <input type="text" data-field="team-${i}-image" value="${escapeAttr(member.image)}">
+        </div>
+      </div>
+      <h4 style="margin:12px 0 8px;font-size:13px;color:#6b7280">Education</h4>
+      <div id="team-${i}-edu">
+        ${renderTeamEduItems(member.education, i)}
+      </div>
+      <button class="btn-outline btn-small" style="margin-bottom:12px" onclick="addTeamEdu(${i})">+ Add Education</button>
+      <h4 style="margin:12px 0 8px;font-size:13px;color:#6b7280">Experience</h4>
+      <div id="team-${i}-exp">
+        ${renderTeamExpItems(member.experience, i)}
+      </div>
+      <button class="btn-outline btn-small" onclick="addTeamExp(${i})">+ Add Experience</button>
+    </div>
+  `;
+}
+
+function renderTeamEduItems(education, memberIdx) {
+  let html = '';
+  const koEdu = education.ko || [];
+  const enEdu = education.en || [];
+  const count = Math.max(koEdu.length, enEdu.length);
+  for (let j = 0; j < count; j++) {
+    const koSchool = koEdu[j]?.school || '';
+    const enSchool = enEdu[j]?.school || '';
+    const koDegree = koEdu[j]?.degree || '';
+    const enDegree = enEdu[j]?.degree || '';
+    html += `
+      <div class="array-item" style="padding:10px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;color:#9ca3af">Education #${j+1}</span>
+          <button class="btn-danger btn-small" onclick="removeTeamEdu(${memberIdx},${j})">Remove</button>
+        </div>
+        <div class="bilingual-row">
+          <div class="field-group">
+            <label><span class="lang-badge ko">KO</span> School</label>
+            <input type="text" data-field="team-${memberIdx}-edu-${j}-ko-school" value="${escapeAttr(koSchool)}">
+          </div>
+          <div class="field-group">
+            <label><span class="lang-badge en">EN</span> School</label>
+            <input type="text" data-field="team-${memberIdx}-edu-${j}-en-school" value="${escapeAttr(enSchool)}">
+          </div>
+        </div>
+        <div class="bilingual-row">
+          <div class="field-group">
+            <label><span class="lang-badge ko">KO</span> Degree</label>
+            <input type="text" data-field="team-${memberIdx}-edu-${j}-ko-degree" value="${escapeAttr(koDegree)}">
+          </div>
+          <div class="field-group">
+            <label><span class="lang-badge en">EN</span> Degree</label>
+            <input type="text" data-field="team-${memberIdx}-edu-${j}-en-degree" value="${escapeAttr(enDegree)}">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  return html;
+}
+
+function renderTeamExpItems(experience, memberIdx) {
+  let html = '';
+  const koExp = experience.ko || [];
+  const enExp = experience.en || [];
+  const count = Math.max(koExp.length, enExp.length);
+  for (let j = 0; j < count; j++) {
+    html += `
+      <div class="array-item" style="padding:10px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px;color:#9ca3af">Experience #${j+1}</span>
+          <button class="btn-danger btn-small" onclick="removeTeamExp(${memberIdx},${j})">Remove</button>
+        </div>
+        <div class="bilingual-row">
+          <div class="field-group">
+            <label><span class="lang-badge ko">KO</span></label>
+            <input type="text" data-field="team-${memberIdx}-exp-${j}-ko" value="${escapeAttr(koExp[j] || '')}">
+          </div>
+          <div class="field-group">
+            <label><span class="lang-badge en">EN</span></label>
+            <input type="text" data-field="team-${memberIdx}-exp-${j}-en" value="${escapeAttr(enExp[j] || '')}">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  return html;
+}
+
+// ─── Data Collection ──────────────────────────────────
+function collectFormData(tab) {
+  const { data } = fileCache[tab];
+  switch (tab) {
+    case 'about': collectAbout(data); break;
+    case 'contact': collectContact(data); break;
+    case 'faq': collectFaq(data); break;
+    case 'quotes': collectQuotes(data); break;
+    case 'testimonials': collectTestimonials(data); break;
+    case 'team': collectTeam(data); break;
+  }
+}
+
+function getVal(field) {
+  const el = document.querySelector(`[data-field="${field}"]`);
+  return el ? el.value : '';
+}
+
+function getBilingual(prefix) {
+  return { ko: getVal(`${prefix}-ko`), en: getVal(`${prefix}-en`) };
+}
+
+function collectAbout(data) {
+  data.title = getBilingual('about-title');
+  data.subtitle = getBilingual('about-subtitle');
+  data.video.url = getVal('about-video-url');
+  data.video.title = getBilingual('about-video-title');
+  data.downloadButton = getBilingual('about-download');
+  data.sectionHeadings.team = getBilingual('about-heading-team');
+  data.sectionHeadings.clientsSay = getBilingual('about-heading-clients-say');
+  data.sectionHeadings.ourClients = getBilingual('about-heading-our-clients');
+  data.sectionHeadings.ourSpace = getBilingual('about-heading-our-space');
+  data.cta.heading = getBilingual('about-cta-heading');
+  data.cta.button = getBilingual('about-cta-button');
+}
+
+function collectContact(data) {
+  data.heading = getBilingual('contact-heading');
+  data.phone.label = getBilingual('contact-phone-label');
+  data.phone.number = getVal('contact-phone-number');
+  data.email.label = getBilingual('contact-email-label');
+  data.email.address = getVal('contact-email-address');
+  data.office.label = getBilingual('contact-office-label');
+  data.office.address = getBilingual('contact-office-address');
+  data.office.addressPlain = getBilingual('contact-office-plain');
+  data.tagline = getBilingual('contact-tagline');
+  data.companyInfo = getBilingual('contact-company');
+  data.map.query = getVal('contact-map-query');
+}
+
+function collectFaq(data) {
+  // Category labels
+  Object.keys(data.faqCategoryLabels).forEach(cat => {
+    data.faqCategoryLabels[cat] = getBilingual(`faq-cat-${cat}`);
+  });
+
+  // FAQ items
+  const items = document.querySelectorAll('#faq-items > .array-item');
+  data.faqData = Array.from(items).map((el, i) => ({
+    category: getVal(`faq-item-${i}-category`),
+    question: getBilingual(`faq-item-${i}-q`),
+    answer: getBilingual(`faq-item-${i}-a`),
+  }));
+}
+
+function collectQuotes(data) {
+  const items = document.querySelectorAll('#quotes-items > .array-item');
+  const result = Array.from(items).map((el, i) => ({
+    quote: getBilingual(`quote-${i}-text`),
+    author: getVal(`quote-${i}-author`),
+    role: getBilingual(`quote-${i}-role`),
+  }));
+  fileCache.quotes.data = result;
+}
+
+function collectTestimonials(data) {
+  const items = document.querySelectorAll('#testimonials-items > .array-item');
+  const result = Array.from(items).map((el, i) => ({
+    quote: getBilingual(`testimonial-${i}-quote`),
+    author: getBilingual(`testimonial-${i}-author`),
+  }));
+  fileCache.testimonials.data = result;
+}
+
+function collectTeam(data) {
+  const items = document.querySelectorAll('#team-items > .array-item');
+  const result = Array.from(items).map((el, i) => {
+    // Education
+    const eduContainer = document.getElementById(`team-${i}-edu`);
+    const eduItems = eduContainer ? eduContainer.querySelectorAll('.array-item') : [];
+    const koEdu = [];
+    const enEdu = [];
+    eduItems.forEach((_, j) => {
+      koEdu.push({ school: getVal(`team-${i}-edu-${j}-ko-school`), degree: getVal(`team-${i}-edu-${j}-ko-degree`) });
+      enEdu.push({ school: getVal(`team-${i}-edu-${j}-en-school`), degree: getVal(`team-${i}-edu-${j}-en-degree`) });
+    });
+
+    // Experience
+    const expContainer = document.getElementById(`team-${i}-exp`);
+    const expItems = expContainer ? expContainer.querySelectorAll('.array-item') : [];
+    const koExp = [];
+    const enExp = [];
+    expItems.forEach((_, j) => {
+      koExp.push(getVal(`team-${i}-exp-${j}-ko`));
+      enExp.push(getVal(`team-${i}-exp-${j}-en`));
+    });
+
+    return {
+      name: getBilingual(`team-${i}-name`),
+      initial: getVal(`team-${i}-initial`),
+      role: getBilingual(`team-${i}-role`),
+      image: getVal(`team-${i}-image`),
+      education: { ko: koEdu, en: enEdu },
+      experience: { ko: koExp, en: enExp },
+    };
+  });
+  fileCache.team.data = result;
+}
+
+// ─── Array Mutations ──────────────────────────────────
+function addFaqItem() {
+  collectFormData('faq');
+  fileCache.faq.data.faqData.push({ category: 'services', question: { ko: '', en: '' }, answer: { ko: '', en: '' } });
+  renderEditor('faq');
+}
+
+function removeFaqItem(i) {
+  collectFormData('faq');
+  fileCache.faq.data.faqData.splice(i, 1);
+  renderEditor('faq');
+}
+
+function moveFaqItem(i, dir) {
+  collectFormData('faq');
+  const arr = fileCache.faq.data.faqData;
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderEditor('faq');
+}
+
+function addQuoteItem() {
+  collectFormData('quotes');
+  fileCache.quotes.data.push({ quote: { ko: '', en: '' }, author: '', role: { ko: '', en: '' } });
+  renderEditor('quotes');
+}
+
+function removeQuoteItem(i) {
+  collectFormData('quotes');
+  fileCache.quotes.data.splice(i, 1);
+  renderEditor('quotes');
+}
+
+function moveQuoteItem(i, dir) {
+  collectFormData('quotes');
+  const arr = fileCache.quotes.data;
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderEditor('quotes');
+}
+
+function addTestimonialItem() {
+  collectFormData('testimonials');
+  fileCache.testimonials.data.push({ quote: { ko: '', en: '' }, author: { ko: '', en: '' } });
+  renderEditor('testimonials');
+}
+
+function removeTestimonialItem(i) {
+  collectFormData('testimonials');
+  fileCache.testimonials.data.splice(i, 1);
+  renderEditor('testimonials');
+}
+
+function moveTestimonialItem(i, dir) {
+  collectFormData('testimonials');
+  const arr = fileCache.testimonials.data;
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderEditor('testimonials');
+}
+
+function addTeamItem() {
+  collectFormData('team');
+  fileCache.team.data.push({
+    name: { ko: '', en: '' },
+    initial: '',
+    role: { ko: '', en: '' },
+    image: '',
+    education: { ko: [], en: [] },
+    experience: { ko: [], en: [] },
+  });
+  renderEditor('team');
+}
+
+function removeTeamItem(i) {
+  collectFormData('team');
+  fileCache.team.data.splice(i, 1);
+  renderEditor('team');
+}
+
+function moveTeamItem(i, dir) {
+  collectFormData('team');
+  const arr = fileCache.team.data;
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderEditor('team');
+}
+
+function addTeamEdu(memberIdx) {
+  collectFormData('team');
+  const member = fileCache.team.data[memberIdx];
+  member.education.ko.push({ school: '', degree: '' });
+  member.education.en.push({ school: '', degree: '' });
+  renderEditor('team');
+}
+
+function removeTeamEdu(memberIdx, eduIdx) {
+  collectFormData('team');
+  const member = fileCache.team.data[memberIdx];
+  member.education.ko.splice(eduIdx, 1);
+  member.education.en.splice(eduIdx, 1);
+  renderEditor('team');
+}
+
+function addTeamExp(memberIdx) {
+  collectFormData('team');
+  const member = fileCache.team.data[memberIdx];
+  member.experience.ko.push('');
+  member.experience.en.push('');
+  renderEditor('team');
+}
+
+function removeTeamExp(memberIdx, expIdx) {
+  collectFormData('team');
+  const member = fileCache.team.data[memberIdx];
+  member.experience.ko.splice(expIdx, 1);
+  member.experience.en.splice(expIdx, 1);
+  renderEditor('team');
+}
+
+// ─── HTML Helpers ─────────────────────────────────────
+function bilingualField(prefix, label, data) {
+  const ko = data?.ko || '';
+  const en = data?.en || '';
+  return `
+    <div class="bilingual-row">
+      <div class="field-group">
+        <label class="field-label-row"><span class="lang-badge ko">KO</span> ${escapeHtml(label)}</label>
+        <input type="text" data-field="${prefix}-ko" value="${escapeAttr(ko)}">
+      </div>
+      <div class="field-group">
+        <label class="field-label-row"><span class="lang-badge en">EN</span> ${escapeHtml(label)}</label>
+        <input type="text" data-field="${prefix}-en" value="${escapeAttr(en)}">
+      </div>
+    </div>
+  `;
+}
+
+function bilingualTextarea(prefix, label, data) {
+  const ko = data?.ko || '';
+  const en = data?.en || '';
+  return `
+    <div class="bilingual-row">
+      <div class="field-group">
+        <label class="field-label-row"><span class="lang-badge ko">KO</span> ${escapeHtml(label)}</label>
+        <textarea data-field="${prefix}-ko">${escapeHtml(ko)}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label-row"><span class="lang-badge en">EN</span> ${escapeHtml(label)}</label>
+        <textarea data-field="${prefix}-en">${escapeHtml(en)}</textarea>
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escapeAttr(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ─── Init ─────────────────────────────────────────────
+initAuth();
+</script>
+</body>
+</html>

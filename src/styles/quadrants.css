@@ -28,12 +28,15 @@
 
 .quadrant .hover-img {
   position: absolute;
-  opacity: 0;
-  transition: opacity 200ms ease;
+  visibility: hidden;
+}
+
+.quadrant:hover .static-img {
+  visibility: hidden;
 }
 
 .quadrant:hover .hover-img {
-  opacity: 1;
+  visibility: visible;
 }
 
 .quadrant.selected {

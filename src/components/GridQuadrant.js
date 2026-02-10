@@ -24,7 +24,7 @@ export class GridQuadrant {
       about: 'about',
       services: 'services',
       portfolio: 'portfolio',
-      clients: 'clientssay',
+      clients: 'clients',
     };
 
     // Preload all GIF images to prevent flash on hover
@@ -36,8 +36,7 @@ export class GridQuadrant {
 
       const staticImg = createElement('img', 'static-img');
       const imageName = imageMap[section];
-      const ext = imageName === 'services' ? 'png' : 'jpg';
-      staticImg.src = `/assets/images/${imageName}.${ext}`;
+      staticImg.src = `/assets/images/${imageName}.png`;
       staticImg.alt = section;
 
       const hoverImg = createElement('img', 'hover-img');

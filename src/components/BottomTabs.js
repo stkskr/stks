@@ -1,7 +1,9 @@
 import { stateManager } from '../core/state.js';
 import { createElement } from '../utils/dom.js';
-import { faqData, faqCategoryLabels } from '../data/faq.js';
-import { contactContent } from '../data/contact.js';
+import faqJson from '../data/faq.json';
+import contactContent from '../data/contact.json';
+
+const { faqData, faqCategoryLabels } = faqJson;
 import { uiContent } from '../data/ui.js';
 import { languageManager } from '../core/language.js';
 

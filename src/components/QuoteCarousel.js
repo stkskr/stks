@@ -1,4 +1,4 @@
-import { quotesData } from '../data/quotes.js';
+import quotesData from '../data/quotes.json';
 import { languageManager } from '../core/language.js';
 import { createElement } from '../utils/dom.js';
 import { stateManager } from '../core/state.js';

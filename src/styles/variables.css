@@ -1,4 +1,7 @@
 :root {
+  /* Force light mode - prevents Samsung Internet forced dark mode */
+  color-scheme: light only;
+
   /* Colors */
   --color-menu-white: #fafafa;
   --color-content-white: #ffffff;
