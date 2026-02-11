@@ -311,6 +311,35 @@
     }
     .portfolio-item.expanded .portfolio-item-body { display: block; }
 
+    /* Media type checkboxes */
+    .media-type-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .media-type-group label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      cursor: pointer;
+      padding: 4px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      transition: background 0.15s, border-color 0.15s;
+      text-transform: capitalize;
+    }
+    .media-type-group label:hover { background: #f3f4f6; }
+    .media-type-group input[type="checkbox"] { accent-color: #4f46e5; }
+    .media-type-group input[type="checkbox"]:checked + span {
+      color: #4f46e5;
+      font-weight: 600;
+    }
+
     /* Search/filter bar */
     .search-bar {
       display: flex;
@@ -958,6 +987,13 @@ function getVal(field) {
   return el ? el.value : '';
 }
 
+function getMediaType(i) {
+  const group = document.querySelector(`[data-field="pf-${i}-mediaType"]`);
+  if (!group) return '';
+  return Array.from(group.querySelectorAll('input[type="checkbox"]:checked'))
+    .map(cb => cb.value).join(', ');
+}
+
 function getBilingual(prefix) {
   return { ko: getVal(`${prefix}-ko`), en: getVal(`${prefix}-en`) };
 }
@@ -1108,6 +1144,16 @@ function renderPortfolioEditor(data) {
   return html;
 }
 
+const MEDIA_TYPES = ['video', 'online', 'branding', 'sns', 'ooh', 'script'];
+
+function renderMediaTypeCheckboxes(i, currentValue) {
+  const selected = currentValue.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  return `<div class="media-type-group" data-field="pf-${i}-mediaType">` +
+    MEDIA_TYPES.map(type =>
+      `<label><input type="checkbox" value="${type}" ${selected.includes(type) ? 'checked' : ''}><span>${type}</span></label>`
+    ).join('') + '</div>';
+}
+
 function renderPortfolioItem(item, i) {
   const title = item.title?.en || item.title?.ko || '(untitled)';
   return `
@@ -1136,7 +1182,7 @@ function renderPortfolioItem(item, i) {
             </div>
             <div class="field-group">
               <label>Media Type</label>
-              <input type="text" data-field="pf-${i}-mediaType" value="${escapeAttr(item.mediaType || '')}">
+              ${renderMediaTypeCheckboxes(i, item.mediaType || '')}
             </div>
           </div>
           <div class="single-field">
@@ -1186,7 +1232,7 @@ function collectPortfolio(data) {
       id: getVal(`pf-${i}-id`),
       title: getBilingual(`pf-${i}-title`),
       client: getVal(`pf-${i}-client`),
-      mediaType: getVal(`pf-${i}-mediaType`),
+      mediaType: getMediaType(i),
       mission: getBilingual(`pf-${i}-mission`),
       solution: getBilingual(`pf-${i}-solution`),
     };
