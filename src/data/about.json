@@ -20,7 +20,7 @@
   },
   "sectionHeadings": {
     "team": {
-      "ko": "팀 소개",
+      "ko": "Meet our team",
       "en": "Meet our team"
     },
     "clientsSay": {
@@ -28,11 +28,11 @@
       "en": "Clients say"
     },
     "ourClients": {
-      "ko": "파트너사",
+      "ko": "Our clients",
       "en": "Our clients"
     },
     "ourSpace": {
-      "ko": "오피스 공간",
+      "ko": "Our space",
       "en": "Our space"
     }
   },
@@ -42,7 +42,7 @@
       "en": "Have a project?"
     },
     "button": {
-      "ko": "문의하기",
+      "ko": "Let's talk",
       "en": "Let's talk"
     }
   }
