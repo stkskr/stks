@@ -19,7 +19,8 @@
     "role": {
       "ko": "이해승 이사님",
       "en": "Lee Hae-seung, Director"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -41,7 +42,8 @@
     "role": {
       "ko": "오혜주 수석국장",
       "en": "Oh Hye-joo, Senior Director"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -63,7 +65,8 @@
     "role": {
       "ko": "김정환 NEXT 그룹장",
       "en": "Kim Jeong-hwan, NEXT Group Head"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -85,7 +88,8 @@
     "role": {
       "ko": "윤태구 국장",
       "en": "Yun Tae-gu, Director"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -96,7 +100,8 @@
     "role": {
       "ko": "홍민지 부장",
       "en": "Hong Min-ji, Manager"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -107,7 +112,8 @@
     "role": {
       "ko": "송은혜 차장",
       "en": "Song Eun-hye, Assistant Manager"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -118,7 +124,8 @@
     "role": {
       "ko": "이유진 매니저",
       "en": "Lee Yu-jin, Manager"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {
@@ -140,7 +147,8 @@
     "role": {
       "ko": "박지연 플래너",
       "en": "Park Ji-yeon, Planner"
-    }
+    },
+    "isTestimonial": true
   },
   {
     "quote": {

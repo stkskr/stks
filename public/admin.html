@@ -365,6 +365,82 @@
       white-space: nowrap;
     }
 
+    /* Image previews */
+    .image-preview-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .image-preview-section h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .image-preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .image-preview-item {
+      position: relative;
+      width: 120px;
+      height: 80px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .image-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .image-preview-item .remove-img {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
+      background: rgba(220,38,38,0.85);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 11px;
+      line-height: 18px;
+      text-align: center;
+      cursor: pointer;
+      display: none;
+      padding: 0;
+    }
+    .image-preview-item:hover .remove-img { display: block; }
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px dashed #d1d5db;
+      border-radius: 6px;
+      background: #fff;
+      color: #6b7280;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .upload-btn:hover { border-color: #4f46e5; color: #4f46e5; }
+    .upload-status {
+      font-size: 12px;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+    .upload-status.uploading { color: #d97706; }
+    .upload-status.uploaded { color: #059669; }
+    .upload-status.upload-error { color: #dc2626; }
+
     /* Responsive */
     @media (max-width: 768px) {
       .bilingual-row { grid-template-columns: 1fr; }
@@ -399,14 +475,13 @@
   </div>
 
   <div class="tab-nav" id="tab-nav">
-    <button class="tab-btn active" data-tab="about">About</button>
-    <button class="tab-btn" data-tab="contact">Contact</button>
-    <button class="tab-btn" data-tab="quadrants">Quadrants</button>
-    <button class="tab-btn" data-tab="portfolio">Portfolio</button>
-    <button class="tab-btn" data-tab="faq">FAQ</button>
-    <button class="tab-btn" data-tab="quotes">Quotes</button>
-    <button class="tab-btn" data-tab="testimonials">Testimonials</button>
+    <button class="tab-btn active" data-tab="quadrants">Quadrants</button>
+    <button class="tab-btn" data-tab="about">About</button>
     <button class="tab-btn" data-tab="team">Team</button>
+    <button class="tab-btn" data-tab="portfolio">Portfolio</button>
+    <button class="tab-btn" data-tab="quotes">Quotes</button>
+    <button class="tab-btn" data-tab="faq">FAQ</button>
+    <button class="tab-btn" data-tab="contact">Contact</button>
   </div>
 
   <div class="editor-area" id="editor-area"></div>
@@ -440,6 +515,7 @@ let token = null;
 let currentTab = 'about';
 let fileCache = {};    // { [tab]: { data, sha } }
 let dirtyTabs = {};    // { [tab]: true } if unsaved
+let imageManifest = null;
 
 // ─── Auth ─────────────────────────────────────────────
 function startLogin() {
@@ -505,7 +581,7 @@ async function showDashboard() {
   });
 
   // Load initial tab
-  switchTab('about');
+  switchTab('quadrants');
 }
 
 // ─── GitHub API ───────────────────────────────────────
@@ -593,6 +669,7 @@ async function switchTab(tab) {
 
   try {
     await loadFile(tab);
+    if (tab === 'portfolio') await loadImageManifest();
     renderEditor(tab);
     setStatus('Ready');
   } catch (e) {
@@ -614,6 +691,10 @@ async function saveCurrentFile() {
 
   try {
     await saveFile(currentTab);
+    // When saving quotes, also regenerate and save testimonials.json
+    if (currentTab === 'quotes') {
+      await saveTestimonialsFromQuotes();
+    }
     setStatus('Saved successfully!', 'success');
   } catch (e) {
     setStatus('Save failed: ' + e.message, 'error');
@@ -629,6 +710,304 @@ function setStatus(text, type = '') {
   el.className = 'save-status' + (type ? ` ${type}` : '');
 }
 
+// Generate testimonials.json from quotes with isTestimonial flag
+async function saveTestimonialsFromQuotes() {
+  const quotes = fileCache.quotes.data;
+  const testimonials = quotes
+    .filter(q => q.isTestimonial)
+    .map(q => ({
+      quote: q.quote,
+      author: {
+        ko: [q.author, q.role.ko].filter(Boolean).join(' '),
+        en: [q.author, q.role.en].filter(Boolean).join(' '),
+      },
+    }));
+
+  // Load testimonials SHA if not cached
+  if (!fileCache.testimonials) {
+    await loadFile('testimonials');
+  }
+  fileCache.testimonials.data = testimonials;
+  await saveFile('testimonials');
+}
+
+// ─── Image Manifest & Upload ─────────────────────────
+async function loadImageManifest() {
+  if (imageManifest) return imageManifest;
+  try {
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}/image-manifest.json?ref=${BRANCH}`;
+    const res = await ghFetch(url);
+    if (!res.ok) { imageManifest = {}; return imageManifest; }
+    const fileData = await res.json();
+    imageManifest = JSON.parse(decodeContent(fileData.content));
+  } catch (e) {
+    imageManifest = {};
+  }
+  return imageManifest;
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function getFileSha(repoPath) {
+  try {
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${repoPath}?ref=${BRANCH}`;
+    const res = await ghFetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.sha;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function uploadGhFile(repoPath, base64Content, sha, message) {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${repoPath}`;
+  const body = { message, content: base64Content, branch: BRANCH };
+  if (sha) body.sha = sha;
+  const res = await ghFetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || `Upload failed: ${res.status}`);
+  }
+  return await res.json();
+}
+
+async function deleteGhFile(repoPath, sha, message) {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${repoPath}`;
+  const res = await ghFetch(url, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, sha, branch: BRANCH }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || `Delete failed: ${res.status}`);
+  }
+}
+
+function getPortfolioPrefix(i) {
+  const slug = getVal(`pf-${i}-id`);
+  if (!slug || !imageManifest) return String(i + 1).padStart(2, '0');
+  const entry = imageManifest[slug];
+  if (entry?.thumbnail) {
+    const filename = entry.thumbnail.split('/').pop();
+    const match = filename.match(/^(\d+)_/);
+    if (match) return match[1];
+  }
+  return String(i + 1).padStart(2, '0');
+}
+
+function getNextSliderNum(slug) {
+  const entry = (imageManifest || {})[slug];
+  if (!entry || !entry.slider || entry.slider.length === 0) return 0;
+  let maxNum = 0;
+  entry.slider.forEach(path => {
+    const match = path.match(/_(\d{2})\.\w+$/);
+    if (match) maxNum = Math.max(maxNum, parseInt(match[1], 10));
+  });
+  return maxNum || entry.slider.length;
+}
+
+function renderPortfolioImages(item, i) {
+  const slug = item.id || '';
+  const manifest = imageManifest || {};
+  const entry = manifest[slug] || { thumbnail: '', slider: [] };
+
+  let thumbHtml;
+  if (entry.thumbnail) {
+    thumbHtml = `<div class="image-preview-item"><img src="${escapeAttr(entry.thumbnail)}" alt="Thumbnail" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:#999;padding:4px\\'>Not found</span>'"></div>`;
+  } else {
+    thumbHtml = '<span style="font-size:12px;color:#9ca3af">No thumbnail</span>';
+  }
+
+  let sliderHtml;
+  if (entry.slider && entry.slider.length > 0) {
+    sliderHtml = entry.slider.map((path, si) =>
+      `<div class="image-preview-item">
+        <img src="${escapeAttr(path)}" alt="Slide ${si+1}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:#999;padding:4px\\'>Not found</span>'">
+        <button class="remove-img" title="Delete" onclick="event.stopPropagation();deleteSliderImage(${i},'${escapeAttr(slug)}',${si})">&#215;</button>
+      </div>`
+    ).join('');
+  } else {
+    sliderHtml = '<span style="font-size:12px;color:#9ca3af">No slider images</span>';
+  }
+
+  return `
+    <div class="image-preview-section">
+      <h4>Thumbnail</h4>
+      <div class="image-preview-grid" id="pf-${i}-thumb-preview">${thumbHtml}</div>
+      <input type="file" id="pf-${i}-thumb-file" accept="image/*" style="display:none" onchange="uploadThumbnail(${i})">
+      <button class="upload-btn" type="button" onclick="document.getElementById('pf-${i}-thumb-file').click()">&#128247; Upload Thumbnail</button>
+      <div class="upload-status" id="pf-${i}-thumb-status"></div>
+
+      <h4 style="margin-top:16px">Slider Images (${(entry.slider || []).length})</h4>
+      <div class="image-preview-grid" id="pf-${i}-slider-preview">${sliderHtml}</div>
+      <input type="file" id="pf-${i}-slider-file" accept="image/*" multiple style="display:none" onchange="uploadSliderImages(${i})">
+      <button class="upload-btn" type="button" onclick="document.getElementById('pf-${i}-slider-file').click()">&#128247; Upload Slider Images</button>
+      <div class="upload-status" id="pf-${i}-slider-status"></div>
+    </div>
+  `;
+}
+
+async function uploadThumbnail(i) {
+  const fileInput = document.getElementById(`pf-${i}-thumb-file`);
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const slug = getVal(`pf-${i}-id`);
+  if (!slug) { alert('Please set an ID (URL slug) before uploading images.'); return; }
+
+  const prefix = getPortfolioPrefix(i);
+  const ext = file.name.split('.').pop().toLowerCase();
+  const filename = `${prefix}_${slug}.${ext}`;
+  const repoPath = `public/assets/portfolio/thumbnails/${filename}`;
+
+  const statusEl = document.getElementById(`pf-${i}-thumb-status`);
+  statusEl.textContent = 'Uploading thumbnail...';
+  statusEl.className = 'upload-status uploading';
+
+  try {
+    const base64 = await readFileAsBase64(file);
+
+    // If existing thumbnail has a different filename, delete old one
+    const entry = (imageManifest || {})[slug];
+    if (entry?.thumbnail) {
+      const oldFilename = entry.thumbnail.split('/').pop();
+      if (oldFilename !== filename) {
+        const oldSha = await getFileSha(`public/assets/portfolio/thumbnails/${oldFilename}`);
+        if (oldSha) await deleteGhFile(`public/assets/portfolio/thumbnails/${oldFilename}`, oldSha, `Replace thumbnail for ${slug}`);
+      }
+    }
+
+    const sha = await getFileSha(repoPath);
+    await uploadGhFile(repoPath, base64, sha, `Update thumbnail for ${slug}`);
+
+    // Update manifest cache
+    if (!imageManifest[slug]) imageManifest[slug] = { thumbnail: '', slider: [] };
+    imageManifest[slug].thumbnail = `/assets/portfolio/thumbnails/${filename}`;
+
+    // Show immediate preview using object URL
+    const objectUrl = URL.createObjectURL(file);
+    document.getElementById(`pf-${i}-thumb-preview`).innerHTML =
+      `<div class="image-preview-item"><img src="${objectUrl}" alt="Thumbnail"></div>`;
+
+    statusEl.textContent = 'Uploaded! Live after deploy (~1-2 min).';
+    statusEl.className = 'upload-status uploaded';
+  } catch (e) {
+    statusEl.textContent = 'Failed: ' + e.message;
+    statusEl.className = 'upload-status upload-error';
+  }
+  fileInput.value = '';
+}
+
+async function uploadSliderImages(i) {
+  const fileInput = document.getElementById(`pf-${i}-slider-file`);
+  const files = Array.from(fileInput.files);
+  if (!files.length) return;
+
+  const slug = getVal(`pf-${i}-id`);
+  if (!slug) { alert('Please set an ID (URL slug) before uploading images.'); return; }
+
+  const prefix = getPortfolioPrefix(i);
+  let nextNum = getNextSliderNum(slug);
+
+  const statusEl = document.getElementById(`pf-${i}-slider-status`);
+  const previewContainer = document.getElementById(`pf-${i}-slider-preview`);
+
+  // Clear "No slider images" placeholder
+  if (previewContainer.querySelector('span:not(.remove-img)')) {
+    previewContainer.innerHTML = '';
+  }
+
+  try {
+    for (let f = 0; f < files.length; f++) {
+      statusEl.textContent = `Uploading ${f + 1}/${files.length}...`;
+      statusEl.className = 'upload-status uploading';
+
+      const file = files[f];
+      const ext = file.name.split('.').pop().toLowerCase();
+      const num = String(nextNum + f + 1).padStart(2, '0');
+      const filename = `${prefix}_${slug}_${num}.${ext}`;
+      const repoPath = `public/assets/portfolio/slider/${filename}`;
+
+      const base64 = await readFileAsBase64(file);
+      const sha = await getFileSha(repoPath);
+      await uploadGhFile(repoPath, base64, sha, `Add slider image for ${slug}`);
+
+      // Update manifest cache
+      if (!imageManifest[slug]) imageManifest[slug] = { thumbnail: '', slider: [] };
+      imageManifest[slug].slider.push(`/assets/portfolio/slider/${filename}`);
+
+      // Show preview immediately
+      const objectUrl = URL.createObjectURL(file);
+      const div = document.createElement('div');
+      div.className = 'image-preview-item';
+      div.innerHTML = `<img src="${objectUrl}" alt="Slider">`;
+      previewContainer.appendChild(div);
+    }
+
+    statusEl.textContent = `${files.length} image${files.length > 1 ? 's' : ''} uploaded! Live after deploy.`;
+    statusEl.className = 'upload-status uploaded';
+  } catch (e) {
+    statusEl.textContent = 'Failed: ' + e.message;
+    statusEl.className = 'upload-status upload-error';
+  }
+  fileInput.value = '';
+}
+
+async function deleteSliderImage(i, slug, sliderIndex) {
+  if (!confirm('Delete this slider image from the repository?')) return;
+
+  const entry = (imageManifest || {})[slug];
+  if (!entry || !entry.slider[sliderIndex]) return;
+
+  const path = entry.slider[sliderIndex];
+  const filename = path.split('/').pop();
+  const repoPath = `public/assets/portfolio/slider/${filename}`;
+
+  const statusEl = document.getElementById(`pf-${i}-slider-status`);
+  statusEl.textContent = 'Deleting...';
+  statusEl.className = 'upload-status uploading';
+
+  try {
+    const sha = await getFileSha(repoPath);
+    if (sha) {
+      await deleteGhFile(repoPath, sha, `Remove slider image ${filename}`);
+    }
+
+    // Update manifest cache and refresh preview
+    entry.slider.splice(sliderIndex, 1);
+    const previewContainer = document.getElementById(`pf-${i}-slider-preview`);
+    if (entry.slider.length === 0) {
+      previewContainer.innerHTML = '<span style="font-size:12px;color:#9ca3af">No slider images</span>';
+    } else {
+      previewContainer.innerHTML = entry.slider.map((p, si) =>
+        `<div class="image-preview-item">
+          <img src="${escapeAttr(p)}" alt="Slide ${si+1}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:#999;padding:4px\\'>Not found</span>'">
+          <button class="remove-img" title="Delete" onclick="event.stopPropagation();deleteSliderImage(${i},'${escapeAttr(slug)}',${si})">&#215;</button>
+        </div>`
+      ).join('');
+    }
+
+    statusEl.textContent = 'Deleted. Change live after deploy.';
+    statusEl.className = 'upload-status uploaded';
+  } catch (e) {
+    statusEl.textContent = 'Delete failed: ' + e.message;
+    statusEl.className = 'upload-status upload-error';
+  }
+}
+
 // ─── Renderers ────────────────────────────────────────
 function renderEditor(tab) {
   const area = document.getElementById('editor-area');
@@ -641,7 +1020,6 @@ function renderEditor(tab) {
     case 'portfolio': area.innerHTML = renderPortfolioEditor(data); break;
     case 'faq': area.innerHTML = renderFaqEditor(data); break;
     case 'quotes': area.innerHTML = renderQuotesEditor(data); break;
-    case 'testimonials': area.innerHTML = renderTestimonialsEditor(data); break;
     case 'team': area.innerHTML = renderTeamEditor(data); break;
   }
   // After rendering portfolio, bind search and toggle listeners
@@ -654,7 +1032,7 @@ function renderAboutEditor(data) {
     <div class="editor-card">
       <h3>Title &amp; Subtitle</h3>
       ${bilingualField('about-title', 'Title', data.title)}
-      ${bilingualTextarea('about-subtitle', 'Subtitle', data.subtitle)}
+      ${bilingualTextarea('about-subtitle', 'Subtitle', data.subtitle, true)}
     </div>
     <div class="editor-card">
       <h3>Video</h3>
@@ -715,16 +1093,16 @@ function renderContactEditor(data) {
     <div class="editor-card">
       <h3>Office</h3>
       ${bilingualField('contact-office-label', 'Label', data.office.label)}
-      ${bilingualTextarea('contact-office-address', 'Address (HTML)', data.office.address)}
+      ${bilingualTextarea('contact-office-address', 'Address', data.office.address, true)}
       ${bilingualField('contact-office-plain', 'Address (plain text)', data.office.addressPlain)}
     </div>
     <div class="editor-card">
       <h3>Tagline</h3>
-      ${bilingualTextarea('contact-tagline', 'Tagline', data.tagline)}
+      ${bilingualTextarea('contact-tagline', 'Tagline', data.tagline, true)}
     </div>
     <div class="editor-card">
       <h3>Company Info</h3>
-      ${bilingualTextarea('contact-company', 'Company Info', data.companyInfo)}
+      ${bilingualTextarea('contact-company', 'Company Info', data.companyInfo, true)}
     </div>
     <div class="editor-card">
       <h3>Map</h3>
@@ -791,9 +1169,11 @@ function renderFaqItem(item, i) {
   `;
 }
 
-// Quotes editor
+// Quotes editor (also manages testimonials via checkbox)
 function renderQuotesEditor(data) {
-  let html = `<div class="editor-card"><h3>Quote Carousel Items</h3><div id="quotes-items">`;
+  let html = `<div class="editor-card"><h3>Quotes &amp; Testimonials</h3>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:16px">All items appear in the quote carousel. Check "Testimonial" to also show in the testimonials grid.</p>
+    <div id="quotes-items">`;
   data.forEach((item, i) => {
     html += renderQuoteItem(item, i);
   });
@@ -807,6 +1187,9 @@ function renderQuoteItem(item, i) {
       <div class="array-item-header">
         <span class="item-number">Quote #${i + 1}</span>
         <div class="array-item-actions">
+          <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;margin-right:8px">
+            <input type="checkbox" data-field="quote-${i}-testimonial" ${item.isTestimonial ? 'checked' : ''} style="accent-color:#4f46e5"> Testimonial
+          </label>
           ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveQuoteItem(${i},-1)">Move Up</button>` : ''}
           <button class="btn-danger btn-small" onclick="removeQuoteItem(${i})">Delete</button>
         </div>
@@ -819,32 +1202,6 @@ function renderQuoteItem(item, i) {
         </div>
       </div>
       ${bilingualField(`quote-${i}-role`, 'Role / Name', item.role)}
-    </div>
-  `;
-}
-
-// Testimonials editor
-function renderTestimonialsEditor(data) {
-  let html = `<div class="editor-card"><h3>Testimonials Grid Items</h3><div id="testimonials-items">`;
-  data.forEach((item, i) => {
-    html += renderTestimonialItem(item, i);
-  });
-  html += `</div><div class="array-controls"><button class="btn-outline btn-small" onclick="addTestimonialItem()">+ Add Testimonial</button></div></div>`;
-  return html;
-}
-
-function renderTestimonialItem(item, i) {
-  return `
-    <div class="array-item" data-index="${i}">
-      <div class="array-item-header">
-        <span class="item-number">Testimonial #${i + 1}</span>
-        <div class="array-item-actions">
-          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveTestimonialItem(${i},-1)">Move Up</button>` : ''}
-          <button class="btn-danger btn-small" onclick="removeTestimonialItem(${i})">Delete</button>
-        </div>
-      </div>
-      ${bilingualTextarea(`testimonial-${i}-quote`, 'Quote', item.quote)}
-      ${bilingualField(`testimonial-${i}-author`, 'Author', item.author)}
     </div>
   `;
 }
@@ -977,7 +1334,6 @@ function collectFormData(tab) {
     case 'portfolio': collectPortfolio(data); break;
     case 'faq': collectFaq(data); break;
     case 'quotes': collectQuotes(data); break;
-    case 'testimonials': collectTestimonials(data); break;
     case 'team': collectTeam(data); break;
   }
 }
@@ -998,9 +1354,17 @@ function getBilingual(prefix) {
   return { ko: getVal(`${prefix}-ko`), en: getVal(`${prefix}-en`) };
 }
 
+// For HTML fields: collect textarea newlines back to <br>
+function getBilingualHtml(prefix) {
+  return {
+    ko: getVal(`${prefix}-ko`).replace(/\n/g, '<br>'),
+    en: getVal(`${prefix}-en`).replace(/\n/g, '<br>'),
+  };
+}
+
 function collectAbout(data) {
   data.title = getBilingual('about-title');
-  data.subtitle = getBilingual('about-subtitle');
+  data.subtitle = getBilingualHtml('about-subtitle');
   data.video.url = getVal('about-video-url');
   data.video.title = getBilingual('about-video-title');
   data.downloadButton = getBilingual('about-download');
@@ -1019,10 +1383,10 @@ function collectContact(data) {
   data.email.label = getBilingual('contact-email-label');
   data.email.address = getVal('contact-email-address');
   data.office.label = getBilingual('contact-office-label');
-  data.office.address = getBilingual('contact-office-address');
+  data.office.address = getBilingualHtml('contact-office-address');
   data.office.addressPlain = getBilingual('contact-office-plain');
-  data.tagline = getBilingual('contact-tagline');
-  data.companyInfo = getBilingual('contact-company');
+  data.tagline = getBilingualHtml('contact-tagline');
+  data.companyInfo = getBilingualHtml('contact-company');
   data.map.query = getVal('contact-map-query');
 }
 
@@ -1043,21 +1407,17 @@ function collectFaq(data) {
 
 function collectQuotes(data) {
   const items = document.querySelectorAll('#quotes-items > .array-item');
-  const result = Array.from(items).map((el, i) => ({
-    quote: getBilingual(`quote-${i}-text`),
-    author: getVal(`quote-${i}-author`),
-    role: getBilingual(`quote-${i}-role`),
-  }));
+  const result = Array.from(items).map((el, i) => {
+    const cb = document.querySelector(`[data-field="quote-${i}-testimonial"]`);
+    const obj = {
+      quote: getBilingual(`quote-${i}-text`),
+      author: getVal(`quote-${i}-author`),
+      role: getBilingual(`quote-${i}-role`),
+    };
+    if (cb && cb.checked) obj.isTestimonial = true;
+    return obj;
+  });
   fileCache.quotes.data = result;
-}
-
-function collectTestimonials(data) {
-  const items = document.querySelectorAll('#testimonials-items > .array-item');
-  const result = Array.from(items).map((el, i) => ({
-    quote: getBilingual(`testimonial-${i}-quote`),
-    author: getBilingual(`testimonial-${i}-author`),
-  }));
-  fileCache.testimonials.data = result;
 }
 
 function collectTeam(data) {
@@ -1193,6 +1553,7 @@ function renderPortfolioItem(item, i) {
           </div>
           ${bilingualTextarea(`pf-${i}-mission`, 'Mission', item.mission)}
           ${bilingualTextarea(`pf-${i}-solution`, 'Solution', item.solution)}
+          ${renderPortfolioImages(item, i)}
           <div class="array-item-actions" style="margin-top:12px;display:flex;gap:4px;justify-content:flex-end">
             ${i > 0 ? `<button class="btn-outline btn-small" onclick="movePortfolioItem(${i},-1)">Move Up</button>` : ''}
             ${i < fileCache.portfolio.data.length - 1 ? `<button class="btn-outline btn-small" onclick="movePortfolioItem(${i},1)">Move Down</button>` : ''}
@@ -1284,27 +1645,6 @@ function moveQuoteItem(i, dir) {
   if (j < 0 || j >= arr.length) return;
   [arr[i], arr[j]] = [arr[j], arr[i]];
   renderEditor('quotes');
-}
-
-function addTestimonialItem() {
-  collectFormData('testimonials');
-  fileCache.testimonials.data.push({ quote: { ko: '', en: '' }, author: { ko: '', en: '' } });
-  renderEditor('testimonials');
-}
-
-function removeTestimonialItem(i) {
-  collectFormData('testimonials');
-  fileCache.testimonials.data.splice(i, 1);
-  renderEditor('testimonials');
-}
-
-function moveTestimonialItem(i, dir) {
-  collectFormData('testimonials');
-  const arr = fileCache.testimonials.data;
-  const j = i + dir;
-  if (j < 0 || j >= arr.length) return;
-  [arr[i], arr[j]] = [arr[j], arr[i]];
-  renderEditor('testimonials');
 }
 
 function addTeamItem() {
@@ -1415,9 +1755,14 @@ function bilingualField(prefix, label, data) {
   `;
 }
 
-function bilingualTextarea(prefix, label, data) {
-  const ko = data?.ko || '';
-  const en = data?.en || '';
+function bilingualTextarea(prefix, label, data, html = false) {
+  let ko = data?.ko || '';
+  let en = data?.en || '';
+  // For HTML fields, show <br> as line breaks in the textarea
+  if (html) {
+    ko = ko.replace(/<br\s*\/?>/gi, '\n');
+    en = en.replace(/<br\s*\/?>/gi, '\n');
+  }
   return `
     <div class="bilingual-row">
       <div class="field-group">
