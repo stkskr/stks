@@ -7,7 +7,7 @@ export const uiContent = {
       en: 'FAQ',
     },
     contact: {
-      ko: '연락처',
+      ko: 'Contact',
       en: 'Contact',
     },
   },

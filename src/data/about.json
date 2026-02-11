@@ -24,7 +24,7 @@
       "en": "Meet our team"
     },
     "clientsSay": {
-      "ko": "고객 후기",
+      "ko": "Clients say",
       "en": "Clients say"
     },
     "ourClients": {
@@ -38,7 +38,7 @@
   },
   "cta": {
     "heading": {
-      "ko": "프로젝트가 있으신가요?",
+      "ko": "Have a project?",
       "en": "Have a project?"
     },
     "button": {
