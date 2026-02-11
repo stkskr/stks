@@ -1,4 +1,4 @@
-import { portfolioData } from '../data/portfolio.js';
+import portfolioData from '../data/portfolio.json';
 import { languageManager } from '../core/language.js';
 import { createElement } from '../utils/dom.js';
 import { getThumbnailPath } from '../utils/portfolio.js';

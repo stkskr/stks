@@ -252,6 +252,90 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* Collapsible portfolio items */
+    .portfolio-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: #fafafa;
+      overflow: hidden;
+    }
+    .portfolio-item:hover { background: #f9fafb; }
+    .portfolio-item-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      gap: 12px;
+    }
+    .portfolio-item-summary:hover { background: #f3f4f6; }
+    .portfolio-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+    .portfolio-item-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ca3af;
+      min-width: 28px;
+    }
+    .portfolio-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .portfolio-item-meta {
+      font-size: 12px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    .portfolio-item-chevron {
+      font-size: 12px;
+      color: #9ca3af;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .portfolio-item.expanded .portfolio-item-chevron { transform: rotate(90deg); }
+    .portfolio-item-body {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .portfolio-item.expanded .portfolio-item-body { display: block; }
+
+    /* Search/filter bar */
+    .search-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .search-bar input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+    }
+    .search-bar .result-count {
+      font-size: 13px;
+      color: #6b7280;
+      align-self: center;
+      white-space: nowrap;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .bilingual-row { grid-template-columns: 1fr; }
@@ -288,6 +372,8 @@
   <div class="tab-nav" id="tab-nav">
     <button class="tab-btn active" data-tab="about">About</button>
     <button class="tab-btn" data-tab="contact">Contact</button>
+    <button class="tab-btn" data-tab="quadrants">Quadrants</button>
+    <button class="tab-btn" data-tab="portfolio">Portfolio</button>
     <button class="tab-btn" data-tab="faq">FAQ</button>
     <button class="tab-btn" data-tab="quotes">Quotes</button>
     <button class="tab-btn" data-tab="testimonials">Testimonials</button>
@@ -312,6 +398,8 @@ const DATA_PATH = 'src/data';
 const FILES = {
   about: { path: `${DATA_PATH}/about.json`, label: 'About' },
   contact: { path: `${DATA_PATH}/contact.json`, label: 'Contact' },
+  quadrants: { path: `${DATA_PATH}/quadrants.json`, label: 'Quadrants' },
+  portfolio: { path: `${DATA_PATH}/portfolio.json`, label: 'Portfolio' },
   faq: { path: `${DATA_PATH}/faq.json`, label: 'FAQ' },
   quotes: { path: `${DATA_PATH}/quotes.json`, label: 'Quotes' },
   testimonials: { path: `${DATA_PATH}/testimonials.json`, label: 'Testimonials' },
@@ -520,11 +608,15 @@ function renderEditor(tab) {
   switch (tab) {
     case 'about': area.innerHTML = renderAboutEditor(data); break;
     case 'contact': area.innerHTML = renderContactEditor(data); break;
+    case 'quadrants': area.innerHTML = renderQuadrantsEditor(data); break;
+    case 'portfolio': area.innerHTML = renderPortfolioEditor(data); break;
     case 'faq': area.innerHTML = renderFaqEditor(data); break;
     case 'quotes': area.innerHTML = renderQuotesEditor(data); break;
     case 'testimonials': area.innerHTML = renderTestimonialsEditor(data); break;
     case 'team': area.innerHTML = renderTeamEditor(data); break;
   }
+  // After rendering portfolio, bind search and toggle listeners
+  if (tab === 'portfolio') bindPortfolioListeners();
 }
 
 // About editor
@@ -852,6 +944,8 @@ function collectFormData(tab) {
   switch (tab) {
     case 'about': collectAbout(data); break;
     case 'contact': collectContact(data); break;
+    case 'quadrants': collectQuadrants(data); break;
+    case 'portfolio': collectPortfolio(data); break;
     case 'faq': collectFaq(data); break;
     case 'quotes': collectQuotes(data); break;
     case 'testimonials': collectTestimonials(data); break;
@@ -963,6 +1057,144 @@ function collectTeam(data) {
     };
   });
   fileCache.team.data = result;
+}
+
+// Quadrants editor
+function renderQuadrantsEditor(data) {
+  const sections = ['about', 'services', 'portfolio', 'clients'];
+  return sections.map(section => `
+    <div class="editor-card">
+      <h3>${section.charAt(0).toUpperCase() + section.slice(1)} Quadrant</h3>
+      ${bilingualTextarea(`quad-${section}`, 'Heading lines (one per line)', {
+        ko: (data[section]?.ko || []).join('\n'),
+        en: (data[section]?.en || []).join('\n')
+      })}
+    </div>
+  `).join('');
+}
+
+function collectQuadrants(data) {
+  ['about', 'services', 'portfolio', 'clients'].forEach(section => {
+    const ko = getVal(`quad-${section}-ko`);
+    const en = getVal(`quad-${section}-en`);
+    data[section] = {
+      ko: ko.split('\n'),
+      en: en.split('\n'),
+    };
+  });
+}
+
+// Portfolio editor
+function renderPortfolioEditor(data) {
+  let html = `
+    <div class="editor-card">
+      <h3>Portfolio Items (${data.length})</h3>
+      <div class="search-bar">
+        <input type="text" id="portfolio-search" placeholder="Search by title, client, or media type...">
+        <span class="result-count" id="portfolio-count">${data.length} items</span>
+      </div>
+      <div id="portfolio-items">
+  `;
+  data.forEach((item, i) => {
+    html += renderPortfolioItem(item, i);
+  });
+  html += `
+      </div>
+      <div class="array-controls">
+        <button class="btn-outline btn-small" onclick="addPortfolioItem()">+ Add Portfolio Item</button>
+      </div>
+    </div>
+  `;
+  return html;
+}
+
+function renderPortfolioItem(item, i) {
+  const title = item.title?.en || item.title?.ko || '(untitled)';
+  return `
+    <div class="portfolio-item" data-index="${i}" data-search="${escapeAttr((title + ' ' + (item.client||'') + ' ' + (item.mediaType||'')).toLowerCase())}">
+      <div class="portfolio-item-summary" onclick="togglePortfolioItem(this)">
+        <div class="portfolio-item-left">
+          <span class="portfolio-item-num">#${i + 1}</span>
+          <span class="portfolio-item-title">${escapeHtml(title)}</span>
+          <span class="portfolio-item-meta">${escapeHtml(item.client || '')} &middot; ${escapeHtml(item.mediaType || '')}</span>
+        </div>
+        <span class="portfolio-item-chevron">&#9654;</span>
+      </div>
+      <div class="portfolio-item-body">
+        <div style="margin-top:12px">
+          <div class="single-field">
+            <div class="field-group">
+              <label>ID (URL slug)</label>
+              <input type="text" data-field="pf-${i}-id" value="${escapeAttr(item.id || '')}">
+            </div>
+          </div>
+          ${bilingualField(`pf-${i}-title`, 'Title', item.title)}
+          <div class="bilingual-row">
+            <div class="field-group">
+              <label>Client</label>
+              <input type="text" data-field="pf-${i}-client" value="${escapeAttr(item.client || '')}">
+            </div>
+            <div class="field-group">
+              <label>Media Type</label>
+              <input type="text" data-field="pf-${i}-mediaType" value="${escapeAttr(item.mediaType || '')}">
+            </div>
+          </div>
+          <div class="single-field">
+            <div class="field-group">
+              <label>Video URL (optional)</label>
+              <input type="text" data-field="pf-${i}-videoUrl" value="${escapeAttr(item.videoUrl || '')}">
+            </div>
+          </div>
+          ${bilingualTextarea(`pf-${i}-mission`, 'Mission', item.mission)}
+          ${bilingualTextarea(`pf-${i}-solution`, 'Solution', item.solution)}
+          <div class="array-item-actions" style="margin-top:12px;display:flex;gap:4px;justify-content:flex-end">
+            ${i > 0 ? `<button class="btn-outline btn-small" onclick="movePortfolioItem(${i},-1)">Move Up</button>` : ''}
+            ${i < fileCache.portfolio.data.length - 1 ? `<button class="btn-outline btn-small" onclick="movePortfolioItem(${i},1)">Move Down</button>` : ''}
+            <button class="btn-danger btn-small" onclick="removePortfolioItem(${i})">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function togglePortfolioItem(summary) {
+  const item = summary.closest('.portfolio-item');
+  item.classList.toggle('expanded');
+}
+
+function bindPortfolioListeners() {
+  const search = document.getElementById('portfolio-search');
+  if (!search) return;
+  search.addEventListener('input', () => {
+    const q = search.value.toLowerCase().trim();
+    const items = document.querySelectorAll('.portfolio-item');
+    let count = 0;
+    items.forEach(item => {
+      const match = !q || item.dataset.search.includes(q);
+      item.style.display = match ? '' : 'none';
+      if (match) count++;
+    });
+    document.getElementById('portfolio-count').textContent = `${count} item${count !== 1 ? 's' : ''}`;
+  });
+}
+
+function collectPortfolio(data) {
+  const items = document.querySelectorAll('#portfolio-items > .portfolio-item');
+  const result = Array.from(items).map((el, i) => {
+    const obj = {
+      id: getVal(`pf-${i}-id`),
+      title: getBilingual(`pf-${i}-title`),
+      client: getVal(`pf-${i}-client`),
+      mediaType: getVal(`pf-${i}-mediaType`),
+      mission: getBilingual(`pf-${i}-mission`),
+      solution: getBilingual(`pf-${i}-solution`),
+    };
+    const videoUrl = getVal(`pf-${i}-videoUrl`);
+    if (videoUrl) obj.videoUrl = videoUrl;
+    return obj;
+  });
+  fileCache.portfolio.data = result;
 }
 
 // ─── Array Mutations ──────────────────────────────────
@@ -1087,6 +1319,36 @@ function removeTeamExp(memberIdx, expIdx) {
   member.experience.ko.splice(expIdx, 1);
   member.experience.en.splice(expIdx, 1);
   renderEditor('team');
+}
+
+// Portfolio mutations
+function addPortfolioItem() {
+  collectFormData('portfolio');
+  fileCache.portfolio.data.push({
+    id: '',
+    title: { ko: '', en: '' },
+    client: '',
+    mediaType: '',
+    mission: { ko: '', en: '' },
+    solution: { ko: '', en: '' },
+  });
+  renderEditor('portfolio');
+}
+
+function removePortfolioItem(i) {
+  if (!confirm('Delete this portfolio item?')) return;
+  collectFormData('portfolio');
+  fileCache.portfolio.data.splice(i, 1);
+  renderEditor('portfolio');
+}
+
+function movePortfolioItem(i, dir) {
+  collectFormData('portfolio');
+  const arr = fileCache.portfolio.data;
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderEditor('portfolio');
 }
 
 // ─── HTML Helpers ─────────────────────────────────────

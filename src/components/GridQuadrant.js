@@ -1,6 +1,6 @@
 import { stateManager } from '../core/state.js';
 import { router } from '../core/router.js';
-import { quadrantContent } from '../data/quadrants.js';
+import quadrantContent from '../data/quadrants.json';
 import { languageManager } from '../core/language.js';
 import { createElement, setHTML } from '../utils/dom.js';
 import { ModalVideo } from './ModalVideo.js';
