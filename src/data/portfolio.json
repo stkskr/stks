@@ -24,7 +24,6 @@
     },
     "client": "Innocean",
     "mediaType": "script",
-    "videoUrl": "https://www.youtube.com/watch?v=y9tnJ1CIvT8&t=613s",
     "mission": {
       "ko": "현대 CEO 정의선이 CES 2022에서 관중에게 발표할 연설문 제작. 매력적이고 이해하기 쉬운 방식으로 현대의 첨단 로봇 기술을 소개하는 스크립트 작업.",
       "en": "Write a speech to be delivered by Hyundai CEO Chung Eui-sun, and speakers from Hyundai, to a live audience at CES 2022. The speech had to introduce Hyundai's advanced robotics technology for mobility in a way that was captivating and easy to understand."
@@ -32,7 +31,8 @@
     "solution": {
       "ko": "기술을 쉽게 이해할 수 있도록 적절한 속도로 소화하기 쉬운 용어들을 활용하고, 발표의 전 과정이 매력적일 수 있도록 대화의 형식으로 스크립트 제작.",
       "en": "We made sure to explain the technology in easily digestible terms at an appropriate pace, and gave the speakers lots of chances to interact with each other, to make sure the speech was captivating from start to finish."
-    }
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=y9tnJ1CIvT8&t=613s"
   },
   {
     "id": "990-pro-online-features",
@@ -126,7 +126,6 @@
       "en": "LG CES 2025 Convention Copy"
     },
     "client": "LG GMG",
-    "videoUrl": "https://youtu.be/a5zI_Neviys",
     "mediaType": "ooh",
     "mission": {
       "ko": "CES 2025에서 공개된 LG의 미래 비전을 전 세계 고객이 쉽게 이해하고 감정적으로 공감할 수 있도록, '공감지능(Affectionate Intelligence)'이라는 복합 개념을 따뜻하고 명료한 언어로 풀어내는 글로벌 카피 개발 과제. 브랜드의 기술 혁신성과 인간 중심 메시지를 동시에 전달할 수 있는 카피 구조화 필요.",
@@ -135,7 +134,8 @@
     "solution": {
       "ko": "공식 서문의 의미 중심 재창작, 인터랙티브 디스플레이 스크립트의 리얼리티 중심 톤앤매너 워시, 각 존 타이틀의 구조 재정비 및 언어 정제. 전시 전반에 걸친 카피 워크를 통해 고객 여정에 따라 정보 전달과 감정 몰입을 모두 고려한 브랜드 메시지 완성.",
       "en": "Recreation of the official preface with narrative clarity, tone and manner wash of the interactive display script to reflect everyday realism, and structural refinement of zone titles. A holistic language overhaul across the exhibition ensured an experience that combined clear guidance with emotional immersion."
-    }
+    },
+    "videoUrl": "https://youtu.be/a5zI_Neviys"
   },
   {
     "id": "amorepacific-80th-anniversary",
@@ -144,8 +144,7 @@
       "en": "Amorepacific 80th Anniversary Brand Film"
     },
     "client": "AMOREPACIFIC",
-    "videoUrl": "https://www.youtube.com/watch?v=GF_67s2LUwk",
-    "mediaType": "branding, video",
+    "mediaType": "video, branding",
     "mission": {
       "ko": "아모레퍼시픽의 80년 헤리티지를 기반으로, 브랜드의 비전과 정체성을 함께 전달할 수 있는 내러티브 카피 개발. 좌우 분할 구조의 필름 구성을 감안해, 과거와 미래의 메시지가 하나의 흐름으로 읽힐 수 있도록 언어적 연결성과 리듬을 갖춘 문장 설계 필요.",
       "en": "Craft an English narrative that bridges Amorepacific's heritage and future vision for its 80th anniversary film. The film's split-screen format required a writing structure that could move fluidly between past and future, while expressing confidence, artistry, and forward-thinking ambition."
@@ -153,7 +152,8 @@
     "solution": {
       "ko": "'New Beauty로 영감을 전해온 여정'이라는 브랜드 메시지를 현대적이고 예술적인 어조로 재해석. 시대마다 달라진 아름다움의 언어를 통일된 어휘 구조로 풀어내고, 헤리티지와 비전을 자연스럽게 호환시킬 수 있도록 문장 흐름과 어조를 정교하게 조율.",
       "en": "Reframed the core message of \"inspiring New Beauty across every era\" with a contemporary, artistic tone. Unified the language of past and future beauty into a single voice, ensuring the copy could flow seamlessly across the film's split-screen narrative while elevating the brand's global presence."
-    }
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=GF_67s2LUwk"
   },
   {
     "id": "amorepacific-vision-statement",
@@ -230,7 +230,6 @@
       "en": "LG Uplus – ixi-O TVC"
     },
     "client": "LG Uplus",
-    "videoUrl": "https://youtu.be/Bj-WHOkG_r8",
     "mediaType": "video",
     "mission": {
       "ko": "AI 기반 통화 요약, 딥페이크 감지, 스팸 필터링 등 '익시오'의 주요 기능을 소비자 관점에서 쉽게 전달할 수 있는 TVC용 영문 카피 개발. 기능 중심 설명이 아닌, 공감 가능한 언어와 리듬으로 브랜드 톤을 살리는 작업이 요구됨.",
@@ -239,7 +238,8 @@
     "solution": {
       "ko": "복잡한 기능을 일상 언어로 풀어내는 '말맛' 중심의 카피 전략을 적용. 기능 하나하나를 상황 중심의 문장으로 스토리텔링해 사용자의 공감대를 유도하고, 브랜드 특유의 친근하고 유쾌한 어조를 글로벌 타겟에 맞춰 재해석함.",
       "en": "Applied a tone-first strategy that turned complex features into accessible, story-like lines with rhythm and wit. Framed each function in real-life context to spark recognition and trust, while shaping ixi-O's voice into one that feels playful, helpful, and distinctly human."
-    }
+    },
+    "videoUrl": "https://youtu.be/Bj-WHOkG_r8"
   },
   {
     "id": "innisfree-brand-slogan",
@@ -300,7 +300,6 @@
     },
     "client": "Samsung Display",
     "mediaType": "branding",
-    "videoUrl": "https://youtu.be/Gqvy7JwcjSQ",
     "mission": {
       "ko": "OLED와 QD-OLED 기반의 색 일관성 기술을 소비자 경험 중심으로 전달할 수 있는 명칭 개발. 스마트폰부터 TV까지 기기 간 색 연결성을 직관적으로 담아내면서도, 글로벌 전시에서도 감각적으로 통용될 수 있는 네이밍 필요.",
       "en": "Create a concise English name that intuitively captures the experience of consistent, true-to-life color across OLED and QD-OLED devices. The name needed to reflect a seamless visual journey—from phone to TV—while resonating in global exhibition contexts."
@@ -308,7 +307,8 @@
     "solution": {
       "ko": "'동기화(Sync)'와 '색감(Chroma)'을 결합해 기술 개념을 감각적으로 풀어낸 'Synchroma' 제안. 쉽고 직관적인 언어 구조를 통해 전시 현장의 메시지 전달력을 높였고, 기기 간 연결성과 몰입형 색 경험을 단어 하나에 표현.",
       "en": "Proposed \"Synchroma,\" a fusion of \"sync\" and \"chroma,\" to distill the concept into a crisp, sensory-friendly name. The result clearly signals visual harmony across devices while enhancing message clarity in exhibition and brand touchpoints."
-    }
+    },
+    "videoUrl": "https://youtu.be/Gqvy7JwcjSQ"
   },
   {
     "id": "olive-young-25th-anniversary",
@@ -318,7 +318,6 @@
     },
     "client": "TBWA",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/EXqX7NLBSok",
     "mission": {
       "ko": "올리브영 25주년을 기념하는 TVC의 영문 카피를 통해 브랜드와 고객이 함께 쌓아온 시간의 감정적 가치를 축하하는 과제. 일상의 설렘과 영감을 긍정적인 에너지로 풀어내는 따뜻하고 컨템포러리한 어조가 요구됨.",
       "en": "Craft celebratory English copy for Olive Young's 25th anniversary TVC, honoring the shared journey between the brand and its customers. The writing needed to capture everyday joy and inspiration with a warm, contemporary tone."
@@ -326,7 +325,8 @@
     "solution": {
       "ko": "모든 '우리의 날들'을 축하하는 메시지를 중심으로, 브랜드와 고객의 관계를 동등한 파트너십으로 묘사하는 어휘를 구성. 단어 하나하나에 밝은 정서와 감각적인 리듬을 더해, 감정적 공감과 글로벌 보편성을 동시에 전달할 수 있도록 정제함.",
       "en": "Built the message around a shared celebration of \"our days,\" framing the brand-customer relationship as a mutual partnership. Infused each line with emotional brightness and rhythmic ease to ensure both heartfelt resonance and universal appeal."
-    }
+    },
+    "videoUrl": "https://youtu.be/EXqX7NLBSok"
   },
   {
     "id": "samsung-smartthings-lifestyle",
@@ -336,7 +336,6 @@
     },
     "client": "ToBeContinue",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/opQ_1cYZdss",
     "mission": {
       "ko": "자연스러운 스토리텔링을 통해 매력적인 단편 영화로 SmartThings의 기능을 소개.",
       "en": "Show off SmartThings features in an engaging short film through natural storytelling."
@@ -344,7 +343,8 @@
     "solution": {
       "ko": "광고가 아닌 일상적인 대화처럼 들리도록 자연스러운 문구와 발화 패턴을 활용하여 두 캐릭터의 고유한 목소리를 구현.",
       "en": "We created unique voices for the two characters by drawing on natural phrases and patterns of speech, to make a script sounds like a natural English conversation, rather than an advert."
-    }
+    },
+    "videoUrl": "https://youtu.be/opQ_1cYZdss"
   },
   {
     "id": "hyundai-pleos-vision",
@@ -354,7 +354,6 @@
     },
     "client": "MDR Creative",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/E_DxpnmVDUc?si=uJqxEY_83QShgPBy&t=199",
     "mission": {
       "ko": "자동차를 위한 운영체제, PLEOS의 비전을 공상과학 세계관을 통해 풀어내는 과제. OS라는 기술 중심 콘셉트를 관객이 쉽게 이해할 수 있도록 캐주얼하면서도 몰입감 있는 내레이션 스크립트로 구현 필요. 브랜드의 미래지향성과 서사적 상상력을 모두 담아낼 언어 설계 필요.",
       "en": "Transform a futuristic yet unfamiliar concept—an operating system for cars—into a vision that feels cinematic, imaginative, and accessible. Required crafting a narration script that balances sci-fi tone with down-to-earth clarity, expressing Hyundai's forward-looking narrative through immersive language."
@@ -362,7 +361,8 @@
     "solution": {
       "ko": "공상과학 콘셉트 기반 스토리보드에 맞추어, 자동차 OS의 역할을 '세상의 움직임을 읽고 흐름을 만들어내는 존재'로 설명. 기술 용어를 배제하고 스토리텔링 중심으로 흐름을 설계해, 정보 전달보다는 감각적 설득에 초점을 맞춘 나레이션 스크립트 완성.",
       "en": "Based on a sci-fi-inspired narrative world, paint the OS as a metaphorical force that senses motion and orchestrates flow. Avoided technical jargon in favor of sensory-driven storytelling, delivering a script designed to captivate rather than explain—rooted in vision, not instruction."
-    }
+    },
+    "videoUrl": "https://youtu.be/E_DxpnmVDUc?si=uJqxEY_83QShgPBy&t=199"
   },
   {
     "id": "samyang-tangle-renewal",
@@ -372,7 +372,6 @@
     },
     "client": "TBWA",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/W6eOk2pLwC8",
     "mission": {
       "ko": "미국 런칭을 앞둔 '탱글' 리뉴얼 캠페인. 긴 면을 즐기는 USP와 향상된 맛을 미국 소비자에게 직관적으로 전달하며 브랜드의 식품 확장 전략을 미국 시장에 맞는 감각적 언어로 표현 필요.",
       "en": "For Tangle's U.S. debut, the mission was to clearly deliver its USP—the joy of long noodles—alongside the upgraded taste. The challenge was to express the brand's food expansion strategy in a way that felt sensory and relevant to American consumers."
@@ -380,7 +379,8 @@
     "solution": {
       "ko": "후킹되는 음악과 리듬감 있는 카피를 통해 탱글의 긴 면과 풍미 강조. 영어 카피는 미국 시장에 맞춰 최적화하여 브랜드 차별성 부각.",
       "en": "We created rhythm-driven copy synced to catchy music, highlighting Tangle's long noodles and rich taste. The English copy was optimized for the U.S. market to sharpen the brand's unique positioning."
-    }
+    },
+    "videoUrl": "https://youtu.be/W6eOk2pLwC8"
   },
   {
     "id": "odyssey-neo-g9",
@@ -390,7 +390,6 @@
     },
     "client": "SEC VD",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/N5ousUFgwiU",
     "mission": {
       "ko": "Odyssey x T1 콜라보레이션 모니터 G9. Gaming Performance를 상향시켜 플레이어를 승리로 이끄는 G9의 카피를 제작.",
       "en": "Develop copy showing the game-winning performance only capable with the G9 monitor, focusing on the epic collaboration between Odyssey x T1."
@@ -398,7 +397,8 @@
     "solution": {
       "ko": "플레이어의 승리를 지키는 Guardian Angel로 등장한 Living Legendary Pro Gamer 페이커의 영예에 걸맞는 짧고 세련된 카피 구현.",
       "en": "We delivered a powerful copy that blasts right to the hearts of dedicated gamers worldwide. Assured victory was delivered by acclaimed pro-gamer, Faker."
-    }
+    },
+    "videoUrl": "https://youtu.be/N5ousUFgwiU"
   },
   {
     "id": "samsung-ea-rebranding",
@@ -408,7 +408,6 @@
     },
     "client": "Alleysquare",
     "mediaType": "video, branding",
-    "videoUrl": "https://youtu.be/qflBCIj2boE",
     "mission": {
       "ko": "삼성엔지니어링의 새로운 사명 'Samsung E&A'의 정체성을 알리고, 45개국 1,600여 개 프로젝트의 수행 경험을 기반으로 한 차별화된 플랜트 혁신 역량을 강조하는 브랜드 영상을 현지 감성과 글로벌 시청자에게 맞게 트랜스크리에이션. 한편, 레오나르도 다빈치의 상상력과 창의성을 모티브로 한 두 번째 영상 역시 삼성 E&A의 비전과 연결될 수 있도록 감성적으로 풀어낼 것.",
       "en": "Transcreate two brand films announcing Samsung Engineering's new name, Samsung E&A. The first highlights the company's differentiated innovation based on its execution of over 1,600 projects across 45 countries. The second draws inspiration from the genius of Leonardo da Vinci, tying his imagination and ingenuity to Samsung E&A's forward-looking vision."
@@ -416,7 +415,8 @@
     "solution": {
       "ko": "기술 중심 메시지를 글로벌 시청자에게 자연스럽게 전달할 수 있도록 구조와 어조를 재정비하고, 'Engineering & Ahead'라는 브랜드 철학을 기반으로 지속가능한 미래를 향한 도전을 명확하고 직관적인 언어로 풀어냄. 다빈치 영상은 역사적 상상력과 현대 기술을 연결하는 창의적 접근을 통해 브랜드의 개척자적 정체성을 강조함.",
       "en": "Refined the script to deliver complex technology narratives in clear, accessible language aligned with global audiences. Anchored in the \"Engineering & Ahead\" philosophy, the first film presents Samsung E&A's future-focused vision. The Da Vinci film uses a creative narrative approach, connecting historical imagination with modern engineering to underscore the brand's pioneering spirit."
-    }
+    },
+    "videoUrl": "https://youtu.be/qflBCIj2boE"
   },
   {
     "id": "lg-tone-of-voice",
@@ -511,7 +511,6 @@
     },
     "client": "AHC",
     "mediaType": "branding",
-    "videoUrl": "https://youtu.be/id0TXk8nVLE",
     "mission": {
       "ko": "앤 해서웨이가 말하는 AHC 크림을 사용하게 된 이야기 등 AHC 브랜드 가치를 설명하는 영상.",
       "en": "A video explaining the brand values of AHC, including Anne Hathaway's story of how she came to use AHC cream."
@@ -519,7 +518,8 @@
     "solution": {
       "ko": "앤 해서웨이가 제공한 내용을 토대로 AHC 브랜드에 녹여 대본을 작성.",
       "en": "We wrote a script that weaves Anne Hathaway's provided insights into the essence of the AHC brand."
-    }
+    },
+    "videoUrl": "https://youtu.be/id0TXk8nVLE"
   },
   {
     "id": "aero-furniture-message-matrix",
@@ -631,7 +631,6 @@
     },
     "client": "ThePositive",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/JDVSvw9Q-d8",
     "mission": {
       "ko": "조세 무리뉴 감독이 등장하는 EA 스포츠와 넥슨의 FC 온라인 광고 비디오의 스토리보드와 대본을 transcreate. 영어 버전이 자연스럽고 매력적으로 들리면서 주제에 대한 명확한 디렉션을 제시.",
       "en": "Transcreate the storyboard and script for a video featuring coach José Mourinho for the new FC Online game by EA Sports and Nexon. Ensure the English version sounds natural and engaging while providing clear directions for the subject."
@@ -639,7 +638,8 @@
     "solution": {
       "ko": "한국어 스토리보드와 대본을 재해석하여 무리뉴 감독의 전설적인 위상의 정수를 담은 역동적이고 매력적인 영문 스크립트를 만들어 냈습니다. 명확하고 정확한 디렉션을 제공하여 영상이 FC 온라인의 감동과 명성을 전달할 수 있도록 했습니다. 그 결과 전 세계 시청자에게 진정성 있고 매력적으로 느껴지는 대본이 완성되었습니다.",
       "en": "We reimagined the Korean storyboard and script, infusing it with dynamic and captivating English that captured the essence of Mourinho's legendary status. We provided clear and precise directions, ensuring the video conveyed the excitement and prestige of FC Online. The final result was a script that felt authentic and engaging to an international audience."
-    }
+    },
+    "videoUrl": "https://youtu.be/JDVSvw9Q-d8"
   },
   {
     "id": "aestura-atobarrier",
@@ -649,7 +649,6 @@
     },
     "client": "aL",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/JOYxgqaka2I",
     "mission": {
       "ko": "제품 영상의 영어 카피 작성. 한국어를 기반으로 제작 완료된 영상 내에서 그 형식과 타이밍을 유지하고 원래의 톤과 언어를 그대로 살리는 것이 필요.",
       "en": "Writing English copy for a product video. Required maintaining the formatting and staying true to the original tone/language since the video was already produced in Korean."
@@ -657,7 +656,8 @@
     "solution": {
       "ko": "한국 본연의 느낌과 형식을 유지하면서도 영어 카피를 자연스럽게 녹여내어 목표 청중에게 영상의 의도와 일관성을 유지.",
       "en": "We successfully maintained the Korean essence and format, seamlessly blending the English copy to keep the video's intent and coherence for the target viewers."
-    }
+    },
+    "videoUrl": "https://youtu.be/JOYxgqaka2I"
   },
   {
     "id": "melon-music-sns",
@@ -718,7 +718,6 @@
     },
     "client": "OHSKA Studio",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/booaC2RnRGA",
     "mission": {
       "ko": "일상의 변화에 대한 상상들을 현실화할 수 있는 현대의 기술력을 과장으로 들리지 않고, 현실감 있도록 전달하는 카피 개발.",
       "en": "Develop copy that conveys the technological capabilities of today that can turn imaginative changes in daily life into reality, without sounding exaggerated but rather realistic."
@@ -726,7 +725,8 @@
     "solution": {
       "ko": "현대의 능력을 보여줄 수 있는 '사실'들을 언급하고, 오버하지 않으면서 비전의 실현을 약속하는 카피 개발.",
       "en": "We developed copy that mentions \"facts\" showcasing modern capabilities, promising the realization of visions without overstating or exaggerating."
-    }
+    },
+    "videoUrl": "https://youtu.be/booaC2RnRGA"
   },
   {
     "id": "kakao-pay-intro",
@@ -770,7 +770,6 @@
     },
     "client": "SK hynix",
     "mediaType": "branding",
-    "videoUrl": "https://youtu.be/fvSvNb71Kn0",
     "mission": {
       "ko": "당시 일반인들에게 인지도가 높지 않았던 SK 하이닉스. 이 프로젝트를 시초로 전 세계에 명성을 떨칠 운명임을 깨닫는다.",
       "en": "Redefine the ever-growing brand SK hynix into a globally-renowned powerhouse. Create a slogan to last for years, if not decades."
@@ -778,7 +777,8 @@
     "solution": {
       "ko": "수없이 변화하는 모습을 반도체에 비유하여 볼드하고 임팩트 있게 선보이는 글로벌 슬로건과 영상 카피 제작",
       "en": "By connecting semiconductors with the human spirit, we transformed semiconductors into a product that's bold, brilliant, full of impact. We associated SK hynix with the indomitable human passion, creativity, and inspiration that \"comes from within.\""
-    }
+    },
+    "videoUrl": "https://youtu.be/fvSvNb71Kn0"
   },
   {
     "id": "laneige-sleeping-mask",
@@ -788,7 +788,6 @@
     },
     "client": "BBDO",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/UwRuT75LNPI",
     "mission": {
       "ko": "뷰티 업계에 특화된 용어를 사용하면서 클라이언트의 국문 카피를 영문화하여 국문 원본의 의미에 충실하고 카피가 TVC의 톤과 잘 어울리도록 카피 제작.",
       "en": "Transcreate the client's Korean copy into English, staying true to the original Korean meaning while using beauty industry-specific terms and making sure the copy matches the tone of the TVC well."
@@ -796,7 +795,8 @@
     "solution": {
       "ko": "자연스러운 영어 카피를 만들기 위해 유사한 뷰티 제품을 조사하여 TVC의 톤과 타겟층에 맞는 흔히 사용되는 단어를 찾아 카피에 활용.",
       "en": "We researched similar beauty products to find commonly used words matching the tone and target audience of the TVC, to create compelling, natural English copy that fully aligned with the TVC messaging."
-    }
+    },
+    "videoUrl": "https://youtu.be/UwRuT75LNPI"
   },
   {
     "id": "kia-ev6-world-premiere",
@@ -806,7 +806,6 @@
     },
     "client": "Planit Production",
     "mediaType": "script",
-    "videoUrl": "https://youtu.be/c_aOOAa-Q2k",
     "mission": {
       "ko": "New Kia 브랜드 선언 이후 공개하는 EV6를 전 세계에 라이브 스트리밍으로 최초 공개.",
       "en": "Announce the all-new EV6 to global audiences through live stream following the brand reveal of the New Kia rebranding."
@@ -814,7 +813,8 @@
     "solution": {
       "ko": "New Kia 공개 당시의 소비자 반응과 연계하여 EV6가 어떤 상징성을 가졌는지 인트로부터 짧고 볼드하게 선언.",
       "en": "We deeply entwined the New Kia brand announcement with the eagerly awaited EV6 release to viewers worldwide wishing to experience the next evolution of electric cars."
-    }
+    },
+    "videoUrl": "https://youtu.be/c_aOOAa-Q2k"
   },
   {
     "id": "medit-brand-manual",
@@ -841,7 +841,6 @@
     },
     "client": "Planit Production",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/TJf6if_CNZo",
     "mission": {
       "ko": "기아자동차와 유로파리그의 공식 파트너십을 단순한 제휴 관계가 아닌, 팬들과의 가족 관계로 홍보.",
       "en": "Promote Kia Motors' official partnership with the UEFA Europa League not just as a simple collaboration, but as a familial bond with the fans."
@@ -849,7 +848,8 @@
     "solution": {
       "ko": "기아가 팬들의 가슴이 뛰는 순간들에 모두 함께할 수 있는 가족, 클럽 패밀리임을 감성적으로 어필.",
       "en": "We emotionally highlighted that Kia is a part of the club family, sharing in every heartbeat and thrilling moment of the fans."
-    }
+    },
+    "videoUrl": "https://youtu.be/TJf6if_CNZo"
   },
   {
     "id": "hyundai-duty-free",
@@ -927,7 +927,6 @@
     },
     "client": "Planit",
     "mediaType": "video",
-    "videoUrl": "https://youtu.be/qNsSsM9aUhc",
     "mission": {
       "ko": "현대 자동차의 비전은 자동차로 어디든지, 언제든지 떠날 수 있다는 것. 그리고 쉐클턴즈 리턴 영상을 통해 그들의 위대한 비전에 대한 해답을 제시.",
       "en": "Hyundai's vision is that you can go anywhere, anytime, with their cars. Through the Shackleton's Return video, they showcased an answer to this grand vision."
@@ -935,7 +934,8 @@
     "solution": {
       "ko": "세세한 감정선을 놓치지 않기 위해, 말투나, 어조 등을 고스란히 언어에 담아내면서 내레이션, 인터뷰 스크립트 카피 진행.",
       "en": "To capture even the subtlest emotional nuances, we meticulously preserved the tone and inflection while crafting narration and interview script copy."
-    }
+    },
+    "videoUrl": "https://youtu.be/qNsSsM9aUhc"
   },
   {
     "id": "hanwha-corporate",
@@ -945,7 +945,6 @@
     },
     "client": "Hanwha",
     "mediaType": "video, branding",
-    "videoUrl": "https://youtu.be/h8kcS7QE96c",
     "mission": {
       "ko": "드라이하고 휴머니즘이 결여된 홍보영상에서 탈피해 마치 한 저널리스트의 여행기 같은 다큐멘터리 형식의 홍보 영상 내레이션과 자막.",
       "en": "Move away from dry, impersonal promotional videos to a documentary-style format that feels like a journalist's travelogue, complete with narration and subtitles."
@@ -953,7 +952,8 @@
     "solution": {
       "ko": "BBC나 내셔널 지오그래픽 다큐 같은 느낌과 감정을 담은 내레이션으로 한화의 색다른 홍보 영상에 말맛나는 색을 입힘.",
       "en": "We infused Hanwha's unique promotional video with a rich narrative style reminiscent of BBC or National Geographic documentaries, adding a touch of engaging storytelling and emotion."
-    }
+    },
+    "videoUrl": "https://youtu.be/h8kcS7QE96c"
   },
   {
     "id": "doosan-corporate",
@@ -963,7 +963,6 @@
     },
     "client": "Oricom",
     "mediaType": "video, branding",
-    "videoUrl": "https://youtu.be/EmWIqioo1K0",
     "mission": {
       "ko": "지구와 사람의 미래를 지켜줄 기술과 정성으로 자연친화적 기업에 도전하는 아름다운 기업 두산 그룹. 글로벌하게 이미지를 쇄신할 중요한 홍보 영상.",
       "en": "Doosan Group, a company striving to be an eco-friendly leader through technology and dedication that safeguard the future of the planet and its people. A crucial promotional video aimed at refreshing its global image."
@@ -971,7 +970,8 @@
     "solution": {
       "ko": "보다 감성적이고, 시청자와 교감, 공감하려는 두산의 메시지를 영문 카피로 승화.",
       "en": "We elevated Doosan's message into English copy that is more emotional, aiming to connect and resonate with viewers."
-    }
+    },
+    "videoUrl": "https://youtu.be/EmWIqioo1K0"
   },
   {
     "id": "zic-global-slogan",
@@ -988,6 +988,23 @@
     "solution": {
       "ko": "4개월의 시간 동안 이 중요한 리브랜딩에 몰두하여,현재 전세계 모든 ZIC 엔진 오일에서 볼 수 있는 슬로건을 제작.",
       "en": "Over four months, we dedicated ourselves to this crucial rebranding project, creating the slogan that is now featured on all ZIC engine oils worldwide."
+    }
+  },
+  {
+    "id": "zflip-olympic-edition",
+    "title": {
+      "ko": "2024 Paris Olympic Edition Z Flip 6 Video Copy",
+      "en": "2024 Paris Olympic Edition Z Flip 6 Video Copy"
+    },
+    "client": "Cheil",
+    "mediaType": "video",
+    "mission": {
+      "ko": "비디오 광고를 위한 영어 카피 작성. 제품과 그 기능에 대한 기술적 설명을 원래 한국어 톤에 맞춰 자연스러운 영문 스크립트로 통합.",
+      "en": "Writing English copy for a video advertisement. Required integrating technical explanations of the product and its features into casual English dialogue that aligned with the tone of the original Korean. "
+    },
+    "solution": {
+      "ko": "다양한 배역의 성격을 조화롭게 담아내어 제품과 그 기능을 설명하는 재미있고 유익한 스크립트를 제작, 글로벌 청중에게 전달.",
+      "en": "We produced an entertaining and informative script balancing the voices of multiple roles to explain the product and its features for a global audience."
     }
   }
 ]
