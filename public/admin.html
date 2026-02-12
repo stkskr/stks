@@ -262,6 +262,117 @@
     /* Single-value field (non-bilingual) */
     .single-field { margin-bottom: 16px; }
 
+    /* Team member card */
+    .team-profile-header {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .team-photo-wrapper {
+      flex-shrink: 0;
+      width: 80px;
+      text-align: center;
+    }
+    .team-photo-preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e5e7eb;
+      background: #f3f4f6;
+    }
+    .team-photo-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px dashed #d1d5db;
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+    .team-photo-upload-btn {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 11px;
+      color: #19334a;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .team-photo-upload-btn:hover { color: #a11d20; }
+    .team-header-fields {
+      flex: 1;
+      min-width: 0;
+    }
+    .team-initial-field {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .team-initial-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+    }
+    .team-initial-field input {
+      width: 48px;
+      padding: 4px 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .team-initial-field input:focus {
+      outline: none;
+      border-color: #19334a;
+      box-shadow: 0 0 0 3px rgba(25,51,74,0.1);
+    }
+    .team-section {
+      background: #f8f9fb;
+      border: 1px solid #edf0f3;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .team-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .team-section-header h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .team-section .array-item {
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+    .team-section .bilingual-row {
+      gap: 10px;
+    }
+    .team-edu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .team-edu-row span {
+      font-size: 11px;
+      color: #b0b5bb;
+    }
+
     /* Loading spinner */
     .spinner {
       display: inline-block;
@@ -1560,39 +1671,57 @@ function renderTeamEditor(data) {
 }
 
 function renderTeamItem(member, i) {
+  const photoSrc = member.image || '';
+  const photoPreview = photoSrc
+    ? `<img src="${escapeAttr(photoSrc)}" alt="Photo" class="team-photo-preview" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="team-photo-placeholder" style="display:none">No photo</div>`
+    : `<div class="team-photo-placeholder">No photo</div>`;
+
   return `
     <div class="array-item" data-index="${i}">
       <div class="array-item-header">
         <span class="item-number">Member #${i + 1}: ${escapeHtml(member.name.en || member.name.ko || '')}</span>
         <div class="array-item-actions">
           ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveTeamItem(${i},-1)">Move Up</button>` : ''}
-          <button class="btn-danger btn-small" onclick="removeTeamItem(${i})">Delete</button>
+          <button class="btn-danger btn-small" onclick="removeTeamItem(${i})">Delete Member</button>
         </div>
       </div>
-      ${bilingualField(`team-${i}-name`, 'Name', member.name)}
-      <div class="single-field">
-        <div class="field-group">
-          <label>Initial (shown on diamond)</label>
-          <input type="text" data-field="team-${i}-initial" value="${escapeAttr(member.initial)}" maxlength="2" style="width:60px">
+
+      <div class="team-profile-header">
+        <div class="team-photo-wrapper">
+          <div id="team-${i}-photo-preview">${photoPreview}</div>
+          <input type="file" id="team-${i}-photo-file" accept="image/*" style="display:none" onchange="uploadTeamPhoto(${i})">
+          <span class="team-photo-upload-btn" onclick="document.getElementById('team-${i}-photo-file').click()">Change photo</span>
+          <input type="hidden" data-field="team-${i}-image" value="${escapeAttr(photoSrc)}">
+        </div>
+        <div class="team-header-fields">
+          <div class="team-initial-field">
+            <label>Initial</label>
+            <input type="text" data-field="team-${i}-initial" value="${escapeAttr(member.initial)}" maxlength="2">
+          </div>
+          ${bilingualField(`team-${i}-name`, 'Name', member.name)}
+          ${bilingualField(`team-${i}-role`, 'Role', member.role)}
         </div>
       </div>
-      ${bilingualField(`team-${i}-role`, 'Role', member.role)}
-      <div class="single-field">
-        <div class="field-group">
-          <label>Image Path</label>
-          <input type="text" data-field="team-${i}-image" value="${escapeAttr(member.image)}">
+
+      <div class="team-section">
+        <div class="team-section-header">
+          <h4>Education</h4>
+          <button class="btn-outline btn-small" onclick="addTeamEdu(${i})">+ Add</button>
+        </div>
+        <div id="team-${i}-edu">
+          ${renderTeamEduItems(member.education, i)}
         </div>
       </div>
-      <h4 style="margin:12px 0 8px;font-size:13px;color:#6b7280">Education</h4>
-      <div id="team-${i}-edu">
-        ${renderTeamEduItems(member.education, i)}
+
+      <div class="team-section">
+        <div class="team-section-header">
+          <h4>Experience</h4>
+          <button class="btn-outline btn-small" onclick="addTeamExp(${i})">+ Add</button>
+        </div>
+        <div id="team-${i}-exp">
+          ${renderTeamExpItems(member.experience, i)}
+        </div>
       </div>
-      <button class="btn-outline btn-small" style="margin-bottom:12px" onclick="addTeamEdu(${i})">+ Add Education</button>
-      <h4 style="margin:12px 0 8px;font-size:13px;color:#6b7280">Experience</h4>
-      <div id="team-${i}-exp">
-        ${renderTeamExpItems(member.experience, i)}
-      </div>
-      <button class="btn-outline btn-small" onclick="addTeamExp(${i})">+ Add Experience</button>
     </div>
   `;
 }
@@ -1608,27 +1737,27 @@ function renderTeamEduItems(education, memberIdx) {
     const koDegree = koEdu[j]?.degree || '';
     const enDegree = enEdu[j]?.degree || '';
     html += `
-      <div class="array-item" style="padding:10px;margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:12px;color:#9ca3af">Education #${j+1}</span>
-          <button class="btn-danger btn-small" onclick="removeTeamEdu(${memberIdx},${j})">Remove</button>
+      <div class="array-item">
+        <div class="team-edu-row">
+          <span>#${j+1}</span>
+          <button class="btn-danger btn-small" onclick="removeTeamEdu(${memberIdx},${j})" style="padding:2px 8px;font-size:11px">Remove</button>
         </div>
-        <div class="bilingual-row">
-          <div class="field-group">
+        <div class="bilingual-row" style="margin-bottom:6px">
+          <div class="field-group" style="margin-bottom:0">
             <label><span class="lang-badge ko">KO</span> School</label>
             <input type="text" data-field="team-${memberIdx}-edu-${j}-ko-school" value="${escapeAttr(koSchool)}">
           </div>
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0">
             <label><span class="lang-badge en">EN</span> School</label>
             <input type="text" data-field="team-${memberIdx}-edu-${j}-en-school" value="${escapeAttr(enSchool)}">
           </div>
         </div>
         <div class="bilingual-row">
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0">
             <label><span class="lang-badge ko">KO</span> Degree</label>
             <input type="text" data-field="team-${memberIdx}-edu-${j}-ko-degree" value="${escapeAttr(koDegree)}">
           </div>
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0">
             <label><span class="lang-badge en">EN</span> Degree</label>
             <input type="text" data-field="team-${memberIdx}-edu-${j}-en-degree" value="${escapeAttr(enDegree)}">
           </div>
@@ -1646,17 +1775,17 @@ function renderTeamExpItems(experience, memberIdx) {
   const count = Math.max(koExp.length, enExp.length);
   for (let j = 0; j < count; j++) {
     html += `
-      <div class="array-item" style="padding:10px;margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:12px;color:#9ca3af">Experience #${j+1}</span>
-          <button class="btn-danger btn-small" onclick="removeTeamExp(${memberIdx},${j})">Remove</button>
+      <div class="array-item">
+        <div class="team-edu-row">
+          <span>#${j+1}</span>
+          <button class="btn-danger btn-small" onclick="removeTeamExp(${memberIdx},${j})" style="padding:2px 8px;font-size:11px">Remove</button>
         </div>
         <div class="bilingual-row">
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0">
             <label><span class="lang-badge ko">KO</span></label>
             <input type="text" data-field="team-${memberIdx}-exp-${j}-ko" value="${escapeAttr(koExp[j] || '')}">
           </div>
-          <div class="field-group">
+          <div class="field-group" style="margin-bottom:0">
             <label><span class="lang-badge en">EN</span></label>
             <input type="text" data-field="team-${memberIdx}-exp-${j}-en" value="${escapeAttr(enExp[j] || '')}">
           </div>
@@ -2015,6 +2144,45 @@ function moveTeamItem(i, dir) {
   if (j < 0 || j >= arr.length) return;
   [arr[i], arr[j]] = [arr[j], arr[i]];
   renderEditor('team');
+}
+
+async function uploadTeamPhoto(i) {
+  const fileInput = document.getElementById(`team-${i}-photo-file`);
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const objectUrl = URL.createObjectURL(file);
+  const previewEl = document.getElementById(`team-${i}-photo-preview`);
+  previewEl.innerHTML = `<img src="${objectUrl}" alt="Photo" class="team-photo-preview">`;
+
+  // Store the file as a data URL in the hidden field for now
+  const reader = new FileReader();
+  reader.onload = () => {
+    // For team photos, we just update the image path field.
+    // The user will need to upload the image file to the repo separately
+    // or we can store it as a pending operation.
+    // For simplicity: set image path to a conventional path and queue the upload
+    const ext = file.name.split('.').pop().toLowerCase();
+    const memberName = getVal(`team-${i}-name-en`) || getVal(`team-${i}-name-ko`) || `member${i}`;
+    const safeName = memberName.replace(/[^a-zA-Z0-9]/g, '');
+    const filename = `profile${safeName}.${ext}`;
+    const repoPath = `public/assets/images/${filename}`;
+    const imagePath = `/assets/images/${filename}`;
+
+    // Update the hidden image field
+    const hiddenInput = document.querySelector(`[data-field="team-${i}-image"]`);
+    if (hiddenInput) hiddenInput.value = imagePath;
+
+    // Queue image upload
+    const base64 = reader.result.split(',')[1];
+    pendingImageOps = pendingImageOps.filter(op =>
+      !(op.action === 'upload' && op.repoPath.startsWith('public/assets/images/profile') && op.label === `team photo for ${memberName}`)
+    );
+    pendingImageOps.push({ action: 'upload', repoPath, base64, label: `team photo for ${memberName}` });
+    updateSaveButton();
+  };
+  reader.readAsDataURL(file);
+  fileInput.value = '';
 }
 
 function addTeamEdu(memberIdx) {
