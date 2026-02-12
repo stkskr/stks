@@ -455,6 +455,73 @@
     [data-drag-item].drag-over-top { box-shadow: inset 0 3px 0 0 #4f46e5; }
     [data-drag-item].drag-over-bottom { box-shadow: inset 0 -3px 0 0 #4f46e5; }
 
+    /* Deploy modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 520px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal h2 { font-size: 18px; margin-bottom: 16px; color: #111827; }
+    .modal .change-list {
+      list-style: none;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #374151;
+    }
+    .modal .change-list li {
+      padding: 6px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .modal .change-list li::before {
+      content: '\2022';
+      color: #4f46e5;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    .modal .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .modal textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      margin-bottom: 16px;
+    }
+    .modal textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .bilingual-row { grid-template-columns: 1fr; }
@@ -502,7 +569,20 @@
 
   <div class="save-bar">
     <span class="save-status" id="save-status">Ready</span>
-    <button class="btn-primary" id="save-btn" onclick="saveCurrentFile()">Save Changes</button>
+    <button class="btn-primary" id="save-btn" onclick="saveCurrentFile()">Save &amp; Deploy</button>
+  </div>
+
+  <div id="deploy-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)hideDeployModal()">
+    <div class="modal">
+      <h2>Save &amp; Deploy</h2>
+      <ul class="change-list" id="deploy-changes"></ul>
+      <div class="field-label">Commit message</div>
+      <textarea id="deploy-message"></textarea>
+      <div class="modal-actions">
+        <button class="btn-outline" onclick="hideDeployModal()">Cancel</button>
+        <button class="btn-primary" id="deploy-confirm-btn" onclick="executeDeploy()">Deploy</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -530,6 +610,7 @@ let currentTab = 'about';
 let fileCache = {};    // { [tab]: { data, sha } }
 let dirtyTabs = {};    // { [tab]: true } if unsaved
 let imageManifest = null;
+let pendingImageOps = []; // queued image ops: { action, repoPath, base64?, label }
 
 // ─── Auth ─────────────────────────────────────────────
 function startLogin() {
@@ -692,30 +773,11 @@ async function switchTab(tab) {
   }
 }
 
-// ─── Save ─────────────────────────────────────────────
-async function saveCurrentFile() {
+// ─── Save & Deploy ────────────────────────────────────
+function saveCurrentFile() {
   if (!currentTab || !fileCache[currentTab]) return;
-
   collectFormData(currentTab);
-
-  const btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Saving...';
-  setStatus('Saving...', 'saving');
-
-  try {
-    await saveFile(currentTab);
-    // When saving quotes, also regenerate and save testimonials.json
-    if (currentTab === 'quotes') {
-      await saveTestimonialsFromQuotes();
-    }
-    setStatus('Saved successfully!', 'success');
-  } catch (e) {
-    setStatus('Save failed: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Save Changes';
-  }
+  showDeployModal();
 }
 
 function setStatus(text, type = '') {
@@ -724,25 +786,172 @@ function setStatus(text, type = '') {
   el.className = 'save-status' + (type ? ` ${type}` : '');
 }
 
-// Generate testimonials.json from quotes with isTestimonial flag
-async function saveTestimonialsFromQuotes() {
-  const quotes = fileCache.quotes.data;
-  const testimonials = quotes
-    .filter(q => q.isTestimonial)
-    .map(q => ({
-      quote: q.quote,
-      author: {
-        ko: [q.author, q.role.ko].filter(Boolean).join(' '),
-        en: [q.author, q.role.en].filter(Boolean).join(' '),
-      },
-    }));
+function updateSaveButton() {
+  const btn = document.getElementById('save-btn');
+  if (!btn) return;
+  const n = pendingImageOps.length;
+  btn.textContent = n > 0 ? `Save & Deploy (${n} queued)` : 'Save & Deploy';
+}
 
-  // Load testimonials SHA if not cached
-  if (!fileCache.testimonials) {
-    await loadFile('testimonials');
+function showDeployModal() {
+  const changes = [];
+  changes.push(`Update ${FILES[currentTab].label} data`);
+  if (currentTab === 'quotes') {
+    changes.push('Auto-update Testimonials from flagged quotes');
   }
-  fileCache.testimonials.data = testimonials;
-  await saveFile('testimonials');
+  pendingImageOps.forEach(op => {
+    const icon = op.action === 'upload' ? '+' : '\u2212';
+    changes.push(`${icon} ${op.label}`);
+  });
+
+  document.getElementById('deploy-changes').innerHTML =
+    changes.map(c => `<li>${escapeHtml(c)}</li>`).join('');
+  document.getElementById('deploy-message').value =
+    `Update ${FILES[currentTab].label.toLowerCase()} content via admin`;
+  document.getElementById('deploy-modal').style.display = '';
+}
+
+function hideDeployModal() {
+  document.getElementById('deploy-modal').style.display = 'none';
+}
+
+async function batchCommit(message, fileOps) {
+  // Get current branch head
+  const refRes = await ghFetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/ref/heads/${BRANCH}`
+  );
+  if (!refRes.ok) throw new Error('Failed to get branch reference');
+  const headSha = (await refRes.json()).object.sha;
+
+  // Get tree from head commit
+  const commitRes = await ghFetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/commits/${headSha}`
+  );
+  if (!commitRes.ok) throw new Error('Failed to get current commit');
+  const baseTreeSha = (await commitRes.json()).tree.sha;
+
+  // Create blobs and build tree entries
+  const treeItems = [];
+  for (const op of fileOps) {
+    if (op.deleted) {
+      treeItems.push({ path: op.path, mode: '100644', type: 'blob', sha: null });
+    } else {
+      const blobRes = await ghFetch(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/blobs`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: op.content, encoding: op.encoding }),
+        }
+      );
+      if (!blobRes.ok) throw new Error(`Failed to create blob for ${op.path}`);
+      const blob = await blobRes.json();
+      treeItems.push({ path: op.path, mode: '100644', type: 'blob', sha: blob.sha });
+    }
+  }
+
+  // Create new tree
+  const treeRes = await ghFetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems }),
+    }
+  );
+  if (!treeRes.ok) throw new Error('Failed to create tree');
+  const treeSha = (await treeRes.json()).sha;
+
+  // Create commit
+  const newCommitRes = await ghFetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/commits`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, tree: treeSha, parents: [headSha] }),
+    }
+  );
+  if (!newCommitRes.ok) throw new Error('Failed to create commit');
+  const newCommitSha = (await newCommitRes.json()).sha;
+
+  // Update branch ref (fast-forward only)
+  const updateRes = await ghFetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/refs/heads/${BRANCH}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sha: newCommitSha, force: false }),
+    }
+  );
+  if (!updateRes.ok) throw new Error('Branch updated by someone else. Reload and try again.');
+}
+
+async function executeDeploy() {
+  const message = document.getElementById('deploy-message').value.trim();
+  if (!message) { alert('Please enter a commit message.'); return; }
+
+  hideDeployModal();
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Deploying...';
+  setStatus('Deploying...', 'saving');
+
+  try {
+    const fileOps = [];
+
+    // 1. Current tab's JSON data
+    fileOps.push({
+      path: FILES[currentTab].path,
+      content: JSON.stringify(fileCache[currentTab].data, null, 2) + '\n',
+      encoding: 'utf-8',
+    });
+
+    // 2. Auto-generated testimonials (when saving quotes)
+    if (currentTab === 'quotes') {
+      const testimonials = fileCache[currentTab].data
+        .filter(q => q.isTestimonial)
+        .map(q => ({
+          quote: q.quote,
+          author: {
+            ko: [q.author, q.role.ko].filter(Boolean).join(' '),
+            en: [q.author, q.role.en].filter(Boolean).join(' '),
+          },
+        }));
+      fileOps.push({
+        path: FILES.testimonials.path,
+        content: JSON.stringify(testimonials, null, 2) + '\n',
+        encoding: 'utf-8',
+      });
+    }
+
+    // 3. Pending image operations
+    for (const op of pendingImageOps) {
+      if (op.action === 'upload') {
+        fileOps.push({ path: op.repoPath, content: op.base64, encoding: 'base64' });
+      } else if (op.action === 'delete') {
+        fileOps.push({ path: op.repoPath, deleted: true });
+      }
+    }
+
+    await batchCommit(message, fileOps);
+
+    // Clear queue, invalidate cache
+    pendingImageOps = [];
+    delete fileCache[currentTab];
+    if (currentTab === 'quotes') delete fileCache.testimonials;
+
+    // Reload current tab data (refreshes SHA)
+    await loadFile(currentTab);
+
+    updateSaveButton();
+    setStatus('Deployed successfully!', 'success');
+  } catch (e) {
+    setStatus('Deploy failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    updateSaveButton();
+  }
 }
 
 // ─── Image Manifest & Upload ─────────────────────────
@@ -888,24 +1097,28 @@ async function uploadThumbnail(i) {
   const repoPath = `public/assets/portfolio/thumbnails/${filename}`;
 
   const statusEl = document.getElementById(`pf-${i}-thumb-status`);
-  statusEl.textContent = 'Uploading thumbnail...';
-  statusEl.className = 'upload-status uploading';
 
   try {
     const base64 = await readFileAsBase64(file);
 
-    // If existing thumbnail has a different filename, delete old one
+    // If existing thumbnail has a different filename, queue old one for deletion
     const entry = (imageManifest || {})[slug];
     if (entry?.thumbnail) {
       const oldFilename = entry.thumbnail.split('/').pop();
       if (oldFilename !== filename) {
-        const oldSha = await getFileSha(`public/assets/portfolio/thumbnails/${oldFilename}`);
-        if (oldSha) await deleteGhFile(`public/assets/portfolio/thumbnails/${oldFilename}`, oldSha, `Replace thumbnail for ${slug}`);
+        pendingImageOps.push({
+          action: 'delete',
+          repoPath: `public/assets/portfolio/thumbnails/${oldFilename}`,
+          label: `old thumbnail for ${slug}`,
+        });
       }
     }
 
-    const sha = await getFileSha(repoPath);
-    await uploadGhFile(repoPath, base64, sha, `Update thumbnail for ${slug}`);
+    // Remove any previous queued thumbnail for this slug, then queue new one
+    pendingImageOps = pendingImageOps.filter(op =>
+      !(op.action === 'upload' && op.repoPath === repoPath)
+    );
+    pendingImageOps.push({ action: 'upload', repoPath, base64, label: `thumbnail for ${slug}` });
 
     // Update manifest cache
     if (!imageManifest[slug]) imageManifest[slug] = { thumbnail: '', slider: [] };
@@ -916,10 +1129,11 @@ async function uploadThumbnail(i) {
     document.getElementById(`pf-${i}-thumb-preview`).innerHTML =
       `<div class="image-preview-item"><img src="${objectUrl}" alt="Thumbnail"></div>`;
 
-    statusEl.textContent = 'Uploaded! Live after deploy (~1-2 min).';
+    statusEl.textContent = 'Queued. Click Save & Deploy to commit.';
     statusEl.className = 'upload-status uploaded';
+    updateSaveButton();
   } catch (e) {
-    statusEl.textContent = 'Failed: ' + e.message;
+    statusEl.textContent = 'Failed to read file: ' + e.message;
     statusEl.className = 'upload-status upload-error';
   }
   fileInput.value = '';
@@ -946,9 +1160,6 @@ async function uploadSliderImages(i) {
 
   try {
     for (let f = 0; f < files.length; f++) {
-      statusEl.textContent = `Uploading ${f + 1}/${files.length}...`;
-      statusEl.className = 'upload-status uploading';
-
       const file = files[f];
       const ext = file.name.split('.').pop().toLowerCase();
       const num = String(nextNum + f + 1).padStart(2, '0');
@@ -956,8 +1167,7 @@ async function uploadSliderImages(i) {
       const repoPath = `public/assets/portfolio/slider/${filename}`;
 
       const base64 = await readFileAsBase64(file);
-      const sha = await getFileSha(repoPath);
-      await uploadGhFile(repoPath, base64, sha, `Add slider image for ${slug}`);
+      pendingImageOps.push({ action: 'upload', repoPath, base64, label: `slider image ${filename}` });
 
       // Update manifest cache
       if (!imageManifest[slug]) imageManifest[slug] = { thumbnail: '', slider: [] };
@@ -971,55 +1181,50 @@ async function uploadSliderImages(i) {
       previewContainer.appendChild(div);
     }
 
-    statusEl.textContent = `${files.length} image${files.length > 1 ? 's' : ''} uploaded! Live after deploy.`;
+    statusEl.textContent = `${files.length} image${files.length > 1 ? 's' : ''} queued. Click Save & Deploy to commit.`;
     statusEl.className = 'upload-status uploaded';
+    updateSaveButton();
   } catch (e) {
-    statusEl.textContent = 'Failed: ' + e.message;
+    statusEl.textContent = 'Failed to read files: ' + e.message;
     statusEl.className = 'upload-status upload-error';
   }
   fileInput.value = '';
 }
 
-async function deleteSliderImage(i, slug, sliderIndex) {
-  if (!confirm('Delete this slider image from the repository?')) return;
+function deleteSliderImage(i, slug, sliderIndex) {
+  if (!confirm('Mark this slider image for deletion?')) return;
 
   const entry = (imageManifest || {})[slug];
   if (!entry || !entry.slider[sliderIndex]) return;
 
   const path = entry.slider[sliderIndex];
   const filename = path.split('/').pop();
-  const repoPath = `public/assets/portfolio/slider/${filename}`;
+
+  // Queue the deletion
+  pendingImageOps.push({
+    action: 'delete',
+    repoPath: `public/assets/portfolio/slider/${filename}`,
+    label: `slider image ${filename}`,
+  });
+
+  // Update manifest cache and refresh preview
+  entry.slider.splice(sliderIndex, 1);
+  const previewContainer = document.getElementById(`pf-${i}-slider-preview`);
+  if (entry.slider.length === 0) {
+    previewContainer.innerHTML = '<span style="font-size:12px;color:#9ca3af">No slider images</span>';
+  } else {
+    previewContainer.innerHTML = entry.slider.map((p, si) =>
+      `<div class="image-preview-item">
+        <img src="${escapeAttr(p)}" alt="Slide ${si+1}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:#999;padding:4px\\'>Not found</span>'">
+        <button class="remove-img" title="Delete" onclick="event.stopPropagation();deleteSliderImage(${i},'${escapeAttr(slug)}',${si})">&#215;</button>
+      </div>`
+    ).join('');
+  }
 
   const statusEl = document.getElementById(`pf-${i}-slider-status`);
-  statusEl.textContent = 'Deleting...';
+  statusEl.textContent = 'Marked for deletion. Will apply on Save & Deploy.';
   statusEl.className = 'upload-status uploading';
-
-  try {
-    const sha = await getFileSha(repoPath);
-    if (sha) {
-      await deleteGhFile(repoPath, sha, `Remove slider image ${filename}`);
-    }
-
-    // Update manifest cache and refresh preview
-    entry.slider.splice(sliderIndex, 1);
-    const previewContainer = document.getElementById(`pf-${i}-slider-preview`);
-    if (entry.slider.length === 0) {
-      previewContainer.innerHTML = '<span style="font-size:12px;color:#9ca3af">No slider images</span>';
-    } else {
-      previewContainer.innerHTML = entry.slider.map((p, si) =>
-        `<div class="image-preview-item">
-          <img src="${escapeAttr(p)}" alt="Slide ${si+1}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:#999;padding:4px\\'>Not found</span>'">
-          <button class="remove-img" title="Delete" onclick="event.stopPropagation();deleteSliderImage(${i},'${escapeAttr(slug)}',${si})">&#215;</button>
-        </div>`
-      ).join('');
-    }
-
-    statusEl.textContent = 'Deleted. Change live after deploy.';
-    statusEl.className = 'upload-status uploaded';
-  } catch (e) {
-    statusEl.textContent = 'Delete failed: ' + e.message;
-    statusEl.className = 'upload-status upload-error';
-  }
+  updateSaveButton();
 }
 
 // ─── Drag & Drop Reordering ──────────────────────────
