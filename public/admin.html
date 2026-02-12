@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>STKS Admin</title>
   <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%2319334a'/><text x='16' y='23' font-family='Poppins,sans-serif' font-size='20' font-weight='700' fill='white' text-anchor='middle'>S</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,11 +37,20 @@
       top: 0;
       z-index: 100;
     }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-logo {
+      width: 28px;
+      height: 28px;
+      filter: brightness(0) invert(1);
+    }
     .header h1 { font-size: 18px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
     .header-right { display: flex; align-items: center; gap: 12px; font-size: 14px; }
     .header-right .username { opacity: 0.8; }
 
     /* Buttons */
+    button, select, input, textarea {
+      font-family: inherit;
+    }
     button {
       cursor: pointer;
       border: none;
@@ -560,7 +570,10 @@
 <!-- Dashboard -->
 <div id="dashboard" class="dashboard">
   <div class="header">
-    <h1>STKS Admin</h1>
+    <div class="header-left">
+      <img src="/assets/favicon/favicon.png" alt="STKS" class="header-logo">
+      <h1>STKS Admin</h1>
+    </div>
     <div class="header-right">
       <span class="username" id="username-display"></span>
       <button class="btn-ghost" onclick="logout()">Logout</button>
