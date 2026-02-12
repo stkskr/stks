@@ -12,12 +12,24 @@
     "image": "/assets/images/profileRichard.jpg",
     "education": {
       "ko": [
-        { "school": "UC Berkeley, USA", "degree": "정치학 학사" },
-        { "school": "USC Cinema, USA", "degree": "영화연출 석사" }
+        {
+          "school": "UC Berkeley, USA",
+          "degree": "정치학 학사"
+        },
+        {
+          "school": "USC Cinema, USA",
+          "degree": "영화연출 석사"
+        }
       ],
       "en": [
-        { "school": "UC Berkeley, USA", "degree": "BS in Political Science" },
-        { "school": "USC Cinema, USA", "degree": "MA in Film Production" }
+        {
+          "school": "UC Berkeley, USA",
+          "degree": "BS in Political Science"
+        },
+        {
+          "school": "USC Cinema, USA",
+          "degree": "MA in Film Production"
+        }
       ]
     },
     "experience": {
@@ -50,24 +62,30 @@
     "image": "/assets/images/profileBrixton.jpg",
     "education": {
       "ko": [
-        { "school": "The King's University, Canada", "degree": "영문학 학사" }
+        {
+          "school": "The King's University, Canada",
+          "degree": "영문학 학사"
+        }
       ],
       "en": [
-        { "school": "The King's University, Canada", "degree": "BA in English Literature" }
+        {
+          "school": "The King's University, Canada",
+          "degree": "BA in English Literature"
+        }
       ]
     },
     "experience": {
       "ko": [
+        "모국어: 북미 영어 / 국적: 캐나다",
         "New York Times – 프로젝트 에디터",
         "Are.na Essay Yearly – 기고자",
-        "데모패션, 진저마이트 – 카피라이터",
-        "모국어: 북미 영어 / 국적: 캐나다"
+        "데모패션, 진저마이트 – 카피라이터"
       ],
       "en": [
+        "Native in North American English / Nationality: Canada",
         "New York Times - Project Editor",
         "Are.na Essays Yearly - Contributor",
-        "DEMO Fashion and Gingermite – Copywriter",
-        "Native in North American English / Nationality: Canada"
+        "DEMO Fashion and Gingermite – Copywriter"
       ]
     }
   },
@@ -84,12 +102,24 @@
     "image": "/assets/images/profileSein.jpg",
     "education": {
       "ko": [
-        { "school": "한국외국어대학교", "degree": "스페인어 학사" },
-        { "school": "한국외국어대학교", "degree": "SW & AI 학사" }
+        {
+          "school": "한국외국어대학교",
+          "degree": "SW & AI 학사"
+        },
+        {
+          "school": "한국외국어대학교",
+          "degree": "스페인어 학사"
+        }
       ],
       "en": [
-        { "school": "Hankuk University of Foreign Studies, Korea", "degree": "BA in Spanish" },
-        { "school": "Hankuk University of Foreign Studies, Korea", "degree": "BA in SW & AI" }
+        {
+          "school": "Hankuk University of Foreign Studies, Korea",
+          "degree": "BA in SW & AI"
+        },
+        {
+          "school": "Hankuk University of Foreign Studies, Korea",
+          "degree": "BA in Spanish"
+        }
       ]
     },
     "experience": {
@@ -118,10 +148,16 @@
     "image": "/assets/images/profileNatalie.jpg",
     "education": {
       "ko": [
-        { "school": "이화여자대학교", "degree": "심리학 학사" }
+        {
+          "school": "이화여자대학교",
+          "degree": "심리학 학사"
+        }
       ],
       "en": [
-        { "school": "Ewha Womans University, Korea", "degree": "BA in Psychology" }
+        {
+          "school": "Ewha Womans University, Korea",
+          "degree": "BA in Psychology"
+        }
       ]
     },
     "experience": {
@@ -152,28 +188,34 @@
     "image": "/assets/images/profileHyolim.png",
     "education": {
       "ko": [
-        { "school": "이화여자대학교", "degree": "영어영문학 학사" }
+        {
+          "school": "이화여자대학교",
+          "degree": "영어영문학 학사"
+        }
       ],
       "en": [
-        { "school": "Ewha Womans University, Korea", "degree": "BA in English Language and Literature" }
+        {
+          "school": "Ewha Womans University, Korea",
+          "degree": "BA in English Language and Literature"
+        }
       ]
     },
     "experience": {
       "ko": [
+        "이중언어 – 한국어, 영어",
         "영한, 한영 번역가 - 15년",
         "롯데호텔매거진 – 번역가",
         "아리랑 TV & Radio - 작가",
         "동아일보 - 영문 Editor",
-        "Korean Herald - 기자",
-        "이중언어 – 한국어, 영어"
+        "Korean Herald - 기자"
       ],
       "en": [
+        "Bilingual fluency in English and Korean",
         "Korean-English, English-Korean Translator - 15 years",
         "Lotte Hotel Magazine – Translator",
         "Arirang TV & Radio – Writer",
         "The Dong-A Ilbo – English Editor",
-        "The Korea Herald – Reporter",
-        "Bilingual fluency in English and Korean"
+        "The Korea Herald – Reporter"
       ]
     }
   },
@@ -190,12 +232,24 @@
     "image": "/assets/images/profileOtto.jpg",
     "education": {
       "ko": [
-        { "school": "GoldenQuest Comfort Retrievers\u00ae", "degree": "Off-site trained" },
-        { "school": "Kentucky, USA", "degree": "Mini Golden Retriever" }
+        {
+          "school": "GoldenQuest Comfort Retrievers®",
+          "degree": "Off-site trained"
+        },
+        {
+          "school": "Kentucky, USA",
+          "degree": "Mini Golden Retriever"
+        }
       ],
       "en": [
-        { "school": "GoldenQuest Comfort Retrievers\u00ae", "degree": "Off-site trained" },
-        { "school": "Kentucky, USA", "degree": "Mini Golden Retriever" }
+        {
+          "school": "GoldenQuest Comfort Retrievers®",
+          "degree": "Off-site trained"
+        },
+        {
+          "school": "Kentucky, USA",
+          "degree": "Mini Golden Retriever"
+        }
       ]
     },
     "experience": {
