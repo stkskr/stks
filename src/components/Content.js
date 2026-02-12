@@ -28,11 +28,18 @@ export class Content {
   render(state) {
     if (!state.currentSection) {
       this.innerElement.innerHTML = '';
+      this._lastRendered = null;
       return;
     }
 
     const section = state.currentSection;
     const language = state.language;
+    const key = `${section}:${language}`;
+
+    // Skip re-render if section and language haven't changed
+    // (e.g. opening/closing a portfolio modal only changes the slug)
+    if (this._lastRendered === key) return;
+    this._lastRendered = key;
 
     if (section === 'portfolio') {
       this.renderPortfolio(language);
