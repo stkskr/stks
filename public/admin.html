@@ -209,8 +209,8 @@
       border-radius: 4px;
       font-weight: 700;
     }
-    .lang-badge.ko { background: #dbeafe; color: #1e40af; }
-    .lang-badge.en { background: #fef3c7; color: #92400e; }
+    .lang-badge.ko { background: #fee2e2; color: #991b1b; }
+    .lang-badge.en { background: #dcfce7; color: #166534; }
 
     /* Save bar */
     .save-bar {
@@ -265,38 +265,78 @@
     /* Team member card */
     .team-profile-header {
       display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      margin-bottom: 16px;
+      gap: 28px;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 16px 0;
     }
     .team-photo-wrapper {
       flex-shrink: 0;
-      width: 80px;
+      width: 130px;
       text-align: center;
     }
-    .team-photo-preview {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+    .team-diamond {
+      width: 110px;
+      height: 110px;
+      position: relative;
+      margin: 0 auto;
+    }
+    .team-diamond-shape {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      transform: rotate(45deg);
+      border: 1px solid #ddd;
+      background: #000;
+    }
+    .team-diamond-shape img {
+      width: 142%;
+      height: 142%;
       object-fit: cover;
-      border: 2px solid #e5e7eb;
-      background: #f3f4f6;
+      transform: rotate(-45deg) scale(1.1);
+      position: absolute;
+      top: -21%;
+      left: -21%;
+      filter: grayscale(100%);
+      transition: filter 0.3s;
+    }
+    .team-diamond:hover .team-diamond-shape img {
+      filter: grayscale(0%);
+    }
+    .team-diamond-initial {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.85);
+      z-index: 2;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .team-diamond:hover .team-diamond-initial {
+      opacity: 0;
     }
     .team-photo-placeholder {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      transform: rotate(45deg);
       border: 2px dashed #d1d5db;
       background: #f9fafb;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 0 auto;
+    }
+    .team-photo-placeholder span {
+      transform: rotate(-45deg);
       color: #9ca3af;
       font-size: 12px;
     }
     .team-photo-upload-btn {
       display: inline-block;
-      margin-top: 6px;
+      margin-top: 14px;
       font-size: 11px;
       color: #19334a;
       cursor: pointer;
@@ -307,6 +347,7 @@
     .team-header-fields {
       flex: 1;
       min-width: 0;
+      max-width: 600px;
     }
     .team-initial-field {
       display: flex;
@@ -1049,6 +1090,37 @@ async function batchCommit(message, fileOps) {
   if (!updateRes.ok) throw new Error('Branch updated by someone else. Reload and try again.');
 }
 
+async function checkForExternalChanges() {
+  const filePath = FILES[currentTab].path;
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}?ref=${BRANCH}`;
+  const res = await ghFetch(url);
+  if (!res.ok) return null; // can't check, proceed anyway
+
+  const remote = await res.json();
+  const cachedSha = fileCache[currentTab]?.sha;
+  if (remote.sha === cachedSha) return null; // no changes
+
+  // File changed externally — parse remote data to compare
+  const remoteData = JSON.parse(decodeContent(remote.content));
+  const localData = fileCache[currentTab].data;
+
+  // Build a diff summary
+  const info = { remoteSha: remote.sha, remoteData };
+
+  // For array data, find items in remote that are missing locally
+  if (Array.isArray(remoteData) && Array.isArray(localData)) {
+    const localIds = new Set(localData.map(item => item.id || JSON.stringify(item)));
+    info.newItems = remoteData.filter(item => !localIds.has(item.id || JSON.stringify(item)));
+    info.remoteCount = remoteData.length;
+    info.localCount = localData.length;
+  } else if (currentTab === 'faq') {
+    info.remoteCount = remoteData.faqData?.length || 0;
+    info.localCount = localData.faqData?.length || 0;
+  }
+
+  return info;
+}
+
 async function executeDeploy() {
   const message = document.getElementById('deploy-message').value.trim();
   if (!message) { alert('Please enter a commit message.'); return; }
@@ -1057,10 +1129,45 @@ async function executeDeploy() {
 
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Deploying...';
-  setStatus('Deploying...', 'saving');
+  btn.innerHTML = '<span class="spinner"></span> Checking...';
+  setStatus('Checking for external changes...', 'saving');
 
   try {
+    // Staleness check — detect if someone else modified the file
+    const changes = await checkForExternalChanges();
+    if (changes) {
+      btn.disabled = false;
+      updateSaveButton();
+
+      let warning = `The ${FILES[currentTab].label} file has been modified outside of Admin since you loaded it.\n\n`;
+      if (changes.newItems && changes.newItems.length > 0) {
+        const names = changes.newItems.map(item =>
+          item.title?.en || item.title?.ko || item.name?.en || item.id || '(unknown)'
+        ).join(', ');
+        warning += `${changes.newItems.length} item(s) added externally: ${names}\n`;
+        warning += `Remote has ${changes.remoteCount} items, you have ${changes.localCount}.\n\n`;
+      } else if (changes.remoteCount !== undefined) {
+        warning += `Remote has ${changes.remoteCount} items, you have ${changes.localCount}.\n\n`;
+      }
+      warning += 'Choose an option:\n';
+      warning += '• OK = Reload the latest data (your unsaved edits will be lost)\n';
+      warning += '• Cancel = Go back and review before saving';
+
+      if (confirm(warning)) {
+        // Reload fresh data
+        delete fileCache[currentTab];
+        await loadFile(currentTab);
+        renderEditor(currentTab);
+        setStatus('Reloaded latest data from GitHub', 'success');
+      } else {
+        setStatus('Save cancelled — review your changes', 'error');
+      }
+      return;
+    }
+
+    btn.innerHTML = '<span class="spinner"></span> Deploying...';
+    setStatus('Deploying...', 'saving');
+
     const fileOps = [];
 
     // 1. Current tab's JSON data
@@ -1458,6 +1565,44 @@ function handleDragEnd(e) {
   dragState = { tab: null, fromIndex: null, insertAfter: false };
 }
 
+// ─── Team Sub-item Drag (Edu/Exp) ────────────────────
+function handleTeamSubDragStart(e, type, memberIdx, itemIdx) {
+  dragState = { tab: `team-${type}-${memberIdx}`, fromIndex: itemIdx, insertAfter: false };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(itemIdx));
+  requestAnimationFrame(() => {
+    e.target.closest('[data-drag-item]').classList.add('dragging');
+  });
+}
+
+function handleTeamSubDrop(e, type, memberIdx, toIndex) {
+  e.preventDefault();
+  const expectedTab = `team-${type}-${memberIdx}`;
+  if (dragState.tab !== expectedTab || dragState.fromIndex === null) return;
+
+  const fromIndex = dragState.fromIndex;
+  if (fromIndex === toIndex) return;
+
+  collectFormData('team');
+  const member = fileCache.team.data[memberIdx];
+  const field = type === 'edu' ? 'education' : 'experience';
+
+  // Move in both ko and en arrays together
+  const koArr = member[field].ko;
+  const enArr = member[field].en;
+
+  let insertAt = toIndex;
+  if (dragState.insertAfter) insertAt++;
+  if (fromIndex < insertAt) insertAt--;
+
+  const [koItem] = koArr.splice(fromIndex, 1);
+  koArr.splice(insertAt, 0, koItem);
+  const [enItem] = enArr.splice(fromIndex, 1);
+  enArr.splice(insertAt, 0, enItem);
+
+  renderEditor('team');
+}
+
 // ─── Renderers ────────────────────────────────────────
 function renderEditor(tab) {
   const area = document.getElementById('editor-area');
@@ -1672,9 +1817,15 @@ function renderTeamEditor(data) {
 
 function renderTeamItem(member, i) {
   const photoSrc = member.image || '';
-  const photoPreview = photoSrc
-    ? `<img src="${escapeAttr(photoSrc)}" alt="Photo" class="team-photo-preview" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="team-photo-placeholder" style="display:none">No photo</div>`
-    : `<div class="team-photo-placeholder">No photo</div>`;
+  const initial = escapeHtml(member.initial || '');
+  const diamondPhoto = photoSrc
+    ? `<div class="team-diamond">
+        <div class="team-diamond-initial">${initial}</div>
+        <div class="team-diamond-shape">
+          <img src="${escapeAttr(photoSrc)}" alt="Photo" onerror="this.style.display='none'">
+        </div>
+      </div>`
+    : `<div class="team-photo-placeholder"><span>No photo</span></div>`;
 
   return `
     <div class="array-item" data-index="${i}">
@@ -1688,7 +1839,7 @@ function renderTeamItem(member, i) {
 
       <div class="team-profile-header">
         <div class="team-photo-wrapper">
-          <div id="team-${i}-photo-preview">${photoPreview}</div>
+          <div id="team-${i}-photo-preview">${diamondPhoto}</div>
           <input type="file" id="team-${i}-photo-file" accept="image/*" style="display:none" onchange="uploadTeamPhoto(${i})">
           <span class="team-photo-upload-btn" onclick="document.getElementById('team-${i}-photo-file').click()">Change photo</span>
           <input type="hidden" data-field="team-${i}-image" value="${escapeAttr(photoSrc)}">
@@ -1737,9 +1888,12 @@ function renderTeamEduItems(education, memberIdx) {
     const koDegree = koEdu[j]?.degree || '';
     const enDegree = enEdu[j]?.degree || '';
     html += `
-      <div class="array-item">
+      <div class="array-item" data-drag-item draggable="true" ondragstart="handleTeamSubDragStart(event,'edu',${memberIdx},${j})" ondragover="handleDragOver(event)" ondrop="handleTeamSubDrop(event,'edu',${memberIdx},${j})" ondragend="handleDragEnd(event)">
         <div class="team-edu-row">
-          <span>#${j+1}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="drag-handle" title="Drag to reorder">&#x2807;</span>
+            <span>#${j+1}</span>
+          </div>
           <button class="btn-danger btn-small" onclick="removeTeamEdu(${memberIdx},${j})" style="padding:2px 8px;font-size:11px">Remove</button>
         </div>
         <div class="bilingual-row" style="margin-bottom:6px">
@@ -1775,9 +1929,12 @@ function renderTeamExpItems(experience, memberIdx) {
   const count = Math.max(koExp.length, enExp.length);
   for (let j = 0; j < count; j++) {
     html += `
-      <div class="array-item">
+      <div class="array-item" data-drag-item draggable="true" ondragstart="handleTeamSubDragStart(event,'exp',${memberIdx},${j})" ondragover="handleDragOver(event)" ondrop="handleTeamSubDrop(event,'exp',${memberIdx},${j})" ondragend="handleDragEnd(event)">
         <div class="team-edu-row">
-          <span>#${j+1}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="drag-handle" title="Drag to reorder">&#x2807;</span>
+            <span>#${j+1}</span>
+          </div>
           <button class="btn-danger btn-small" onclick="removeTeamExp(${memberIdx},${j})" style="padding:2px 8px;font-size:11px">Remove</button>
         </div>
         <div class="bilingual-row">
@@ -2153,7 +2310,8 @@ async function uploadTeamPhoto(i) {
 
   const objectUrl = URL.createObjectURL(file);
   const previewEl = document.getElementById(`team-${i}-photo-preview`);
-  previewEl.innerHTML = `<img src="${objectUrl}" alt="Photo" class="team-photo-preview">`;
+  const initialVal = getVal(`team-${i}-initial`) || '';
+  previewEl.innerHTML = `<div class="team-diamond"><div class="team-diamond-initial">${escapeHtml(initialVal)}</div><div class="team-diamond-shape"><img src="${objectUrl}" alt="Photo"></div></div>`;
 
   // Store the file as a data URL in the hidden field for now
   const reader = new FileReader();
