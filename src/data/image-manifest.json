@@ -333,5 +333,11 @@
     "slider": [
       "/assets/portfolio/slider/57_zic-global-slogan.jpg"
     ]
+  },
+  "zflip-olympic-edition": {
+    "thumbnail": "/assets/portfolio/thumbnails/58_zflip-olympic-edition.jpg",
+    "slider": [
+      "/assets/portfolio/slider/58_zflip-olympic-edition_01.jpg"
+    ]
   }
 }

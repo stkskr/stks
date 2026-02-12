@@ -441,6 +441,20 @@
     .upload-status.uploaded { color: #059669; }
     .upload-status.upload-error { color: #dc2626; }
 
+    /* Drag and drop */
+    .drag-handle {
+      cursor: grab;
+      color: #c0c0c0;
+      font-size: 18px;
+      line-height: 1;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    [data-drag-item].dragging { opacity: 0.25; }
+    [data-drag-item].drag-over-top { box-shadow: inset 0 3px 0 0 #4f46e5; }
+    [data-drag-item].drag-over-bottom { box-shadow: inset 0 -3px 0 0 #4f46e5; }
+
     /* Responsive */
     @media (max-width: 768px) {
       .bilingual-row { grid-template-columns: 1fr; }
@@ -1008,6 +1022,73 @@ async function deleteSliderImage(i, slug, sliderIndex) {
   }
 }
 
+// ─── Drag & Drop Reordering ──────────────────────────
+let dragState = { tab: null, fromIndex: null, insertAfter: false };
+
+function getDragArray(tab) {
+  if (tab === 'faq') return fileCache.faq.data.faqData;
+  return fileCache[tab].data;
+}
+
+function handleDragStart(e, tab, index) {
+  dragState = { tab, fromIndex: index, insertAfter: false };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(index));
+  requestAnimationFrame(() => {
+    e.target.closest('[data-drag-item]').classList.add('dragging');
+  });
+}
+
+function handleDragOver(e) {
+  if (dragState.tab === null) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+
+  document.querySelectorAll('.drag-over-top, .drag-over-bottom').forEach(el => {
+    el.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+
+  const item = e.target.closest('[data-drag-item]');
+  if (item && !item.classList.contains('dragging')) {
+    const rect = item.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    if (e.clientY < midY) {
+      item.classList.add('drag-over-top');
+      dragState.insertAfter = false;
+    } else {
+      item.classList.add('drag-over-bottom');
+      dragState.insertAfter = true;
+    }
+  }
+}
+
+function handleDrop(e, tab, toIndex) {
+  e.preventDefault();
+  if (dragState.tab !== tab || dragState.fromIndex === null) return;
+
+  const fromIndex = dragState.fromIndex;
+  if (fromIndex === toIndex) return;
+
+  collectFormData(tab);
+  const arr = getDragArray(tab);
+  const [item] = arr.splice(fromIndex, 1);
+
+  let insertAt = toIndex;
+  if (dragState.insertAfter) insertAt++;
+  if (fromIndex < insertAt) insertAt--;
+
+  arr.splice(insertAt, 0, item);
+  renderEditor(tab);
+}
+
+function handleDragEnd(e) {
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+  document.querySelectorAll('.drag-over-top, .drag-over-bottom').forEach(el => {
+    el.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+  dragState = { tab: null, fromIndex: null, insertAfter: false };
+}
+
 // ─── Renderers ────────────────────────────────────────
 function renderEditor(tab) {
   const area = document.getElementById('editor-area');
@@ -1147,11 +1228,13 @@ function renderFaqEditor(data) {
 function renderFaqItem(item, i) {
   const categories = ['services', 'pricing', 'process', 'legal', 'other'];
   return `
-    <div class="array-item" data-index="${i}">
+    <div class="array-item" data-index="${i}" data-drag-item draggable="true" ondragstart="handleDragStart(event,'faq',${i})" ondragover="handleDragOver(event)" ondrop="handleDrop(event,'faq',${i})" ondragend="handleDragEnd(event)">
       <div class="array-item-header">
-        <span class="item-number">FAQ #${i + 1}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="drag-handle" title="Drag to reorder">&#x2807;</span>
+          <span class="item-number">FAQ #${i + 1}</span>
+        </div>
         <div class="array-item-actions">
-          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveFaqItem(${i},-1)">Move Up</button>` : ''}
           <button class="btn-danger btn-small" onclick="removeFaqItem(${i})">Delete</button>
         </div>
       </div>
@@ -1183,14 +1266,16 @@ function renderQuotesEditor(data) {
 
 function renderQuoteItem(item, i) {
   return `
-    <div class="array-item" data-index="${i}">
+    <div class="array-item" data-index="${i}" data-drag-item draggable="true" ondragstart="handleDragStart(event,'quotes',${i})" ondragover="handleDragOver(event)" ondrop="handleDrop(event,'quotes',${i})" ondragend="handleDragEnd(event)">
       <div class="array-item-header">
-        <span class="item-number">Quote #${i + 1}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="drag-handle" title="Drag to reorder">&#x2807;</span>
+          <span class="item-number">Quote #${i + 1}</span>
+        </div>
         <div class="array-item-actions">
           <label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;margin-right:8px">
             <input type="checkbox" data-field="quote-${i}-testimonial" ${item.isTestimonial ? 'checked' : ''} style="accent-color:#4f46e5"> Testimonial
           </label>
-          ${i > 0 ? `<button class="btn-outline btn-small" onclick="moveQuoteItem(${i},-1)">Move Up</button>` : ''}
           <button class="btn-danger btn-small" onclick="removeQuoteItem(${i})">Delete</button>
         </div>
       </div>
@@ -1517,9 +1602,10 @@ function renderMediaTypeCheckboxes(i, currentValue) {
 function renderPortfolioItem(item, i) {
   const title = item.title?.en || item.title?.ko || '(untitled)';
   return `
-    <div class="portfolio-item" data-index="${i}" data-search="${escapeAttr((title + ' ' + (item.client||'') + ' ' + (item.mediaType||'')).toLowerCase())}">
+    <div class="portfolio-item" data-index="${i}" data-search="${escapeAttr((title + ' ' + (item.client||'') + ' ' + (item.mediaType||'')).toLowerCase())}" data-drag-item draggable="true" ondragstart="handleDragStart(event,'portfolio',${i})" ondragover="handleDragOver(event)" ondrop="handleDrop(event,'portfolio',${i})" ondragend="handleDragEnd(event)">
       <div class="portfolio-item-summary" onclick="togglePortfolioItem(this)">
         <div class="portfolio-item-left">
+          <span class="drag-handle" title="Drag to reorder">&#x2807;</span>
           <span class="portfolio-item-num">#${i + 1}</span>
           <span class="portfolio-item-title">${escapeHtml(title)}</span>
           <span class="portfolio-item-meta">${escapeHtml(item.client || '')} &middot; ${escapeHtml(item.mediaType || '')}</span>
@@ -1555,8 +1641,6 @@ function renderPortfolioItem(item, i) {
           ${bilingualTextarea(`pf-${i}-solution`, 'Solution', item.solution)}
           ${renderPortfolioImages(item, i)}
           <div class="array-item-actions" style="margin-top:12px;display:flex;gap:4px;justify-content:flex-end">
-            ${i > 0 ? `<button class="btn-outline btn-small" onclick="movePortfolioItem(${i},-1)">Move Up</button>` : ''}
-            ${i < fileCache.portfolio.data.length - 1 ? `<button class="btn-outline btn-small" onclick="movePortfolioItem(${i},1)">Move Down</button>` : ''}
             <button class="btn-danger btn-small" onclick="removePortfolioItem(${i})">Delete</button>
           </div>
         </div>
