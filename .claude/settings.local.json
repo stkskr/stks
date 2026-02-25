@@ -28,7 +28,11 @@
       "Bash(npx vite build)",
       "Bash(node -e:*)",
       "Bash(node:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebFetch(domain:www.acquia.com)",
+      "WebFetch(domain:www.theguardian.com)",
+      "WebFetch(domain:www.wsj.com)",
+      "WebFetch(domain:writingcooperative.com)"
     ]
   }
 }

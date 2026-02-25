@@ -1,3 +1,6 @@
+import { inject } from '@vercel/analytics';
+inject();
+
 import './styles/variables.css';
 import './styles/global.css';
 import './styles/animations.css';

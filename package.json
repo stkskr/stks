@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run generate:manifest && vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "npm run generate:manifest && vite build",
     "preview": "vite preview",
-    "generate:manifest": "node scripts/generate-image-manifest.js",
-    "dev": "vite --host 0.0.0.0"
+    "generate:manifest": "node scripts/generate-image-manifest.js"
   },
   "devDependencies": {
     "vite": "^5.0.8",
@@ -15,5 +14,8 @@
   },
   "overrides": {
     "cross-spawn": "^7.0.3"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.6.1"
   }
 }
