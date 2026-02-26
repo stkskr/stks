@@ -717,42 +717,57 @@
     .services-admin-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 12px;
     }
     .service-admin-card {
       border: 1px solid #e5e7eb;
       border-radius: 8px;
-      padding: 16px;
+      padding: 12px;
       background: #fafafa;
+      min-width: 0;
     }
     .service-admin-card h4 {
-      margin-bottom: 12px;
-      font-size: 14px;
+      margin-bottom: 8px;
+      font-size: 13px;
       font-weight: 600;
       color: #374151;
       text-align: center;
     }
+    .service-admin-card .bilingual-row {
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .service-admin-card .bilingual-row input {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+    .service-admin-card .bilingual-row label {
+      font-size: 10px;
+    }
     .service-admin-images {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 8px;
+      gap: 8px;
+      margin-top: 6px;
     }
     .service-admin-img-slot {
       text-align: center;
+      min-width: 0;
     }
     .service-admin-img-slot .lang-badge {
       display: inline-block;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      font-size: 9px;
+      padding: 0 4px;
     }
     .service-admin-img-slot .svc-img-preview {
       width: 100%;
-      aspect-ratio: 3/4;
+      aspect-ratio: 1/1;
       border: 1px solid #e5e7eb;
-      border-radius: 6px;
+      border-radius: 4px;
       background: #fff;
       overflow: hidden;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .service-admin-img-slot .svc-img-preview img {
       width: 100%;
@@ -761,7 +776,7 @@
     }
     .service-upload-btn {
       display: inline-block;
-      margin-top: 4px;
+      margin-top: 2px;
       font-size: 11px;
       color: #19334a;
       cursor: pointer;
