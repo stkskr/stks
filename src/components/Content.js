@@ -128,7 +128,7 @@ export class Content {
 
   renderServices(language) {
     this.innerElement.innerHTML = '';
-    this.servicesGrid.render();
+    this.servicesGrid.render(language);
     this.innerElement.appendChild(this.servicesGrid.getElement());
 
     // Add CTA after services grid

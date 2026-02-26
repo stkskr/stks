@@ -1,0 +1,32 @@
+[
+  {
+    "id": "onlinevideo",
+    "label": { "ko": "온라인 비디오", "en": "Online Video" },
+    "image": { "ko": "/assets/images/onlinevideo.png", "en": "/assets/images/onlinevideo.png" }
+  },
+  {
+    "id": "brandstory",
+    "label": { "ko": "브랜드 스토리", "en": "Brand Story" },
+    "image": { "ko": "/assets/images/brandstory.png", "en": "/assets/images/brandstory.png" }
+  },
+  {
+    "id": "naming",
+    "label": { "ko": "네이밍", "en": "Naming" },
+    "image": { "ko": "/assets/images/naming.png", "en": "/assets/images/naming.png" }
+  },
+  {
+    "id": "slogan",
+    "label": { "ko": "슬로건", "en": "Slogan" },
+    "image": { "ko": "/assets/images/slogan.png", "en": "/assets/images/slogan.png" }
+  },
+  {
+    "id": "ceoscript",
+    "label": { "ko": "CEO 스크립트", "en": "CEO Script" },
+    "image": { "ko": "/assets/images/ceoscript.png", "en": "/assets/images/ceoscript.png" }
+  },
+  {
+    "id": "website",
+    "label": { "ko": "웹사이트", "en": "Website" },
+    "image": { "ko": "/assets/images/website.png", "en": "/assets/images/website.png" }
+  }
+]

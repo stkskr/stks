@@ -1,13 +1,5 @@
+import servicesData from '../data/services.json';
 import { createElement } from '../utils/dom.js';
-
-const serviceImages = [
-  'onlinevideo.png',
-  'brandstory.png',
-  'naming.png',
-  'slogan.png',
-  'ceoscript.png',
-  'website.png'
-];
 
 export class GridServices {
   constructor() {
@@ -15,14 +7,14 @@ export class GridServices {
     this.gridElement = createElement('div', 'services-grid');
   }
 
-  render() {
+  render(language = 'ko') {
     this.gridElement.innerHTML = '';
 
-    serviceImages.forEach(imageName => {
+    servicesData.forEach(service => {
       const item = createElement('div', 'service-item');
       const img = createElement('img');
-      img.src = `/assets/images/${imageName}`;
-      img.alt = imageName.replace('.png', '');
+      img.src = service.image[language] || service.image.ko;
+      img.alt = service.label[language] || service.id;
       item.appendChild(img);
       this.gridElement.appendChild(item);
     });

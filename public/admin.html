@@ -713,6 +713,72 @@
       justify-content: flex-end;
     }
 
+    /* Services admin grid */
+    .services-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .service-admin-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fafafa;
+    }
+    .service-admin-card h4 {
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      text-align: center;
+    }
+    .service-admin-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .service-admin-img-slot {
+      text-align: center;
+    }
+    .service-admin-img-slot .lang-badge {
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .service-admin-img-slot .svc-img-preview {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .service-admin-img-slot .svc-img-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .service-upload-btn {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #19334a;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .service-upload-btn:hover { color: #a11d20; }
+    @media (max-width: 900px) {
+      .services-admin-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .services-admin-grid { grid-template-columns: 1fr; }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .bilingual-row { grid-template-columns: 1fr; }
@@ -754,6 +820,7 @@
     <button class="tab-btn" data-tab="about">About</button>
     <button class="tab-btn" data-tab="team">Team</button>
     <button class="tab-btn" data-tab="portfolio">Portfolio</button>
+    <button class="tab-btn" data-tab="services">Services</button>
     <button class="tab-btn" data-tab="quotes">Quotes</button>
     <button class="tab-btn" data-tab="faq">FAQ</button>
     <button class="tab-btn" data-tab="contact">Contact</button>
@@ -800,6 +867,7 @@ const FILES = {
   quotes: { path: `${DATA_PATH}/quotes.json`, label: 'Quotes' },
   testimonials: { path: `${DATA_PATH}/testimonials.json`, label: 'Testimonials' },
   team: { path: `${DATA_PATH}/team.json`, label: 'Team' },
+  services: { path: `${DATA_PATH}/services.json`, label: 'Services' },
 };
 
 // ─── State ────────────────────────────────────────────
@@ -1683,6 +1751,7 @@ function renderEditor(tab) {
     case 'faq': area.innerHTML = renderFaqEditor(data); break;
     case 'quotes': area.innerHTML = renderQuotesEditor(data); break;
     case 'team': area.innerHTML = renderTeamEditor(data); break;
+    case 'services': area.innerHTML = renderServicesEditor(data); break;
   }
   // After rendering portfolio, bind search and toggle listeners
   if (tab === 'portfolio') bindPortfolioListeners();
@@ -2031,6 +2100,7 @@ function collectFormData(tab) {
     case 'faq': collectFaq(data); break;
     case 'quotes': collectQuotes(data); break;
     case 'team': collectTeam(data); break;
+    case 'services': collectServices(data); break;
   }
 }
 
@@ -2404,6 +2474,107 @@ async function uploadTeamPhoto(i) {
       !(op.action === 'upload' && op.repoPath.startsWith('public/assets/images/profile') && op.label === `team photo for ${memberName}`)
     );
     pendingImageOps.push({ action: 'upload', repoPath, base64, label: `team photo for ${memberName}` });
+    updateDirtyIndicators();
+  };
+  reader.readAsDataURL(file);
+  fileInput.value = '';
+}
+
+// ─── Services Editor ─────────────────────────────────
+function renderServicesEditor(data) {
+  let html = `<div class="editor-card"><h3>Service Images</h3>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:16px">
+      Upload separate images for Korean and English versions of each service card.
+    </p>
+    <div class="services-admin-grid">`;
+
+  data.forEach((service, i) => {
+    const labelText = service.label.en || service.id;
+    const koImg = service.image.ko || '';
+    const enImg = service.image.en || '';
+
+    html += `
+      <div class="service-admin-card">
+        <h4>${escapeHtml(labelText)}</h4>
+        <input type="hidden" data-field="svc-${i}-id" value="${escapeAttr(service.id)}">
+        <div class="bilingual-row" style="margin-bottom:8px">
+          <div class="field-group">
+            <label class="field-label-row"><span class="lang-badge ko">KO</span> Label</label>
+            <input type="text" data-field="svc-${i}-label-ko" value="${escapeAttr(service.label.ko)}">
+          </div>
+          <div class="field-group">
+            <label class="field-label-row"><span class="lang-badge en">EN</span> Label</label>
+            <input type="text" data-field="svc-${i}-label-en" value="${escapeAttr(service.label.en)}">
+          </div>
+        </div>
+        <div class="service-admin-images">
+          <div class="service-admin-img-slot">
+            <span class="lang-badge ko">KO</span>
+            <div class="svc-img-preview" id="svc-${i}-ko-preview">
+              ${koImg ? `<img src="${escapeAttr(koImg)}" alt="KO" onerror="this.parentElement.innerHTML='<span style=\\'color:#9ca3af;font-size:12px\\'>No image</span>'">` : '<span style="color:#9ca3af;font-size:12px">No image</span>'}
+            </div>
+            <input type="file" id="svc-${i}-ko-file" accept="image/*" style="display:none" onchange="uploadServiceImage(${i}, 'ko')">
+            <input type="hidden" data-field="svc-${i}-image-ko" value="${escapeAttr(koImg)}">
+            <span class="service-upload-btn" onclick="document.getElementById('svc-${i}-ko-file').click()">Change image</span>
+          </div>
+          <div class="service-admin-img-slot">
+            <span class="lang-badge en">EN</span>
+            <div class="svc-img-preview" id="svc-${i}-en-preview">
+              ${enImg ? `<img src="${escapeAttr(enImg)}" alt="EN" onerror="this.parentElement.innerHTML='<span style=\\'color:#9ca3af;font-size:12px\\'>No image</span>'">` : '<span style="color:#9ca3af;font-size:12px">No image</span>'}
+            </div>
+            <input type="file" id="svc-${i}-en-file" accept="image/*" style="display:none" onchange="uploadServiceImage(${i}, 'en')">
+            <input type="hidden" data-field="svc-${i}-image-en" value="${escapeAttr(enImg)}">
+            <span class="service-upload-btn" onclick="document.getElementById('svc-${i}-en-file').click()">Change image</span>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function collectServices(data) {
+  const result = data.map((service, i) => ({
+    id: getVal(`svc-${i}-id`),
+    label: {
+      ko: getVal(`svc-${i}-label-ko`),
+      en: getVal(`svc-${i}-label-en`),
+    },
+    image: {
+      ko: getVal(`svc-${i}-image-ko`),
+      en: getVal(`svc-${i}-image-en`),
+    },
+  }));
+  fileCache.services.data = result;
+}
+
+async function uploadServiceImage(i, lang) {
+  const fileInput = document.getElementById(`svc-${i}-${lang}-file`);
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const objectUrl = URL.createObjectURL(file);
+  const previewEl = document.getElementById(`svc-${i}-${lang}-preview`);
+  previewEl.innerHTML = `<img src="${objectUrl}" alt="${lang.toUpperCase()}">`;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const serviceId = getVal(`svc-${i}-id`);
+    const filename = `svc_${serviceId}_${lang}.${ext}`;
+    const repoPath = `public/assets/images/${filename}`;
+    const imagePath = `/assets/images/${filename}`;
+
+    const hiddenInput = document.querySelector(`[data-field="svc-${i}-image-${lang}"]`);
+    if (hiddenInput) hiddenInput.value = imagePath;
+
+    const base64 = reader.result.split(',')[1];
+    const label = `service image ${serviceId} (${lang.toUpperCase()})`;
+    pendingImageOps = pendingImageOps.filter(op =>
+      !(op.action === 'upload' && op.repoPath === repoPath)
+    );
+    pendingImageOps.push({ action: 'upload', repoPath, base64, label });
     updateDirtyIndicators();
   };
   reader.readAsDataURL(file);
