@@ -265,6 +265,7 @@
       }
     }
   ],
+  "faqSeoOnly": [],
   "faqCategoryLabels": {
     "services": {
       "ko": "서비스 & 팀 소개",
