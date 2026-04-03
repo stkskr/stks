@@ -10,9 +10,56 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16583690313"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-16583690313');
+    </script>
   </head>
   <body>
     <div id="app" class="container"></div>
     <script type="module" src="/src/main.js"></script>
+    <script>
+      (function() {
+        const thresholds = [120];
+        const conversionIds = ['AW-16583690313/ggAaCL65hpQcEMmQ3OM9'];
+
+        thresholds.forEach((threshold, index) => {
+          const timeRemainKey = `time_remain_${threshold}`;
+          const isTriggeredKey = `is_triggered_${threshold}`;
+          let timeRemaining = parseInt(sessionStorage.getItem(timeRemainKey)) || threshold;
+
+          if (sessionStorage.getItem(isTriggeredKey) === null) {
+            sessionStorage.setItem(isTriggeredKey, '1');
+          }
+
+          if (timeRemaining > 0) {
+            setTimeout(() => {
+              timeRemaining = 0;
+              finalizeConversion();
+            }, timeRemaining * 1000);
+          }
+
+          function finalizeConversion() {
+            if (timeRemaining <= 0 && sessionStorage.getItem(isTriggeredKey) === '1') {
+              gtag('event', 'conversion', { 'send_to': conversionIds[index] });
+              sessionStorage.setItem(isTriggeredKey, '0');
+            }
+            sessionStorage.setItem(timeRemainKey, timeRemaining);
+          }
+
+          const timeBegin = Date.now();
+          window.addEventListener('beforeunload', function() {
+            const elapsedTime = (Date.now() - timeBegin) / 1000;
+            let currentRemaining = Math.max(0, timeRemaining - elapsedTime);
+            sessionStorage.setItem(timeRemainKey, currentRemaining);
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
