@@ -32,7 +32,8 @@
       "WebFetch(domain:www.acquia.com)",
       "WebFetch(domain:www.theguardian.com)",
       "WebFetch(domain:www.wsj.com)",
-      "WebFetch(domain:writingcooperative.com)"
+      "WebFetch(domain:writingcooperative.com)",
+      "Bash(git -C c:/Users/brixt/Desktop/stks/stks log --oneline)"
     ]
   }
 }

@@ -1,4 +1,5 @@
 import { stateManager } from './state.js';
+import { injectPageSchema } from '../utils/seo.js';
 
 class Router {
   constructor() {
@@ -118,6 +119,8 @@ class Router {
       appState: appState,
       portfolioSlug: route.portfolioSlug,
     });
+
+    injectPageSchema(route.section, route.language, route.portfolioSlug);
 
     // After first route, subsequent navigations should animate
     if (this.isInitialLoad) {
