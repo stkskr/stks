@@ -8,7 +8,7 @@
       "ko": "전화:",
       "en": "Phone:"
     },
-    "number": "02-793-7857"
+    "number": "010-9867-5309"
   },
   "email": {
     "label": {
@@ -23,8 +23,8 @@
       "en": "Office:"
     },
     "address": {
-      "ko": "서울 용산구<br>녹사평대로26길 42<br>스틱스앤스톤스 빌딩",
-      "en": "42, Noksapyeong-daero 26-gil, <br>Yongsan-gu, Seoul, <br>Republic of Korea"
+      "ko": "서울특별시 서초구 서초동 <br>1364-25, 3층 a491",
+      "en": "3F a491, 1364-25, Seocho-gu, <br>Seoul, Republic of Korea"
     },
     "addressPlain": {
       "ko": "서울특별시 서초구 서초동 1364-25, 3층 a491",
