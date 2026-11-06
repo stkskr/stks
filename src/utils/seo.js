@@ -122,8 +122,8 @@ function aboutSchema(lang) {
         'url': `${SITE_URL}/${lang === 'en' ? 'en/' : ''}about`,
         'name': lang === 'ko' ? '스틱스앤스톤스 소개 | Sticks & Stones Seoul' : 'About Sticks & Stones Seoul',
         'description': lang === 'ko'
-          ? '인상적인 메시지를 쓰는 건 어렵습니다. 영어로는 더더욱. 스틱스앤스톤스는 글로벌 브랜딩 전문 영어 카피라이팅 에이전시입니다. 에미상 수상 크리에이티브 디렉터 Richard Kim과 뉴욕타임즈 출신 카피 전략가 Brixton Sandhals가 이끄는 네이티브 영어 전문 팀.'
-          : 'Landing your brand story globally takes a little more. Meet the native English-speaking team behind Sticks & Stones Seoul — led by Emmy Award winner Richard Kim and New York Times editor Brixton Sandhals.',
+          ? '인상적인 메시지를 쓰는 건 어렵습니다. 영어로는 더더욱. 스틱스앤스톤스는 글로벌 브랜딩 전문 영어 카피라이팅 에이전시입니다. 에미상 수상 크리에이티브 디렉터 Richard Kim이 이끄는 네이티브 영어 전문 팀.'
+          : 'Landing your brand story globally takes a little more. Meet the native English-speaking team behind Sticks & Stones Seoul — led by Emmy Award winner Richard Kim.',
         'publisher': { '@id': ORG_ID },
         'about': { '@id': ORG_ID },
         'mainEntity': { '@id': ORG_ID },
